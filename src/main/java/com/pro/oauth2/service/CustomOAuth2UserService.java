@@ -21,7 +21,6 @@ import org.springframework.util.StringUtils;
 @Service
 @Slf4j
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-    // 다시 확인하기
 
     private final UserRepository userRepository;
 
