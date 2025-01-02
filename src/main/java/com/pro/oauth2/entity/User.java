@@ -24,6 +24,7 @@ public class User{
 
     private String name;
 
+    @Column(nullable = true)
     private String oauth2Id;
 
     @Enumerated(EnumType.STRING)
@@ -33,14 +34,15 @@ public class User{
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private int age;
-
-    private String phone;
+//    private int age;
+//
+//    private String phone;
 
     private String password;
 
-    private LocalDateTime registrationDate;
+//    private LocalDateTime registrationDate;
 
+    @Column(nullable = true)
     private int reviewCount;
 
     public User update(OAuth2UserInfo oAuth2UserInfo) {
