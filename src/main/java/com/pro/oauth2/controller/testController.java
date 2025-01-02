@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class EXController {
+public class testController {
     @GetMapping("/login-test")
     @ResponseBody
     public String loginInfo() {

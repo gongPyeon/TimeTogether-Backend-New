@@ -23,7 +23,7 @@ import static com.pro.oauth2.repository.CookieAuthorizationRequestRepository.RED
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Value("${jwt.redirectUri}")
     private String redirectUri; // 수정하기

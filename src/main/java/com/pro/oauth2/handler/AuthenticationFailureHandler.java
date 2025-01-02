@@ -17,7 +17,7 @@ import static com.pro.oauth2.repository.CookieAuthorizationRequestRepository.RED
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
