@@ -38,5 +38,5 @@ out/
 
 application.yml
 **/application.yml
-/src/main/java/resources/application.yml
+src/main/resources/application.yml
 .DS_Store
