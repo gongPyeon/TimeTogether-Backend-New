@@ -36,6 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-
+application.yml
+**/application.yml
 /src/main/java/resources/application.yml
 .DS_Store

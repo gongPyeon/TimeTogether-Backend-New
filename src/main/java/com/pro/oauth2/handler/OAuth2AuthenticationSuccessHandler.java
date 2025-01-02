@@ -43,7 +43,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         log.info("Authentication success!");
         // String targetUrl = determineTargetUrl(request, response, authentication);
-        String targetUrl = "/hello";
+        String targetUrl = "/login-test";
         if (response.isCommitted()) {
             log.debug("Response has already been committed.");
             return;

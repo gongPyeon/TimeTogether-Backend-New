@@ -43,7 +43,7 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/oauth2/**", "/", "/login", "/logout").permitAll()
+                        .requestMatchers("/oauth2/**", "/", "/login", "/login-test").permitAll()
                         .anyRequest().authenticated());
 
         // oauth2 로그인
@@ -64,7 +64,7 @@ public class SecurityConfig {
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID") // jwt는 sessionles인데 어디서 설정되는거지?
                         .deleteCookies("accessToken")
-                        .logoutSuccessUrl("/logout")); // 기존 login과 차이점이 있어야하는지?
+                        .logoutSuccessUrl("/logout-test")); // 기존 login과 차이점이 있어야하는지?
 
         // jwt filter 설정
         http.addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class);

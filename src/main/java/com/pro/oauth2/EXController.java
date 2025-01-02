@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequiredArgsConstructor
 public class EXController {
-    @GetMapping("/login")
+    @GetMapping("/login-test")
     @ResponseBody
     public String loginInfo() {
         return "login";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/logout-test")
     @ResponseBody
     public String logoutInfo() {
         return "logout"; // login page로 변경
