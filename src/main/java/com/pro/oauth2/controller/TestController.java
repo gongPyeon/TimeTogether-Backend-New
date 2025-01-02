@@ -1,4 +1,4 @@
-package com.pro.oauth2;
+package com.pro.oauth2.controller;
 
 import com.pro.oauth2.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequiredArgsConstructor
-public class testController {
+public class TestController {
     @GetMapping("/login-test")
     @ResponseBody
     public String loginInfo() {

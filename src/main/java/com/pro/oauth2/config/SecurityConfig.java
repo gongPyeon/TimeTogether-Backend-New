@@ -1,8 +1,9 @@
 package com.pro.oauth2.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pro.oauth2.filter.CustomJsonUsernamePasswordAuthenticationFilter;
-import com.pro.oauth2.handler.OAuth2AuthenticationFailureHandler;
-import com.pro.oauth2.handler.OAuth2AuthenticationSuccessHandler;
+import com.pro.oauth2.handler.AuthenticationFailureHandler;
+import com.pro.oauth2.handler.AuthenticationSuccessHandler;
 import com.pro.oauth2.jwt.JwtAuthenticationFilter;
 import com.pro.oauth2.jwt.JwtService;
 import com.pro.oauth2.repository.CookieAuthorizationRequestRepository;
@@ -32,9 +33,10 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final JwtService jwtService;
     private final LoginService loginService;
+    private final ObjectMapper objectMapper;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
-    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
-    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -50,7 +52,7 @@ public class SecurityConfig {
         // 요청에 대한 권한 설정
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/oauth2/**", "/", "/login", "/login-test").permitAll()
+                        .requestMatchers("/oauth2/**", "/", "/login", "/login-test", "/sign-up").permitAll()
                         .anyRequest().authenticated());
 
         // oauth2 로그인
@@ -62,8 +64,8 @@ public class SecurityConfig {
 //                        )
 //                        .redirectionEndpoint(redirect -> redirect.baseUri("/oauth2/callback/*"))
                         .userInfoEndpoint(info -> info.userService(customOAuth2UserService)) // 회원 정보 처리 (Oauth2User를 반환)
-                        .successHandler(oAuth2AuthenticationSuccessHandler) // 성공 핸들러
-                        .failureHandler(oAuth2AuthenticationFailureHandler)); // 실패 핸들러
+                        .successHandler(authenticationSuccessHandler) // 성공 핸들러
+                        .failureHandler(authenticationFailureHandler)); // 실패 핸들러
 
         // 로그아웃
         http
@@ -98,8 +100,8 @@ public class SecurityConfig {
         CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
                 = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
         customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(authenticationFailureHandler);
         return customJsonUsernamePasswordLoginFilter;
     }
 
