@@ -80,8 +80,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
         //Redis 설정
         UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
-        RefreshToken refreshToken  = new RefreshToken(tokenInfo.getRefreshToken(), userDetails.getId());
-        log.info("userDetails.getId() = {}", userDetails.getId());
+        RefreshToken refreshToken  = new RefreshToken(userDetails.getEmail(), tokenInfo.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
         log.info("access = {}", tokenInfo.getAccessToken());

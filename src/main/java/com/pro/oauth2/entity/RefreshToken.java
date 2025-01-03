@@ -10,6 +10,6 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 public class RefreshToken {
     @Id
+    private String email;
     private String refreshToken;
-    private Long userId;
 }

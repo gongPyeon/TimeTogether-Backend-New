@@ -21,4 +21,10 @@ public class TestController {
     public String logoutInfo() {
         return "logout"; // login page로 변경
     }
+
+    @GetMapping("/hi")
+    @ResponseBody
+    public String hiInfo() {
+        return "hi"; // accessToken 재발급 확인 테스트용
+    }
 }

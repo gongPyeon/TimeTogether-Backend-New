@@ -7,6 +7,7 @@ import com.pro.oauth2.handler.AuthenticationSuccessHandler;
 import com.pro.oauth2.jwt.JwtAuthenticationFilter;
 import com.pro.oauth2.jwt.JwtService;
 import com.pro.oauth2.repository.CookieAuthorizationRequestRepository;
+import com.pro.oauth2.repository.RefreshTokenRepository;
 import com.pro.oauth2.service.CustomOAuth2UserService;
 import com.pro.oauth2.service.LoginService;
 import jakarta.servlet.Filter;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final LoginService loginService;
     private final ObjectMapper objectMapper;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
     private final AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -108,7 +110,7 @@ public class SecurityConfig {
     // jwt filter 설정
     @Bean
     public Filter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, refreshTokenRepository);
         return jwtAuthenticationFilter;
     }
 

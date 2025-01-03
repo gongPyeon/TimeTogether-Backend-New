@@ -1,11 +1,15 @@
 package com.pro.oauth2.jwt;
 
 import com.pro.oauth2.dto.UserResponseDto;
+import com.pro.oauth2.entity.RefreshToken;
+import com.pro.oauth2.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +24,10 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.nimbusds.oauth2.sdk.ResponseMode.JWT;
 
 @Service
 @Slf4j
@@ -37,9 +44,8 @@ public class JwtService {
 
     @Value("${jwt.refresh.expiration}")
     private Long REFRESH_TOKEN_EXPIRE_TIME;
-
     private final Key key;
-    public JwtService( @Value("${jwt.secretKey}") String secretKey){
+    public JwtService(@Value("${jwt.secretKey}") String secretKey){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -60,6 +66,19 @@ public class JwtService {
                 .build();
     }
 
+    public String generateTokenFromRefreshToken(RefreshToken refreshToken) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(refreshToken.getRefreshToken())
+                .getBody();
+
+        String username = claims.getSubject();
+        String authorities = claims.get(AUTHORITIES_KEY, String.class);
+
+        return createAccessToken(username, authorities);
+    }
+
     public Authentication getAuthentication(String accessToken){
         Claims claims = parseClaims(accessToken);
 
@@ -76,21 +95,23 @@ public class JwtService {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    public boolean validateToken(String token){
-        try{
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        }catch (SecurityException | MalformedJwtException e){
-            log.info("Invalid JWT Token", e);
-        }catch (ExpiredJwtException e){
-            log.info("Expired JWT Token", e);
-        }catch (UnsupportedJwtException e){
-            log.info("Unsupported JWT Token", e);
-        }catch (IllegalArgumentException e){
-            log.info("JWT claims string is empty", e);
-        }
-
-        return false;
+    public boolean validateToken(String token){ // (예외처리)
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+        return true;
+//        try{
+//            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+//            return true;
+//        }catch (SecurityException | MalformedJwtException e){
+//            log.info("Invalid JWT Token", e);
+//        }catch (ExpiredJwtException e){
+//            log.info("Expired JWT Token", e);
+//        }catch (UnsupportedJwtException e){
+//            log.info("Unsupported JWT Token", e);
+//        }catch (IllegalArgumentException e){
+//            log.info("JWT claims string is empty", e);
+//        }
+//
+//        return false;
     }
 
     //JWT 토큰을 요청 헤더에서 찾아서 반환
@@ -102,7 +123,7 @@ public class JwtService {
         return null;
     }
 
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try{
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         }catch (ExpiredJwtException e){
