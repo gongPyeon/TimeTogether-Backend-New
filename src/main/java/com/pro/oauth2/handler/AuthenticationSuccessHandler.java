@@ -1,9 +1,12 @@
 package com.pro.oauth2.handler;
 
 import com.pro.oauth2.dto.UserResponseDto;
+import com.pro.oauth2.entity.RefreshToken;
 import com.pro.oauth2.jwt.JwtService;
 import com.pro.oauth2.lib.CookieUtils;
 import com.pro.oauth2.repository.CookieAuthorizationRequestRepository;
+import com.pro.oauth2.repository.RefreshTokenRepository;
+import com.pro.oauth2.service.principal.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +40,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
     private final JwtService jwtService;
     private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
-
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -75,7 +78,12 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
         UserResponseDto.TokenInfo tokenInfo = jwtService.generateToken(authentication);
         CookieUtils.addCookie(response, ACCESS_TOKEN, tokenInfo.getAccessToken(), ACCESS_TOKEN_MAXAGE);
 
-        response.setHeader("Authorization", BEARER+tokenInfo.getAccessToken());
+        //Redis 설정
+        UserPrincipal userDetails = (UserPrincipal) authentication.getPrincipal();
+        RefreshToken refreshToken  = new RefreshToken(tokenInfo.getRefreshToken(), userDetails.getId());
+        log.info("userDetails.getId() = {}", userDetails.getId());
+        refreshTokenRepository.save(refreshToken);
+
         log.info("access = {}", tokenInfo.getAccessToken());
         log.info("refresh = {}", tokenInfo.getRefreshToken());
     }
