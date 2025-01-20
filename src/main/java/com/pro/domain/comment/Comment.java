@@ -1,15 +1,11 @@
 package com.pro.domain.comment;
 
 import com.pro.domain.common.BaseEntity;
-import com.pro.domain.schedule.domain.ColorEnum;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
