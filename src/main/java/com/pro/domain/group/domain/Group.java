@@ -1,4 +1,4 @@
-package com.pro.domain.group;
+package com.pro.domain.group.domain;
 
 import com.pro.domain.common.BaseEntity;
 import jakarta.persistence.*;
@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "t_mn_group")
 public class Group extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
