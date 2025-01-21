@@ -3,6 +3,7 @@ package com.pro.domain.comment.domain;
 import com.pro.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ public class Comment extends BaseEntity {
   @Column(name = "comment_id")
   private Long id;
 
-  @NotBlank(message = "일정 아이디 값은 필수입니다.")
+  @NotNull(message = "일정 아이디 값은 필수입니다.")
   private Long schedule_id;
 
   @NotBlank

@@ -3,6 +3,7 @@ package com.pro.domain.group.domain;
 import com.pro.domain.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class Group extends BaseEntity {
   private String name;
   private String img;
 
-  @NotBlank(message = "그룹 매니저는 필수값 입니다.")
+  @NotNull(message = "그룹 매니저는 필수값 입니다.")
   private Long manager_id;
 
   private LocalDate end_date; //그룹 끝 날짜 (유효 날짜)

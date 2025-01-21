@@ -4,6 +4,7 @@ import com.pro.domain.common.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -20,7 +21,7 @@ public class Schedule extends BaseEntity {
   @Column(name = "schedule_id")
   private Long id;
 
-  @NotBlank(message = "일정의 유저는 필수값입니다.")
+  @NotNull(message = "일정의 유저는 필수값입니다.")
   private Long user_id;
 
   @Nullable
@@ -28,10 +29,10 @@ public class Schedule extends BaseEntity {
 
   private ColorEnum color;
 
-  @NotBlank(message = "일정 시작시간은 필수값입니다.")
+  @NotNull(message = "일정 시작시간은 필수값입니다.")
   private LocalDateTime start_time; //일정 시작시간 (yyyy-MM-ddTHH:mm:ss)
 
-  @NotBlank(message = "일정 종료시간은 필수값입니다.")
+  @NotNull(message = "일정 종료시간은 필수값입니다.")
   private LocalDateTime end_time; //일정 종료시간
 
   @NotBlank(message = "일정 제목은 필수값입니다.")

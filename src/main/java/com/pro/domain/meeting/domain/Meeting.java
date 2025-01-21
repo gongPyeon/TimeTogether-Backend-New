@@ -1,13 +1,12 @@
 package com.pro.domain.meeting.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -19,7 +18,7 @@ public class Meeting {
   @Column(name = "meeting_id")
   private Long id;
 
-  @NotBlank(message = "그룹 아이디는 필수값 입니다.")
+  @NotNull(message = "그룹 아이디는 필수값 입니다.")
   private Long group_id;
 
   @NotBlank(message = "회의 제목은 필수값 입니다.")
@@ -29,7 +28,7 @@ public class Meeting {
 
   private String intro; //회의 소제목
 
-  @NotBlank(message = "회의 매니저는 필수값 입니다.")
+  @NotNull(message = "회의 매니저는 필수값 입니다.")
   private Long manager_id;
 
   @NotBlank(message = "회의날짜 ")
@@ -38,9 +37,9 @@ public class Meeting {
   @NotBlank(message = "회의시간범위는 필수값 입니다.")
   private String time_range; //회의시간범위
 
-  @NotBlank(message = "진행되는 회의시간은 필수값 입니다.")
+  @NotNull(message = "진행되는 회의시간은 필수값 입니다.")
   @Digits(integer = 2, fraction = 2)
   @Max(24) @Min(0)
-  private float time; //진행되는 회의시간
+  private BigDecimal time; //진행되는 회의시간
 
 }
