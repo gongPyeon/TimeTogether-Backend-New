@@ -1,4 +1,4 @@
-package com.pro.domain.common;
+package com.pro.base.common;
 
 import jakarta.persistence.*;
 import lombok.*;

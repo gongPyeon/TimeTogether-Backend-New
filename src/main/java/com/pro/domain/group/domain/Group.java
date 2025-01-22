@@ -1,6 +1,6 @@
 package com.pro.domain.group.domain;
 
-import com.pro.domain.common.BaseEntity;
+import com.pro.base.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,8 +24,8 @@ public class Group extends BaseEntity {
   private String name;
   private String img;
 
-  @NotNull(message = "그룹 매니저는 필수값 입니다.")
-  private Long manager_id;
+  @NotNull(message = "그룹 매니저의 email값은 필수값 입니다.")
+  private String managerEmail; //id에서 email로 변경
 
   private LocalDate end_date; //그룹 끝 날짜 (유효 날짜)
 }

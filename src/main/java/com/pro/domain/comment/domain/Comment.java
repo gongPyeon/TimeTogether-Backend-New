@@ -1,6 +1,6 @@
 package com.pro.domain.comment.domain;
 
-import com.pro.domain.common.BaseEntity;
+import com.pro.base.common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

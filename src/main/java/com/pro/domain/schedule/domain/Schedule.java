@@ -1,13 +1,12 @@
 package com.pro.domain.schedule.domain;
 
-import com.pro.domain.common.BaseEntity;
+import com.pro.base.common.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Entity
