@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum Code {
+public enum BaseResponseCode {
   // 충돌 방지를 위한 Code format
   // 1(홀수)XXX: 이혜리
   // 2(짝수)XXX: 편강

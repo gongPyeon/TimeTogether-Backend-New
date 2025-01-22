@@ -3,19 +3,19 @@ package com.pro.base;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.pro.base.constant.Code;
+import com.pro.base.constant.BaseResponseCode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.pro.base.constant.Code.SUCCESS;
+import static com.pro.base.constant.BaseResponseCode.SUCCESS;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonPropertyOrder({"isSuccess", "code","message","result"})
 public class BaseResponse<T> {
 
-  @JsonProperty("isSuccess")
+  @JsonProperty("success")
   private final boolean isSuccess;
   private final int code;
   @JsonProperty("message")
@@ -37,12 +37,12 @@ public class BaseResponse<T> {
 
   /**
    * 응답이 예/아니오/오류 인 경우
-   * @param code
+   * @param baseResponseCode
    */
-  public BaseResponse(Code code) {
+  public BaseResponse(BaseResponseCode baseResponseCode) {
     this.isSuccess = true;
-    this.code = code.getCode();
-    this.msg = code.getMsg();
+    this.code = baseResponseCode.getCode();
+    this.msg = baseResponseCode.getMsg();
     this.data = null;
   }
 }

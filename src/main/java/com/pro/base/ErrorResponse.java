@@ -1,6 +1,7 @@
 package com.pro.base;
 
-import com.pro.base.constant.Code;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pro.base.constant.BaseResponseCode;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
+  @JsonProperty("success")
   private final boolean isSuccess;
   private final int code;
   private final HttpStatus status;
@@ -19,13 +21,13 @@ public class ErrorResponse {
   /**
    * 에러
    * 
-   * @param code
+   * @param baseResponseCode
    */
-  public ErrorResponse(Code code) {
+  public ErrorResponse(BaseResponseCode baseResponseCode) {
     this.isSuccess = false;
-    this.code = code.getCode();
-    this.status = code.getStatus();
-    this.msg = code.getMsg();
+    this.code = baseResponseCode.getCode();
+    this.status = baseResponseCode.getStatus();
+    this.msg = baseResponseCode.getMsg();
   }
 
 }
