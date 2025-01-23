@@ -1,6 +1,7 @@
 package com.pro.base;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.pro.base.constant.BaseResponseCode;
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -8,14 +9,16 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @ToString
+@JsonPropertyOrder({"success", "code","message","api"})
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
   @JsonProperty("success")
   private final boolean isSuccess;
   private final int code;
-  private final HttpStatus status;
+  @JsonProperty("message")
   private final String msg;
+  private final String api;
 
 
   /**
@@ -23,11 +26,11 @@ public class ErrorResponse {
    * 
    * @param baseResponseCode
    */
-  public ErrorResponse(BaseResponseCode baseResponseCode) {
+  public ErrorResponse(BaseResponseCode baseResponseCode,String apiPath) {
     this.isSuccess = false;
     this.code = baseResponseCode.getCode();
-    this.status = baseResponseCode.getStatus();
     this.msg = baseResponseCode.getMsg();
+    this.api = apiPath;
   }
 
 }

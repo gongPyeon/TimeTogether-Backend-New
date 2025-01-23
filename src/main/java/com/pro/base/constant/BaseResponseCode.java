@@ -11,10 +11,7 @@ public enum BaseResponseCode {
   // 1(홀수)XXX: 이혜리
   // 2(짝수)XXX: 편강
 
-  // ex)
-  // USER_NICKNAME_DUPLICATED(13010, HttpStatus.BAD_REQUEST, "User nickname duplicated"),
-
-  SUCCESS(1001, HttpStatus.OK, "Ok");
+  SUCCESS(2001, HttpStatus.OK, "OK");
 
   private final int code;
   private final HttpStatus status;

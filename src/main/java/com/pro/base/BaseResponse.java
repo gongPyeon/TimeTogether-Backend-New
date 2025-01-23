@@ -8,41 +8,32 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.net.http.HttpRequest;
+
 import static com.pro.base.constant.BaseResponseCode.SUCCESS;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonPropertyOrder({"isSuccess", "code","message","result"})
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonPropertyOrder({"success", "code", "message", "result", "api"})
 public class BaseResponse<T> {
 
   @JsonProperty("success")
-  private final boolean isSuccess;
-  private final int code;
+  private final boolean isSuccess;//요청 성공 여부
+  private final int code;//BaseResponseCode 숫자코드
   @JsonProperty("message")
-  private final String msg;
+  private final String msg;//개발용: BaseResponseCode 숫자코드의 의미(메시지)
   @JsonInclude(JsonInclude.Include.NON_NULL)
-  private final T data;
+  @JsonProperty("result")
+  private final T data;//반환 데이터
+  private final String api;//요청 api
 
-
-  /**
-   * 정보를 요청한 경우
-   * @param data
-   */
-  public BaseResponse(T data) {
-    this.isSuccess = true;
-    this.code = SUCCESS.getCode();
-    this.msg = SUCCESS.getMsg();
-    this.data = data;
+  public static <T> BaseResponse<T> of(BaseResponseCode code, String msg, T data, String apiPath) {
+    return new BaseResponse<>(true, SUCCESS.getCode(), SUCCESS.getMsg(), data, apiPath);
   }
 
-  /**
-   * 응답이 예/아니오/오류 인 경우
-   * @param baseResponseCode
-   */
-  public BaseResponse(BaseResponseCode baseResponseCode) {
-    this.isSuccess = true;
-    this.code = baseResponseCode.getCode();
-    this.msg = baseResponseCode.getMsg();
-    this.data = null;
+  public static <T> BaseResponse<T> of(BaseResponseCode code, T data, String apiPath) {
+    return of(code, code.getMsg(), data, apiPath);
   }
+
+
 }
