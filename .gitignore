@@ -1,3 +1,9 @@
+
+caches/
+daemon/
+native/
+wrapper/
+
 READEME.md
 .gradle
 build/

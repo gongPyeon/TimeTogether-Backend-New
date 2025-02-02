@@ -1,5 +1,6 @@
 package com.pro.domain.date.domain;
 
+import com.pro.domain.group_meeting_middle.domain.GroupMeetingMiddle;
 import com.pro.domain.meeting.domain.Meeting;
 import com.pro.domain.time.domain.Time;
 import jakarta.persistence.*;
@@ -28,12 +29,12 @@ public class Date {
   @Column(name = "date_id")
   private Long id;
 
-  @NotNull(message = "회의 아이디는 필수값입니다.")
+  @NotNull(message = "그룹 회의 중간 테이블 아이디는 필수값입니다.")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "meeting_id")
-  private Meeting meeting;
+  @JoinColumn(name = "group_meeting_middle_id")
+  private GroupMeetingMiddle groupMeetingMiddle;
 
-  @NotNull(message = "일은 필수값입니다.")
+  @NotNull(message = "일(날짜)은 필수값입니다.")
   private LocalDate date;
 
   @NotNull(message = "요일값은 필수값입니다.")
@@ -45,15 +46,15 @@ public class Date {
 
   //Builder, of
   @Builder
-  private Date(Meeting meeting, LocalDate date, String day) {
-    this.meeting = meeting;
+  private Date(GroupMeetingMiddle groupMeetingMiddle, LocalDate date, String day) {
+    this.groupMeetingMiddle = groupMeetingMiddle;
     this.date = date;
     this.day = day;
   }
 
-  public static Date of(Meeting meeting, LocalDate date, String day){
+  public static Date of(GroupMeetingMiddle groupMeetingMiddle, LocalDate date, String day){
     return Date.builder()
-            .meeting(meeting)
+            .groupMeetingMiddle(groupMeetingMiddle)
             .date(date)
             .day(day)
             .build();

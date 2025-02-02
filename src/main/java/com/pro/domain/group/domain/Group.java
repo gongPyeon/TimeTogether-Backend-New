@@ -3,6 +3,7 @@ package com.pro.domain.group.domain;
 import com.pro.base.common.BaseEntity;
 import com.pro.domain.group_meeting_middle.domain.GroupMeetingMiddle;
 import com.pro.domain.group_user_middle.domain.GroupUserMiddle;
+import com.pro.domain.meeting.domain.Meeting;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -41,7 +42,7 @@ public class Group extends BaseEntity {
   private List<GroupUserMiddle> groupUserMiddleList = new ArrayList<>();
 
   @OneToMany(mappedBy = "group")
-  private List<GroupMeetingMiddle> groupMeetingMiddleList = new ArrayList<>();
+  private List<Meeting> meetingList = new ArrayList<>();
 
   //Builder, of
   @Builder

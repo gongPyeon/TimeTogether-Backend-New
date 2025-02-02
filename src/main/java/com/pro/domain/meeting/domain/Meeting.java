@@ -1,6 +1,7 @@
 package com.pro.domain.meeting.domain;
 
 import com.pro.domain.date.domain.Date;
+import com.pro.domain.group.domain.Group;
 import com.pro.domain.group_meeting_middle.domain.GroupMeetingMiddle;
 import com.pro.domain.place.domain.Place;
 import jakarta.annotation.Nullable;
@@ -50,19 +51,21 @@ public class Meeting {
   @Max(24) @Min(0)
   private BigDecimal time; //진행되는 회의시간
 
+  @NotNull(message = "그룹은 필수값입니다.")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "group_id")
+  private Group group;
+
   //연관관계 필드
-  @OneToOne(mappedBy = "meeting")
-  private GroupMeetingMiddle groupMeetingMiddle;
+  @OneToMany(mappedBy = "meeting")
+  private List<GroupMeetingMiddle> groupMeetingMiddleList = new ArrayList<>();
 
   @OneToMany(mappedBy = "meeting")
   private List<Place> placeList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "meeting")
-  private List<Date> dateList = new ArrayList<>();
-
   //Builder, of
   @Builder
-  private Meeting(String title, MeetingType meetingType, @Nullable String intro, String managerEmail, String dates, String timeRange, BigDecimal time) {
+  private Meeting(String title, MeetingType meetingType, @Nullable String intro, String managerEmail, String dates, String timeRange, BigDecimal time,Group group) {
     this.title = title;
     this.meetingType = meetingType;
     this.intro = intro;
@@ -70,9 +73,10 @@ public class Meeting {
     this.dates = dates;
     this.timeRange = timeRange;
     this.time = time;
+    this.group = group;
   }
 
-  public static Meeting of(String title, MeetingType meetingType, @Nullable String intro, String managerEmail, String dates, String timeRange, BigDecimal time) {
+  public static Meeting of(String title, MeetingType meetingType, @Nullable String intro, String managerEmail, String dates, String timeRange, BigDecimal time,Group group) {
     return Meeting.builder()
             .title(title)
             .meetingType(meetingType)
@@ -81,6 +85,7 @@ public class Meeting {
             .dates(dates)
             .timeRange(timeRange)
             .time(time)
+            .group(group)
             .build();
   }
 

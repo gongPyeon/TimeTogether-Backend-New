@@ -53,7 +53,7 @@ public class User{
 
     //연관관계 필드
     @OneToMany(mappedBy = "user")
-    private List<Schedule> schedules = new ArrayList<>();
+    private List<Schedule> scheduleList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<GroupUserMiddle> groupUserMiddles = new ArrayList<>();
