@@ -19,5 +19,6 @@ public class PromiseCheck {
     private int promiseCheckId;
 
     private int dateId;
+    private int promiseId;
     private boolean isConfirmed;
 }

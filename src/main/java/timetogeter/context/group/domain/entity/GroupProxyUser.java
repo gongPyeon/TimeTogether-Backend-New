@@ -25,7 +25,7 @@ public class GroupProxyUser {
     private LocalDateTime timestamp;
     private String encGroupMemberId;
 
-    public GroupProxyUser(String userId, String encGroupId, LocalDateTime timestamp, String encGroupMemberId) {
+    GroupProxyUser(String userId, String encGroupId, LocalDateTime timestamp, String encGroupMemberId) {
         this.groupProxyId = UUID.randomUUID().toString();
         this.userId = userId;
         this.encGroupId = encGroupId;

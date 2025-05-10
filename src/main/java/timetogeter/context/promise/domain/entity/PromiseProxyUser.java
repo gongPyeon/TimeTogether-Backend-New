@@ -24,7 +24,7 @@ public class PromiseProxyUser {
     private LocalDateTime timestamp;
     private String encPromiseMemberId;
 
-    public PromiseProxyUser(String userId, String encPromiseId, LocalDateTime timestamp, String encPromiseMemberId) {
+    PromiseProxyUser(String userId, String encPromiseId, LocalDateTime timestamp, String encPromiseMemberId) {
         this.promiseProxyId = UUID.randomUUID().toString();
         this.userId = userId;
         this.encPromiseId = encPromiseId;
