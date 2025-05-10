@@ -4,11 +4,15 @@ package timetogeter.global;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -16,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+@Disabled
+@AutoConfigureMockMvc
 @Import(RestDocsConfig.class)
 @ExtendWith(RestDocumentationExtension.class)
 public class RestDocsSupport {
@@ -30,7 +36,7 @@ public class RestDocsSupport {
             final WebApplicationContext context,
             final RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(documentationConfiguration(restDocumentation))
+                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
                 .alwaysDo(MockMvcResultHandlers.print())
                 .alwaysDo(restDocs)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))

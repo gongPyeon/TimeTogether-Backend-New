@@ -1,0 +1,72 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "My API",
+        "description": "My API description",
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080"
+        }
+    ],
+    "tags": [
+        
+    ],
+    "paths": {
+        "/restDocsTest": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "\ud14c\uc2a4\ud2b8 API\uc785\ub2c8\ub2e4.",
+                "description": "\ud14c\uc2a4\ud2b8 API\uc785\ub2c8\ub2e4.",
+                "operationId": "auth-controller-test/rest-docs-test",
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/restDocsTest493731843"
+                                },
+                                "examples": {
+                                    "auth-controller-test/rest-docs-test": {
+                                        "value": "{\n  \"text\" : \"test!!\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "restDocsTest493731843": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": [
+                
+            ]
+        }
+    ]
+}
