@@ -13,8 +13,8 @@ public class AuthController {
         return new testDTO("test!!");
     }
 
-    @GetMapping("/restDocsTest/{id}")
-    public String restDocsTestParameterAPI(@PathVariable Long id) {
-        return id + "test!!";
+    @GetMapping(value = "/restDocsTest/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public testDTO restDocsTestParameterAPI(@PathVariable Long id) {
+        return new testDTO(id + "test!!");
     }
 }

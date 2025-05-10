@@ -3,9 +3,10 @@ plugins {
 	id 'org.springframework.boot' version '3.4.1'
 	id 'io.spring.dependency-management' version '1.1.7'
 
-	id "org.asciidoctor.jvm.convert" version "3.3.2" // adoc 파일을 변환하고 build 디렉토리에 복사
+	// asciidoctor: .adoc 문서를 HTML/PDF로 변환
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 
-	// rest docs api spec
+	// restdocs-api-spec: REST Docs와 OpenAPI 문서 생성용
 	id 'com.epages.restdocs-api-spec' version '0.18.2'
 }
 
@@ -13,18 +14,21 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	asciidoctorExt
+	asciidoctorExt // asciidoctor에서 사용할 추가 의존성
 }
 
+// 프로젝트 정보
 group = 'timetogether'
 version = '0.0.1-SNAPSHOT'
 
+// 자바 버전
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
 	}
 }
 
+// 저장소 설정
 repositories {
 	mavenCentral()
 }
@@ -70,18 +74,34 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
 	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor:3.0.0'
 	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.18.2'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 }
 
 ext {
 	snippetsDir = file('build/generated-snippets')
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+// OpenAPI 설정
+openapi3 {
+	server = 'http://localhost:8080'
+	title = 'My API'
+	description = 'My API description'
+	version = '0.1.0'
+	format = 'json'
+	outputDirectory = 'build/api-spec'
 }
 
+// test 작업에 JUnit 플랫폼 사용
+tasks.named('test') {
+	doFirst {
+		delete file('build/generated-snippets') // 기존 문서 스니펫 제거
+	}
+	useJUnitPlatform()
+	outputs.dir snippetsDir // for asciidoctor
+	finalizedBy 'asciidoctor'
+}
 
+// asciidoctor는 테스트 후 실행
 tasks.named('asciidoctor') {
 	dependsOn test
 	configurations 'asciidoctorExt'
@@ -89,33 +109,10 @@ tasks.named('asciidoctor') {
 	doFirst {
 		delete file('src/main/resources/static/docs')
 	}
-	finalizedBy 'copyDocument'
 }
 
-task copyDocument(type: Copy) {
-	dependsOn asciidoctor
-	from file("build/docs/asciidoc")
-	into file("src/main/resources/static/docs")
-}
-
-bootJar {
-	dependsOn 'openapi3'
-	from("${asciidoctor.outputDir}") {
-		into 'static/docs'
-	}
-}
-
-openapi3 {
-	server = 'http://localhost:8080'
-	title = 'My API'
-	description = 'My API description'
-	version = '0.1.0'
-	format = 'json'
-
-	outputDirectory = 'build/api-spec'
-}
-
-task injectSecurityDefinition {
+// OpenAPI 문서 생성 및 JWT 인증 정의 주입
+tasks.register('injectSecurityDefinition') {
 	doLast {
 		def outputFile = file("build/api-spec/openapi3.json")
 		if (outputFile.exists()) {
@@ -136,29 +133,58 @@ task injectSecurityDefinition {
 	}
 }
 
-task copyOpenApiSpec(type: Copy) {
-	from "build/api-spec"
-	include "openapi3.json"
+tasks.register('generateOpenApiSpec') {
+	group = 'documentation'
+	description = 'Generates the OpenAPI specification'
+	dependsOn 'test'
+	finalizedBy 'openapi3'
+}
+
+tasks.register('copyDocuments', Copy) {
+	group = 'documentation'
+	description = 'Copies docs to static resources'
+
+	from("build/docs/asciidoc") {
+		into("/")
+	}
+	from("build/api-spec") {
+		include "openapi3.json"
+		into("/")
+	}
 	into "src/main/resources/static/docs"
 }
 
-afterEvaluate {
-	tasks.named("openapi3").configure {
-		finalizedBy injectSecurityDefinition, copyOpenApiSpec
-	}
-
-	tasks.named("build") {
-		dependsOn tasks.named("openapi3")
-	}
-
-	tasks.named("bootJar") {
-		dependsOn tasks.named("openapi3")
+// bootJar에 포함
+tasks.named('bootJar') {
+	dependsOn 'copyDocuments'
+	from("src/main/resources/static/docs") {
+		into "static/docs"
 	}
 }
 
+// 안전한 연결을 위해 afterEvaluate 사용
+afterEvaluate {
+	tasks.named('openapi3') {
+		dependsOn tasks.named('test')
+		finalizedBy tasks.named('injectSecurityDefinition')
+	}
+	tasks.named('injectSecurityDefinition') {
+		finalizedBy tasks.named('copyDocuments')
+	}
+	tasks.named('asciidoctor') {
+		finalizedBy tasks.named('generateOpenApiSpec')
+	}
+}
+
+tasks.named('copyDocuments') {
+	outputs.upToDateWhen { false }  // 항상 문서 복사 강제
+}
+
+// 빌드시 생성된 QueryDSL 파일 폴더를 관리
 clean {
 	delete file('src/main/generated')
 }
+
 tasks.withType(JavaCompile) {
 	options.generatedSourceOutputDirectory = file('src/main/generated')
 }

@@ -6,9 +6,9 @@ import lombok.Setter;
 
 @Getter
 public class testDTO {
-    private String text;
+    private String result;
 
-    public testDTO(String text) {
-        this.text = text;
+    public testDTO(String result) {
+        this.result = result;
     }
 }

@@ -1,8 +1,5 @@
 package timetogeter.global;
 
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,9 +33,9 @@ public class RestDocsSupport {
             final WebApplicationContext context,
             final RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation))
-                .alwaysDo(MockMvcResultHandlers.print())
-                .alwaysDo(restDocs)
+                .apply(MockMvcRestDocumentation.documentationConfiguration(restDocumentation)) // REST Docs 문서화를 위한 설정 적용
+                .alwaysDo(MockMvcResultHandlers.print()) // 모든 테스트 결과를 콘솔에 출력
+                .alwaysDo(restDocs) // 주입받은 문서화 핸들러를 항상 실행
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .build();
     }
