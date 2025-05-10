@@ -19,7 +19,7 @@ public class Group {
     private String groupImg;
     private String managerId; // userId
 
-    public Group(UUID groupId, String groupName, String groupImg, String managerId) {
+    public Group(String groupName, String groupImg, String managerId) {
         this.groupId = UUID.randomUUID().toString();
         this.groupName = groupName;
         this.groupImg = groupImg;

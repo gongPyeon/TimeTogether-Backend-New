@@ -20,7 +20,7 @@ public class GroupShareKey {
     private String encUserId;
     private String encGroupKey;
 
-    public GroupShareKey(String groupShareKeyId, String groupId, String encUserId, String encGroupKey) {
+    public GroupShareKey(String groupId, String encUserId, String encGroupKey) {
         this.groupShareKeyId = UUID.randomUUID().toString();
         this.groupId = groupId;
         this.encUserId = encUserId;
