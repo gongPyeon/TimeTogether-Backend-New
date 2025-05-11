@@ -1,13 +1,11 @@
-package com.pro.oauth2;
+package timetogeter.context;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Oauth2ApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
+class TimeTogetherApplicationTest {
+    @Test
+    void contextLoads() {
+    }
 }
