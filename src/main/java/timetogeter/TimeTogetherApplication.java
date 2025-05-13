@@ -1,4 +1,4 @@
-package timetogeter.context;
+package timetogeter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
