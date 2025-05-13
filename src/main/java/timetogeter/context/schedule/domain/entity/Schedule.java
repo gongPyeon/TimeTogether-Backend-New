@@ -1,15 +1,13 @@
 package timetogeter.context.schedule.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import timetogeter.context.promise.domain.vo.PromiseType;
 
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
+@Builder(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule {
 
