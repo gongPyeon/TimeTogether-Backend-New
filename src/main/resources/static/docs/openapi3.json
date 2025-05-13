@@ -1,0 +1,84 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "My API",
+        "description": "My API description",
+        "version": "0.1.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080"
+        }
+    ],
+    "tags": [
+        
+    ],
+    "paths": {
+        "/restDocsTest/{id}": {
+            "get": {
+                "tags": [
+                    "Test API"
+                ],
+                "summary": "\ud14c\uc2a4\ud2b87 \uc0dd\uc131 API",
+                "description": "\ud14c\uc2a4\ud2b87 \uc0dd\uc131 API",
+                "operationId": "test",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentCreateResponseSchema"
+                                },
+                                "examples": {
+                                    "test": {
+                                        "value": "{\n  \"result\" : \"1test!!\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CommentCreateResponseSchema": {
+                "title": "CommentCreateResponseSchema",
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "string",
+                        "description": "\ud14c\uc2a4\ud2b8 \uc644\ub8cc \ud654\uba74"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": [
+                
+            ]
+        }
+    ]
+}

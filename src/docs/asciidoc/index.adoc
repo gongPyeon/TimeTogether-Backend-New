@@ -1,0 +1,12 @@
+= Spring REST Docs Test
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+== RestDocsTestController
+
+=== /rest-docs-test
+
+include::{snippets}/auth-controller-test/rest-docs-test/http-request.adoc[]
+include::{snippets}/auth-controller-test/rest-docs-test/http-response.adoc[]
