@@ -19,8 +19,8 @@ public class UserRegisterService {
     @Transactional
     public RegisterResponse getOrRegisterUser(RegisterUserCommand registerUserCommand) {
         User findUser = userRepository.findByProviderIdAndProviderType(
-                        registerUserCommand.providerId(),
-                        registerUserCommand.providerType())
+                        registerUserCommand.userId(),
+                        registerUserCommand.provider())
                 .orElseGet(()->{
                     User user = User.create(registerUserCommand);
                     userRepository.save(user);

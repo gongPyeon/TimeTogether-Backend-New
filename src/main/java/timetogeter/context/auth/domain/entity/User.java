@@ -1,15 +1,16 @@
 package timetogeter.context.auth.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
+import timetogeter.global.security.application.dto.RegisterUserCommand;
 
 @Entity
 @Getter
+@Builder(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
     @Id
@@ -31,4 +32,20 @@ public class User {
     private String age;
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
+    public static User create(RegisterUserCommand registerUserCommand){
+        // 검증
+        return User.builder()
+                .userId(registerUserCommand.userId())
+                .email(registerUserCommand.email())
+                .nickname(registerUserCommand.nickname())
+                .userImg(null)
+                .password(null)
+                .telephone(registerUserCommand.telephone())
+                .provider(registerUserCommand.provider())
+                .role(registerUserCommand.role())
+                .age(registerUserCommand.age())
+                .gender(registerUserCommand.gender())
+                .build();
+    }
 }
