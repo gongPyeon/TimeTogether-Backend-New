@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.domain.entity.User;
+import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.global.security.application.dto.RegisterResponse;
 import timetogeter.global.security.application.dto.RegisterUserCommand;
 
@@ -18,7 +19,7 @@ public class UserRegisterService {
     // 소셜로그인일 경우
     @Transactional
     public RegisterResponse getOrRegisterUser(RegisterUserCommand registerUserCommand) {
-        User findUser = userRepository.findByProviderIdAndProviderType(
+        User findUser = userRepository.findByIdAndProviderType(
                         registerUserCommand.userId(),
                         registerUserCommand.provider())
                 .orElseGet(()->{
@@ -32,7 +33,7 @@ public class UserRegisterService {
 
     // 일반 로그인일 경우
     public RegisterResponse getRegisterUser(String userId) {
-        User findUser = userRepository.findByUserId(userId);
+        User findUser = userRepository.findByUserId(userId).get();
         // TODO: 예외처리 아이디 또는 비밀번호를 확인해주세요. (사용자를 찾을 수 없어요)
 
         return RegisterResponse.from(findUser);
