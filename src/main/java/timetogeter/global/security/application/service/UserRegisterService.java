@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.global.security.application.dto.RegisterResponse;
+import timetogeter.global.security.application.dto.RegisterUserCommand;
 
 @Service
 @Transactional
