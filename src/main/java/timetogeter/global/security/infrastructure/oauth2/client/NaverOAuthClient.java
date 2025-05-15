@@ -15,7 +15,7 @@ public class NaverOAuthClient extends AbstractOAuth2Client {
     @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.naver.req-uri}")
+    @Value("${spring.security.oauth2.client.provider.naver.token-uri}")
     private String reqUri;
 
     public NaverOAuthClient(ApiService apiService, OAuth2RequestFactory requestFactory, OAuth2ResponseParser parser) {

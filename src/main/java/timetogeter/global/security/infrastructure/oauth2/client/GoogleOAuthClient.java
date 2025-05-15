@@ -16,7 +16,7 @@ public class GoogleOAuthClient extends AbstractOAuth2Client {
     @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String clientSecret;
 
-    @Value("${spring.security.oauth2.client.registration.google.req-uri}")
+    @Value("${spring.security.oauth2.client.provider.google.token-uri}")
     private String reqUri;
 
     public GoogleOAuthClient(ApiService apiService, OAuth2RequestFactory requestFactory, OAuth2ResponseParser parser) {
