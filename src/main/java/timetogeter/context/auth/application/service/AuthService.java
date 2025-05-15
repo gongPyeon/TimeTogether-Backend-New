@@ -10,19 +10,29 @@ import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+import timetogeter.global.security.util.jwt.JwtTokenProvider;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
     private final AuthValidator authValidator;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public String signUp(UserSignUpDTO dto) {
         User user = new User(dto);
-        authValidator.isDuplicateId(dto.getUserId());
+        authValidator.validateDuplicateId(dto.getUserId());
 
         userRepository.save(user);
         return BaseCode.SUCCESS_SIGN_UP.getMessage();
+    }
+
+    public String reissueToken(String refreshToken) {
+        String userId = jwtTokenProvider.validateToken(refreshToken);
+        authValidator.validateRefreshToken(userId, refreshToken);
+
+        String accessToken = jwtTokenProvider.generateTokenFromRefreshToken(refreshToken);
+        return accessToken;
     }
 }

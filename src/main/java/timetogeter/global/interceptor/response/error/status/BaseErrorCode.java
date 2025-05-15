@@ -27,7 +27,9 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_NICKNAME_LENGTH(400, HttpStatus.BAD_REQUEST, "아이디는 1자 이상 20자 이하로 입력해주세요"),
     INVALID_NICKNAME_FORMAT(400, HttpStatus.BAD_REQUEST, "닉네임 형식을 다시 확인해주세요"),
     INVALID_EMAIL_FORMAT(400, HttpStatus.BAD_REQUEST, "이메일 형식을 다시 확인해주세요"),
-    INVALID_PHONE_FORMAT(400, HttpStatus.BAD_REQUEST, "전화번호 형식을 다시 확인해주세요");
+    INVALID_PHONE_FORMAT(400, HttpStatus.BAD_REQUEST, "전화번호 형식을 다시 확인해주세요"),
+    INVALID_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰이 존재하지 않아요"),
+    MISMATCH_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰과 일치하지 않아요");
 
     //로그인 에러
 
