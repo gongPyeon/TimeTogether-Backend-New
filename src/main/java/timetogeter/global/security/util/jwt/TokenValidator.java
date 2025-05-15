@@ -20,7 +20,8 @@ public class TokenValidator {
 
     public boolean validateNotNull(String token){
         if(!Objects.nonNull(token)){
-            throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 토큰이 NULL 입니다.");
+            return false;
+            // throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 토큰이 NULL 입니다.");
         }
         return true;
     }

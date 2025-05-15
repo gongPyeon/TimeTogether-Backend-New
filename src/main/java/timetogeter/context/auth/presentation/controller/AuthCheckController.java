@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.application.dto.request.UserIdDTO;
 import timetogeter.context.auth.application.validator.AuthValidator;
+import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
 
 @RestController
@@ -17,7 +18,7 @@ public class AuthCheckController {
     private final AuthValidator authValidator;
     @PostMapping("/id")
     public BaseResponse<String> checkDuplicateId(@RequestBody UserIdDTO dto){
-        String message = authValidator.isDuplicateId(dto.getUserId());
-        return new BaseResponse<>(message);
+        authValidator.validateDuplicateId(dto.getUserId());
+        return new BaseResponse<>(BaseCode.SUCCESS_ID);
     }
 }

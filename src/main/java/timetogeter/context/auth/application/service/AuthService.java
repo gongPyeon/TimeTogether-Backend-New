@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
@@ -39,6 +40,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final AuthValidator authValidator;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
     private final RedisUtil redisUtil;
@@ -48,7 +50,7 @@ public class AuthService {
 
     @Transactional
     public void signUp(UserSignUpDTO dto) {
-        User user = new User(dto);
+        User user = new User(dto, passwordEncoder);
         authValidator.validateDuplicateId(dto.getUserId());
 
         userRepository.save(user);

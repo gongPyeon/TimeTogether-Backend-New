@@ -16,10 +16,9 @@ public class AuthValidator {
     private final UserRepository userRepository;
     private final RedisUtil redisUtil;
 
-    public String validateDuplicateId(String userId){
+    public void validateDuplicateId(String userId){
         if(userRepository.existsById(userId))
             throw new InvalidAuthException(BaseErrorCode.INVALID_ID_DUP, "[ERROR] 중복된 아이디입니다.");
-        return BaseCode.SUCCESS_ID.getMessage();
     }
 
     public void validateRefreshToken(String userId, String providedToken) {

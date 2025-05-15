@@ -30,41 +30,41 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     //===================================
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
-        log.warn("handleIllegalArgument", e);
-        StatusCode errorCode = BaseErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(errorCode, e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAllException(Exception ex) {
-        log.warn("handleAllException", ex);
-        StatusCode errorCode = BaseErrorCode.INTERNAL_SERVER_ERROR;
-        return handleExceptionInternal(errorCode);
-    }
-
-    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
-    }
-
-    private ErrorResponse makeErrorResponse(StatusCode errorCode) {
-        return ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .message(errorCode.getMessage())
-                .build();
-    }
-
-    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode, String message) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode, message));
-    }
-
-    private ErrorResponse makeErrorResponse(StatusCode errorCode, String message) {
-        return ErrorResponse.builder()
-                .code(errorCode.getCode())
-                .message(message)
-                .build();
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
+//        log.warn("handleIllegalArgument", e);
+//        StatusCode errorCode = BaseErrorCode.INVALID_PARAMETER;
+//        return handleExceptionInternal(errorCode, e.getMessage());
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleAllException(Exception ex) {
+//        log.warn("handleAllException", ex);
+//        StatusCode errorCode = BaseErrorCode.INTERNAL_SERVER_ERROR;
+//        return handleExceptionInternal(errorCode);
+//    }
+//
+//    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode) {
+//        return ResponseEntity.status(errorCode.getHttpStatus())
+//                .body(makeErrorResponse(errorCode));
+//    }
+//
+//    private ErrorResponse makeErrorResponse(StatusCode errorCode) {
+//        return ErrorResponse.builder()
+//                .code(errorCode.getCode())
+//                .message(errorCode.getMessage())
+//                .build();
+//    }
+//
+//    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode, String message) {
+//        return ResponseEntity.status(errorCode.getHttpStatus())
+//                .body(makeErrorResponse(errorCode, message));
+//    }
+//
+//    private ErrorResponse makeErrorResponse(StatusCode errorCode, String message) {
+//        return ErrorResponse.builder()
+//                .code(errorCode.getCode())
+//                .message(message)
+//                .build();
+//    }
 }

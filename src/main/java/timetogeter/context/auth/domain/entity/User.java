@@ -2,6 +2,7 @@ package timetogeter.context.auth.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
 import timetogeter.context.auth.application.exception.InvalidAuthException;
 import timetogeter.context.auth.domain.vo.Gender;
@@ -36,37 +37,31 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public User(UserSignUpDTO dto) {
+    public User(UserSignUpDTO dto, PasswordEncoder passwordEncoder) {
         validate(dto.getUserId(), dto.getNickname(), dto.getEmail(), dto.getTelephone());
-        User.builder()
-                .userId(dto.getUserId())
-                .email(dto.getEmail())
-                .nickname(dto.getNickname())
-                .userImg(null)
-                .password(dto.getPassword())
-                .telephone(dto.getTelephone()) // 선택
-                .provider(Provider.GENERAL)
-                .role(Role.USER)
-                .age(dto.getAge()) // 선택
-                .gender(dto.getGender()) // 선택
-                .build();
+        this.userId = dto.getUserId();
+        this.email = dto.getEmail();
+        this.nickname = dto.getNickname();
+        this.password = passwordEncoder.encode(dto.getPassword());
+        this.telephone = dto.getTelephone();
+        this.provider = Provider.GENERAL;
+        this.role = Role.USER;
+        this.age = dto.getAge();
+        this.gender = dto.getGender();
     }
 
     public User(RegisterUserCommand dto){
         // 검증
         validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
-        User.builder()
-                .userId(dto.userId())
-                .email(dto.email())
-                .nickname(dto.nickname())
-                .userImg(null)
-                .password(null)
-                .telephone(dto.telephone())
-                .provider(dto.provider())
-                .role(dto.role())
-                .age(dto.age())
-                .gender(dto.gender())
-                .build();
+        this.userId = dto.userId();
+        this.email = dto.email();
+        this.nickname = dto.nickname();
+        this.password = null;
+        this.telephone = dto.telephone();
+        this.provider = dto.provider();
+        this.role = dto.role();
+        this.age = dto.age();
+        this.gender = dto.gender();
     }
 
     private void validate(String userId, String nickname, String email, String telephone){
@@ -101,6 +96,7 @@ public class User {
     }
 
     private void validatePhone(String phone){
+        if(phone == null) return;
         if (!phone.matches("^01[016789]-\\d{3,4}-\\d{4}$")) {
             throw new InvalidAuthException(BaseErrorCode.INVALID_PHONE_FORMAT, "[ERROR] 전화번호 형식이 올바르지 않습니다.");
         }
