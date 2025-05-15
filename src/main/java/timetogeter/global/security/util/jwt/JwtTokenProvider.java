@@ -110,7 +110,6 @@ public class JwtTokenProvider implements TokenProvider {
         }
 
         throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, error);
-        return null;
     }
 
     public String extractBearer(String token) {

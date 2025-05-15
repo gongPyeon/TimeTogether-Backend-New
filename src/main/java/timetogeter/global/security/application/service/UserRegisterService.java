@@ -10,6 +10,7 @@ import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.application.dto.RegisterResponse;
 import timetogeter.global.security.application.dto.RegisterUserCommand;
 import timetogeter.global.security.exception.AuthFailureException;
+import timetogeter.global.security.exception.UserNotFoundException;
 
 @Service
 @Transactional
@@ -36,7 +37,7 @@ public class UserRegisterService {
     // 일반 로그인일 경우
     public RegisterResponse getRegisterUser(String userId) {
         User findUser = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new AuthFailureException(BaseErrorCode.INVALID_LOGIN, "[ERROR]: "+userId+"에 해당하는 사용자를 찾을 수 없습니다"));
+                .orElseThrow(() -> new UserNotFoundException(BaseErrorCode.INVALID_LOGIN, "[ERROR]: "+userId+"에 해당하는 사용자를 찾을 수 없습니다"));
 
         return RegisterResponse.from(findUser);
     }

@@ -12,8 +12,20 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @Slf4j
 public class AuthExceptionHandler {
     @ExceptionHandler(AuthFailureException.class)
-    public ResponseEntity<ErrorResponse> handle_DuplicateEmailException(AuthFailureException e) {
-        log.error("DuplicateEmailExceptionHandler.handle_DuplicateEmailException <{}> {}", e.getMessage(), e);
+    public ResponseEntity<ErrorResponse> handle_AuthFailureException(AuthFailureException e) {
+        log.error("AuthExceptionHandler.handle_AuthFailureException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
+
+    @ExceptionHandler(InvalidJwtException.class)
+    public ResponseEntity<ErrorResponse> handle_InvalidJwtException(InvalidJwtException e) {
+        log.error("AuthExceptionHandler.handle_InvalidJwtException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle_UserNotFoundException(UserNotFoundException e) {
+        log.error("AuthExceptionHandler.handle_UserNotFoundException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
 }

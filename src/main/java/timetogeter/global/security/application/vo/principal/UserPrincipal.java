@@ -66,7 +66,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getUsername() {
-        return null;
+        return registerResponse.nickname();
     }
 
     @Override
