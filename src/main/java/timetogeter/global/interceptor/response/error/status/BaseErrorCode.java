@@ -17,7 +17,8 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_AUTH(500, HttpStatus.INTERNAL_SERVER_ERROR, "인증 처리를 실패했어요"),
     INVALID_TOKEN(401, HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않아요"),
     INVALID_USER(403, HttpStatus.FORBIDDEN, "접근 권한이 없어요"),
-    INVALID_PROVIDER(400, HttpStatus.BAD_REQUEST, "지원하지 않는 소셜 플랫폼이에요");
+    INVALID_PROVIDER(400, HttpStatus.BAD_REQUEST, "지원하지 않는 소셜 플랫폼이에요"),
+    INVALID_OAUTH_TOKEN(500, HttpStatus.INTERNAL_SERVER_ERROR, "소셜 로그인 토큰 발급을 실패했어요");
 
     //로그인 에러
 

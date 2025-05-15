@@ -1,8 +1,7 @@
-package timetogeter.global.security.application.vo.client;
+package timetogeter.global.security.infrastructure.oauth2.client;
 
 import lombok.RequiredArgsConstructor;
 import timetogeter.context.auth.domain.vo.Provider;
-import timetogeter.context.promise.domain.vo.PromiseType;
 
 @RequiredArgsConstructor
 public class OAuth2ClientProvider {

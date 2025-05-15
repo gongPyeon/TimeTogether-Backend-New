@@ -1,4 +1,4 @@
-package timetogeter.global.security.application.vo.client;
+package timetogeter.global.security.infrastructure.oauth2.client;
 
 import java.util.Map;
 

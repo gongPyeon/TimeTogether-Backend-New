@@ -1,4 +1,4 @@
-package timetogeter.global.security.application.vo.userInfo;
+package timetogeter.global.security.infrastructure.oauth2.userInfo;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

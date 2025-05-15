@@ -1,4 +1,4 @@
-package timetogeter.global.security.application.vo.userInfo;
+package timetogeter.global.security.infrastructure.oauth2.userInfo;
 
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.global.security.exception.InvalidProviderException;
