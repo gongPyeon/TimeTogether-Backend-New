@@ -5,12 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@RequiredArgsConstructor
-public class BaseCode implements StatusCode{
+public enum BaseCode implements StatusCode{
     OK(200, "요청에 성공했습니다.");
 
     private final int code;
-    private final HttpStatus httpStatus;
     private final String message;
+    private final HttpStatus httpStatus;
 
+    BaseCode(int code, String message) {
+        this.code = code;
+        this.message = message;
+        this.httpStatus = HttpStatus.OK;
+    }
 }
