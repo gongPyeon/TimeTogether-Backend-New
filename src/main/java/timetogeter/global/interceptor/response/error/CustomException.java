@@ -1,4 +1,4 @@
-package timetogeter.global.interceptor.response.error.custom;
+package timetogeter.global.interceptor.response.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

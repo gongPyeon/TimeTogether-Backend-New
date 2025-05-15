@@ -51,8 +51,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(StatusCode errorCode) {
         return ErrorResponse.builder()
-                .code(errorCode.name())
-                .codenum(errorCode.getCode())
+                .name(errorCode.name())
+                .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
     }
@@ -64,8 +64,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ErrorResponse makeErrorResponse(StatusCode errorCode, String message) {
         return ErrorResponse.builder()
-                .code(errorCode.name())
-                .codenum(errorCode.getCode())
+                .name(errorCode.name())
+                .code(errorCode.getCode())
                 .message(message)
                 .build();
     }
