@@ -25,11 +25,16 @@ public class GroupProxyUser {
     private LocalDateTime timestamp;
     private String encGroupMemberId;
 
-    GroupProxyUser(String userId, String encGroupId, LocalDateTime timestamp, String encGroupMemberId) {
+    private GroupProxyUser(String userId, String encGroupId, LocalDateTime timestamp, String encGroupMemberId) {
         this.groupProxyId = UUID.randomUUID().toString();
         this.userId = userId;
         this.encGroupId = encGroupId;
         this.timestamp = timestamp;
         this.encGroupMemberId = encGroupMemberId;
+    }
+
+    public static GroupProxyUser of(String userId, String encGroupId, String encGroupMemberId, long timestampMillis) {
+        LocalDateTime timestamp = new Timestamp(timestampMillis).toLocalDateTime();
+        return new GroupProxyUser(userId, encGroupId, timestamp, encGroupMemberId);
     }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "groups")
+@Table(name = "group_table")
 public class Group {
     @Id
     private String groupId;
@@ -21,10 +21,14 @@ public class Group {
     private String groupImg;
     private String managerId; // userId
 
-    Group(String groupName, String groupImg, String managerId) {
+    private Group(String groupName, String groupImg, String managerId) {
         this.groupId = UUID.randomUUID().toString();
         this.groupName = groupName;
         this.groupImg = groupImg;
         this.managerId = managerId;
+    }
+
+    public static Group of(String groupName, String groupImg, String managerId) {
+        return new Group(groupName, groupImg, managerId);
     }
 }
