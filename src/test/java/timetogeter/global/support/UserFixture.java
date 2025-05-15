@@ -19,11 +19,11 @@ public class UserFixture {
     private static final Gender USER_GENDER = Gender.MALE;
 
     public static User userById(String userId){
-        return User.create(new RegisterUserCommand(userId, USER_EMAIL, USER_PHONE,
+        return new User(new RegisterUserCommand(userId, USER_EMAIL, USER_PHONE,
                 USER_NICKNAME, USER_PROVIDER, USER_ROLE, USER_AGE, USER_GENDER));
     }
     public static User userByRegisterCommand(RegisterUserCommand registerUserCommand){
-        return User.create(registerUserCommand);
+        return new User(registerUserCommand);
     }
 
     public static RegisterUserCommand registerUserCommand(String userId){

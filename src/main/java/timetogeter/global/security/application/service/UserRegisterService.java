@@ -26,7 +26,7 @@ public class UserRegisterService {
                         registerUserCommand.userId(),
                         registerUserCommand.provider())
                 .orElseGet(()->{
-                    User user = User.create(registerUserCommand);
+                    User user = new User(registerUserCommand);
                     userRepository.save(user);
                     return user;
                 });

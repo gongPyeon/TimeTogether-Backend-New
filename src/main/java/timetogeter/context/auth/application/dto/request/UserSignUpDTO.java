@@ -17,6 +17,8 @@ public class UserSignUpDTO { // TODO: 언제 class를 쓰고 언제 record를 �
     @NotNull
     private String password;
     @NotNull
+    private String rePassword;
+    @NotNull
     private String nickname;
 
     private String telephone;
