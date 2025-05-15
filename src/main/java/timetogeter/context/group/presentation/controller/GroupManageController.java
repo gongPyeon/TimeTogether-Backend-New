@@ -11,7 +11,7 @@ import timetogeter.global.interceptor.response.error.dto.SuccessResponseDto;
 @RestController
 @RequestMapping("/api/v1/group")
 @RequiredArgsConstructor
-public class GroupManageInfoController {
+public class GroupManageController {
 
     private final GroupManageInfoService groupManageInfoService;
 
@@ -24,6 +24,11 @@ public class GroupManageInfoController {
         CreateGroupResponseDto response = groupManageInfoService.createGroup(request, mockManagerId);
         return SuccessResponseDto.from(response);
     }
+
+    /*
+    그룹 관리 - 초대 받기
+     */
+
 
 
 }
