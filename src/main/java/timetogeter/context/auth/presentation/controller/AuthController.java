@@ -10,11 +10,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import timetogeter.context.auth.application.dto.request.LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
 import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
+import timetogeter.global.security.application.dto.TokenCommand;
+import timetogeter.global.security.util.cookie.CookieUtil;
+import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,11 +38,23 @@ public class AuthController {
 
 
     private final AuthService authService;
+
     @PostMapping("/sign-up")
-    public BaseResponse<String> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDto){
-        // TODO: DTO 내부에서 검증처리를 하는 경우, 예외메세지를 분명하게 받을 수 없으므로 NULL 만 적용
+    public BaseResponse<String> signUp(@RequestBody @Valid UserSignUpDTO userSignUpDto){
+        // DTO 내부에서 검증처리를 하는 경우, 예외메세지를 분명하게 받을 수 없으므로 NULL 만 적용
         String message = authService.signUp(userSignUpDto);
         return new BaseResponse<>(message);
+    }
+
+    @PostMapping("/login")
+    public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
+        TokenCommand token = authService.login(dto);
+
+        response.setHeader("Authorization", "Bearer " + token.getAccessToken());
+        CookieUtil.addCookie(response, REFRESH_TOKEN, token.getRefreshToken(),
+                Math.toIntExact(token.getRefreshTokenExpirationTime()));
+
+        return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
     }
 
     @PostMapping("/refresh")
