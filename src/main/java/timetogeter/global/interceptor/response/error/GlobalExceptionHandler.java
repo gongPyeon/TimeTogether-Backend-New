@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.interceptor.response.error.status.StatusCode;
+import timetogeter.global.interceptor.response.StatusCode;
 
 @Slf4j
 @RestControllerAdvice

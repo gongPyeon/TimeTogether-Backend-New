@@ -1,4 +1,4 @@
-package timetogeter.global.interceptor.response.error.status;
+package timetogeter.global.interceptor.response;
 import org.springframework.http.HttpStatus;
 
 

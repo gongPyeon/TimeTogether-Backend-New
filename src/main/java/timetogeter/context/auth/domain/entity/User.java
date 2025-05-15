@@ -2,9 +2,12 @@ package timetogeter.context.auth.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
+import timetogeter.context.auth.application.exception.InvalidAuthException;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.application.dto.RegisterUserCommand;
 
 @Entity
@@ -33,6 +36,22 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    public User(UserSignUpDTO dto) {
+        validateUserId(dto.getUserId());
+        User.builder()
+                .userId(dto.getUserId())
+                .email(dto.getEmail())
+                .nickname(dto.getNickname())
+                .userImg(null)
+                .password(dto.getPassword())
+                .telephone(dto.getTelephone()) // 선택
+                .provider(Provider.GENERAL)
+                .role(Role.USER)
+                .age(dto.getAge()) // 선택
+                .gender(dto.getGender()) // 선택
+                .build();
+    }
+
     public static User create(RegisterUserCommand registerUserCommand){
         // 검증
         return User.builder()
@@ -47,5 +66,14 @@ public class User {
                 .age(registerUserCommand.age())
                 .gender(registerUserCommand.gender())
                 .build();
+    }
+
+    private void validateUserId(String userId) {
+        if (userId == null || userId.length() < 1 || userId.length() > 20) {
+            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_LENGTH,"[ERROR] 아이디는 1~20자여야 합니다.");
+        }
+        if (!userId.matches("^[a-zA-Z0-9_]+$")) {
+            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_FORMAT,"[ERROR] 아이디는 영어, 숫자, 언더바만 가능합니다.");
+        }
     }
 }

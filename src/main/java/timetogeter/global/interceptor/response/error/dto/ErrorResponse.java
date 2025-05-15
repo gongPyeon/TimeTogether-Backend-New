@@ -3,7 +3,7 @@ package timetogeter.global.interceptor.response.error.dto;
 import lombok.*;
 import org.springframework.http.ResponseEntity;
 import timetogeter.global.interceptor.response.error.CustomException;
-import timetogeter.global.interceptor.response.error.status.StatusCode;
+import timetogeter.global.interceptor.response.StatusCode;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)

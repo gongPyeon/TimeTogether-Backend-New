@@ -2,6 +2,7 @@ package timetogeter.global.interceptor.response.error.status;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
+import timetogeter.global.interceptor.response.StatusCode;
 
 //필요한 에러를 //[에러이름] 에러 란에 만들기
 @Getter
@@ -18,7 +19,12 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_TOKEN(401, HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않아요"),
     INVALID_USER(403, HttpStatus.FORBIDDEN, "접근 권한이 없어요"),
     INVALID_PROVIDER(400, HttpStatus.BAD_REQUEST, "지원하지 않는 소셜 플랫폼이에요"),
-    INVALID_OAUTH_TOKEN(500, HttpStatus.INTERNAL_SERVER_ERROR, "소셜 로그인 토큰 발급을 실패했어요");
+    INVALID_OAUTH_TOKEN(500, HttpStatus.INTERNAL_SERVER_ERROR, "소셜 로그인 토큰 발급을 실패했어요"),
+
+    INVALID_ID_LENGTH(400, HttpStatus.BAD_REQUEST, "아이디는 1자 이상 20자 이하로 입력해주세요"),
+    INVALID_ID_FORMAT(400, HttpStatus.BAD_REQUEST, "아이디 형식을 다시 확인해주세요"),
+    INVALID_ID_DUP(400, HttpStatus.BAD_REQUEST, "다른 아이디를 사용해주세요"),
+    INVALID_NICKNAME_DUP(400, HttpStatus.BAD_REQUEST, "다른 닉네임을 사용해주세요");
 
     //로그인 에러
 

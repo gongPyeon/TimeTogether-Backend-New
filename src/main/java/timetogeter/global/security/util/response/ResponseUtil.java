@@ -3,7 +3,7 @@ package timetogeter.global.security.util.response;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
-import timetogeter.global.interceptor.response.error.status.StatusCode;
+import timetogeter.global.interceptor.response.StatusCode;
 
 import java.io.IOException;
 
