@@ -47,12 +47,11 @@ public class AuthService {
     private final OAuth2UserDetailService oAuth2UserDetailService;
 
     @Transactional
-    public String signUp(UserSignUpDTO dto) {
+    public void signUp(UserSignUpDTO dto) {
         User user = new User(dto);
         authValidator.validateDuplicateId(dto.getUserId());
 
         userRepository.save(user);
-        return BaseCode.SUCCESS_SIGN_UP.getMessage();
     }
 
     public String reissueToken(String refreshToken) {
@@ -103,5 +102,15 @@ public class AuthService {
         OAuth2Client client = oAuth2ClientProvider.getClient(provider);
         String accessToken = client.getAccessToken(dto.getCode(), dto.getRedirectUri());
         return client.getUserInfo(accessToken);
+    }
+
+    // TODO: 도중에 실패했을 경우 고려
+    public void logout(String userId, String accessToken) {
+        redisUtil.deleteRefreshToken(userId);
+
+        long expiration = jwtTokenProvider.getExpiration(accessToken);
+        if (expiration > 0) {
+            redisUtil.setBlackList(accessToken, "logout", expiration);
+        }
     }
 }
