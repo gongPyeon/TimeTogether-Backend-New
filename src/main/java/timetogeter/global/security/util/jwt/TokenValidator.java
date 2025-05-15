@@ -1,7 +1,9 @@
 package timetogeter.global.security.util.jwt;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import timetogeter.global.security.util.redis.RedisUtil;
 
 import java.util.Objects;
 

@@ -20,4 +20,5 @@ public record RegisterResponse(String userId,
                 user.getProvider(),
                 user.getRole()
         );
-    })
+    }
+}

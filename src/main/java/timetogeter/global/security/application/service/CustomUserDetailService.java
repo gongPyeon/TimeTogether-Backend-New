@@ -6,8 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import timetogeter.global.security.application.dto.RegisterResponse;
-
-import java.nio.file.attribute.UserPrincipal;
+import timetogeter.global.security.application.vo.principal.UserPrincipal;
 
 @Service
 @RequiredArgsConstructor
