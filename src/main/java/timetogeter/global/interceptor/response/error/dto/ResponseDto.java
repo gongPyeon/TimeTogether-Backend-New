@@ -1,15 +1,12 @@
 package timetogeter.global.interceptor.response.error.dto;
 
-import lombok.Builder;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
 @RequiredArgsConstructor
-public class ErrorResponse {
-
-    private final int codenum;
-    private final String code;
+public class ResponseDto {
+    private final int code;
     private final String message;
 }

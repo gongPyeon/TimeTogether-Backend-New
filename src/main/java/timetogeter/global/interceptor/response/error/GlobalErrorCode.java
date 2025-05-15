@@ -8,6 +8,9 @@ import timetogeter.global.interceptor.response.error.errorbase.ErrorCode;
 @Getter
 @RequiredArgsConstructor
 public enum GlobalErrorCode implements ErrorCode {
+    //Success
+    OK(0000, HttpStatus.OK, "OK"),
+
     //공통 에러
     INVALID_PARAMETER(1000,HttpStatus.BAD_REQUEST, "파라미터 값이 없습니다!"),
     INTERNAL_SERVER_ERROR(1001,HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다!"),

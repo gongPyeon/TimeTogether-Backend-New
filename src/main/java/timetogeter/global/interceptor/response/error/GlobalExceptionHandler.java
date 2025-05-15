@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
+import timetogeter.global.interceptor.response.error.dto.ErrorResponseDto;
 import timetogeter.global.interceptor.response.error.errorbase.ErrorCode;
 
 @Slf4j
@@ -48,8 +48,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(makeErrorResponse(errorCode));
     }
 
-    private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
-        return ErrorResponse.builder()
+    private ErrorResponseDto makeErrorResponse(ErrorCode errorCode) {
+        return ErrorResponseDto.builder()
                 .code(errorCode.name())
                 .codenum(errorCode.getCodenum())
                 .message(errorCode.getMessage())
@@ -61,8 +61,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(makeErrorResponse(errorCode, message));
     }
 
-    private ErrorResponse makeErrorResponse(ErrorCode errorCode, String message) {
-        return ErrorResponse.builder()
+    private ErrorResponseDto makeErrorResponse(ErrorCode errorCode, String message) {
+        return ErrorResponseDto.builder()
                 .code(errorCode.name())
                 .codenum(errorCode.getCodenum())
                 .message(message)
