@@ -1,10 +1,10 @@
-package timetogeter.global.interceptor.response.error.errorbase;
+package timetogeter.global.interceptor.response.error.status;
 import org.springframework.http.HttpStatus;
 
 
-public interface ErrorCode {
+public interface StatusCode {
     String name();
-    int getCodenum();
+    int getCode();
     HttpStatus getHttpStatus();
     String getMessage();
 }

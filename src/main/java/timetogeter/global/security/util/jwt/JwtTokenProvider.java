@@ -108,6 +108,7 @@ public class JwtTokenProvider implements TokenProvider {
         }
 
         // throw new InvalidJwtException(error);
+        return null;
     }
 
     public String extractBearer(String token) {
@@ -152,6 +153,8 @@ public class JwtTokenProvider implements TokenProvider {
 
         } catch (JwtException e) {
             // throw new InvalidJwtException(e.getMessage());
+            return 0;
         }
+        return 0;
     }
 }
