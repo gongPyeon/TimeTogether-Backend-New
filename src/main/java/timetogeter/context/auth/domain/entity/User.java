@@ -18,7 +18,7 @@ public class User {
     private String userImg;
     private String email;
 
-    @Getter(AccessLevel.NONE)
+    // @Getter(AccessLevel.NONE) > 회원가입 시 필요
     private String password;
     private String telephone;
     private String nickname;
