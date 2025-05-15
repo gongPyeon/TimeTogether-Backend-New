@@ -1,9 +1,7 @@
 package timetogeter.global.security.config;
 
-import org.h2.command.Token;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -11,9 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import timetogeter.global.security.exception.FilterExceptionHandler;
+import timetogeter.global.security.exception.filter.ExceptionHandlerFilter;
 import timetogeter.global.security.util.jwt.JwtAuthenticationProvider;
 import timetogeter.global.security.util.jwt.TokenValidator;
 import timetogeter.global.security.util.jwt.filter.JwtAuthenticationFilter;
@@ -32,7 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            CorsConfig corsConfig,
                                            JwtAuthenticationProvider jwtAuthenticationProvider,
-                                           FilterExceptionHandler jwtExceptionHandler,
+                                           ExceptionHandlerFilter jwtExceptionHandlerFilter,
                                            TokenValidator tokenValidator) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource()))
@@ -53,7 +50,7 @@ public class SecurityConfig {
         // 예외 핸들러 > 토큰 인증 수행 및 보안 컨텍스트 설정(Jwt) > 로그아웃
         http
                 .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider, tokenValidator), LogoutFilter.class)
-                .addFilterBefore(jwtExceptionHandler, JwtAuthenticationFilter.class);
+                .addFilterBefore(jwtExceptionHandlerFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

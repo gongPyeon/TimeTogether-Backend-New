@@ -10,7 +10,7 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RestControllerAdvice
 @RequiredArgsConstructor
 @Slf4j
-public class FilterExceptionHandler {
+public class AuthExceptionHandler {
     @ExceptionHandler(AuthFailureException.class)
     public ResponseEntity<ErrorResponse> handle_DuplicateEmailException(AuthFailureException e) {
         log.error("DuplicateEmailExceptionHandler.handle_DuplicateEmailException <{}> {}", e.getMessage(), e);

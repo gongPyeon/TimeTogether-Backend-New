@@ -10,8 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.application.dto.TokenCommand;
 import timetogeter.global.security.application.vo.principal.UserPrincipal;
+import timetogeter.global.security.exception.InvalidJwtException;
 
 import java.security.Key;
 import java.util.Collection;
@@ -107,7 +109,7 @@ public class JwtTokenProvider implements TokenProvider {
             error = "[ERROR] 유효하지 않은 토큰입니다.";
         }
 
-        // throw new InvalidJwtException(error);
+        throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, error);
         return null;
     }
 
@@ -127,7 +129,7 @@ public class JwtTokenProvider implements TokenProvider {
 
         String tokenType = claims.get("type", String.class);
         if (!REFRESH_TYPE.equals(tokenType)) {
-            // throw new InvalidJwtException("Provided token is not a refresh token.");
+            throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR]: 제공된 토큰이 리프레시 토큰이 아닙니다.");
         }
 
         String userId = claims.getSubject();
@@ -148,13 +150,11 @@ public class JwtTokenProvider implements TokenProvider {
             long now = System.currentTimeMillis();
 
             int remaining = (int) ((expiration.getTime() - now) / 1000);
-            if (remaining < 0) // throw new InvalidJwtException("Token expired.");
+            if (remaining < 0) throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 토큰이 만료되었습니다.");
             return remaining;
 
         } catch (JwtException e) {
-            // throw new InvalidJwtException(e.getMessage());
-            return 0;
+            throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] "+e.getMessage());
         }
-        return 0;
     }
 }

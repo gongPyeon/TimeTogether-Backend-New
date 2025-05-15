@@ -6,8 +6,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.application.dto.RegisterResponse;
 import timetogeter.global.security.application.dto.RegisterUserCommand;
+import timetogeter.global.security.exception.AuthFailureException;
 
 @Service
 @Transactional
@@ -33,8 +35,8 @@ public class UserRegisterService {
 
     // 일반 로그인일 경우
     public RegisterResponse getRegisterUser(String userId) {
-        User findUser = userRepository.findByUserId(userId).get();
-        // TODO: 예외처리 아이디 또는 비밀번호를 확인해주세요. (사용자를 찾을 수 없어요)
+        User findUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new AuthFailureException(BaseErrorCode.INVALID_LOGIN, "[ERROR]: "+userId+"에 해당하는 사용자를 찾을 수 없습니다"));
 
         return RegisterResponse.from(findUser);
     }

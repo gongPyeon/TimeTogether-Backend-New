@@ -24,7 +24,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final TokenValidator tokenValidator;
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req,
+                         ServletResponse res,
+                         FilterChain filterChain) throws IOException, ServletException {
+
         HttpServletRequest request = (HttpServletRequest) req;
         String accessToken = request.getHeader(HEADER);
 
