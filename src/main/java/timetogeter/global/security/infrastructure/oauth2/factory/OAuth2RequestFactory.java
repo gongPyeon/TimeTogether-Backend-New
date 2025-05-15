@@ -3,10 +3,12 @@ package timetogeter.global.security.infrastructure.oauth2.factory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import timetogeter.global.security.application.dto.ApiCommand;
 
+@Component
 public class OAuth2RequestFactory {
     public HttpEntity<MultiValueMap<String, String>> create(ApiCommand cmd) {
         HttpHeaders headers = new HttpHeaders();

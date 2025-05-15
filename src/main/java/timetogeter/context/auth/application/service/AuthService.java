@@ -6,20 +6,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
 import timetogeter.context.auth.application.exception.InvalidAuthException;
 import timetogeter.context.auth.application.validator.AuthValidator;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
+import timetogeter.context.auth.domain.vo.Provider;
+import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+import timetogeter.global.security.application.dto.RegisterResponse;
 import timetogeter.global.security.application.dto.TokenCommand;
+import timetogeter.global.security.application.service.OAuth2UserDetailService;
+import timetogeter.global.security.application.vo.principal.UserPrincipal;
+import timetogeter.global.security.exception.AuthFailureException;
+import timetogeter.global.security.infrastructure.oauth2.client.OAuth2Client;
+import timetogeter.global.security.infrastructure.oauth2.client.OAuth2ClientProvider;
 import timetogeter.global.security.util.jwt.JwtTokenProvider;
 import timetogeter.global.security.util.redis.RedisUtil;
 
-import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
+import java.util.List;
+import java.util.Map;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +42,9 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final RedisUtil redisUtil;
+
+    private final OAuth2ClientProvider oAuth2ClientProvider;
+    private final OAuth2UserDetailService oAuth2UserDetailService;
 
     @Transactional
     public String signUp(UserSignUpDTO dto) {
@@ -48,13 +63,45 @@ public class AuthService {
         return accessToken;
     }
 
+    // TODO: 로그인 예외처리 세분화
     public TokenCommand login(LoginReqDTO dto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getUserId(), dto.getPassword()));
-        TokenCommand token = jwtTokenProvider.generateToken(authentication);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(dto.getUserId(), dto.getPassword()));
 
-        redisUtil.saveRefreshToken(dto.getUserId(), token.getRefreshToken());
+            TokenCommand token = jwtTokenProvider.generateToken(authentication);
 
-        return token;
+            redisUtil.saveRefreshToken(dto.getUserId(), token.getRefreshToken());
+            return token;
+        }catch(Exception e){
+            throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 아이디 또는 비밀번호가 틀렸습니다.");
+        }
+    }
+
+    public TokenCommand login(OAuth2LoginReqDTO dto){
+        try {
+            Map<String, Object> attributes = getUserAttributes(dto);
+            RegisterResponse registerResponse = oAuth2UserDetailService.loadOAuth2User(
+                    Provider.valueOf(dto.getProvider()), attributes);
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    new UserPrincipal(registerResponse), null,
+                    List.of(new SimpleGrantedAuthority(Role.USER.name()))
+            );
+
+            TokenCommand token = jwtTokenProvider.generateToken(authentication);
+            redisUtil.saveRefreshToken(registerResponse.email(), token.getRefreshToken());
+
+            return token;
+        }catch(Exception e){
+            throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 아이디 또는 비밀번호가 틀렸습니다.");
+        }
+    }
+
+    private Map<String, Object> getUserAttributes(OAuth2LoginReqDTO dto) {
+        Provider provider = Provider.valueOf(dto.getProvider().toUpperCase());
+        OAuth2Client client = oAuth2ClientProvider.getClient(provider);
+        String accessToken = client.getAccessToken(dto.getCode(), dto.getRedirectUri());
+        return client.getUserInfo(accessToken);
     }
 }

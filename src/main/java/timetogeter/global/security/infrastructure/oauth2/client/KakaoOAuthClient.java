@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import timetogeter.global.security.application.dto.ApiCommand;
 import timetogeter.global.security.infrastructure.oauth2.factory.OAuth2RequestFactory;
@@ -13,6 +14,7 @@ import timetogeter.global.security.util.api.ApiService;
 
 import java.util.Map;
 
+@Component
 public class KakaoOAuthClient extends AbstractOAuth2Client{
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
 import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
@@ -48,6 +49,19 @@ public class AuthController {
 
     @PostMapping("/login")
     public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
+        TokenCommand token = authService.login(dto);
+
+        response.setHeader("Authorization", "Bearer " + token.getAccessToken());
+        CookieUtil.addCookie(response, REFRESH_TOKEN, token.getRefreshToken(),
+                Math.toIntExact(token.getRefreshTokenExpirationTime()));
+
+        return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
+    }
+
+    @PostMapping("/oauth2/login")
+    // KAKAO, NAVER, GOOGLE
+    public BaseResponse<Object> login(@RequestBody @Valid OAuth2LoginReqDTO dto,
+                                      HttpServletResponse response) {
         TokenCommand token = authService.login(dto);
 
         response.setHeader("Authorization", "Bearer " + token.getAccessToken());

@@ -1,12 +1,14 @@
 package timetogeter.global.security.infrastructure.oauth2.client;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import timetogeter.global.security.infrastructure.oauth2.factory.OAuth2RequestFactory;
 import timetogeter.global.security.infrastructure.oauth2.parser.OAuth2ResponseParser;
 import timetogeter.global.security.util.api.ApiService;
 
 import java.util.Map;
 
+@Component
 public class NaverOAuthClient extends AbstractOAuth2Client {
 
     @Value("${spring.security.oauth2.client.registration.naver.client-id}")

@@ -1,8 +1,12 @@
 package timetogeter.global.security.infrastructure.oauth2.client;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import timetogeter.context.auth.domain.vo.Provider;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+import timetogeter.global.security.exception.InvalidProviderException;
 
+@Component
 @RequiredArgsConstructor
 public class OAuth2ClientProvider {
     private final GoogleOAuthClient googleOAuthClient;
@@ -14,6 +18,7 @@ public class OAuth2ClientProvider {
             case GOOGLE -> googleOAuthClient;
             case KAKAO -> kakaoOAuthClient;
             case NAVER -> naverOAuthClient;
+            default -> throw new InvalidProviderException("[ERROR] " + provider + "는 지원하지 않는 플랫폼입니다.");
         };
     }
 }
