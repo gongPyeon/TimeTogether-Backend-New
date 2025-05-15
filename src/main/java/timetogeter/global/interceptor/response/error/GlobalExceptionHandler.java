@@ -1,0 +1,71 @@
+package timetogeter.global.interceptor.response.error;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
+import timetogeter.global.interceptor.response.error.errorbase.ErrorCode;
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+
+    //로그인 예외 처리
+    /*
+    //예시
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<?> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode);
+    }
+     */
+
+
+    //그룹 예외 처리
+
+
+    //===================================
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
+        log.warn("handleIllegalArgument", e);
+        ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
+        return handleExceptionInternal(errorCode, e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleAllException(Exception ex) {
+        log.warn("handleAllException", ex);
+        ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
+        return handleExceptionInternal(errorCode);
+    }
+
+    private ResponseEntity<?> handleExceptionInternal(ErrorCode errorCode) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode));
+    }
+
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode) {
+        return ErrorResponse.builder()
+                .code(errorCode.name())
+                .codenum(errorCode.getCodenum())
+                .message(errorCode.getMessage())
+                .build();
+    }
+
+    private ResponseEntity<?> handleExceptionInternal(ErrorCode errorCode, String message) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                .body(makeErrorResponse(errorCode, message));
+    }
+
+    private ErrorResponse makeErrorResponse(ErrorCode errorCode, String message) {
+        return ErrorResponse.builder()
+                .code(errorCode.name())
+                .codenum(errorCode.getCodenum())
+                .message(message)
+                .build();
+    }
+}
