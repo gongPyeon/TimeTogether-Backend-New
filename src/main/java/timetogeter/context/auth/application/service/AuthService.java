@@ -3,6 +3,7 @@ package timetogeter.context.auth.application.service;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
@@ -95,7 +97,8 @@ public class AuthService {
 
             return token;
         }catch(Exception e){
-            throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 아이디 또는 비밀번호가 틀렸습니다.");
+            log.info(e.getMessage());
+            throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 소셜로그인에 실패했습니다.");
         }
     }
 

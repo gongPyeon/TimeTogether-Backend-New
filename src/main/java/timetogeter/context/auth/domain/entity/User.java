@@ -65,7 +65,6 @@ public class User {
     }
 
     private void validate(String userId, String nickname, String email, String telephone){
-        validateUserId(userId);
         validateUserNickname(nickname);
         validateEmail(email);
         validatePhone(telephone);

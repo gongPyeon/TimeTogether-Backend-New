@@ -21,6 +21,9 @@ public class GoogleOAuthClient extends AbstractOAuth2Client {
     @Value("${spring.security.oauth2.client.provider.google.token-uri}")
     private String reqUri;
 
+    @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
+    private String userInfoUri;
+
     public GoogleOAuthClient(ApiService apiService, OAuth2RequestFactory requestFactory, OAuth2ResponseParser parser) {
         super(apiService, requestFactory, parser);
     }
@@ -38,5 +41,10 @@ public class GoogleOAuthClient extends AbstractOAuth2Client {
     @Override
     protected String getReqUri() {
         return reqUri;
+    }
+
+    @Override
+    protected String getUserInfoUri() {
+        return userInfoUri;
     }
 }

@@ -26,6 +26,9 @@ public class KakaoOAuthClient extends AbstractOAuth2Client{
     @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String reqUri;
 
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+    private String userInfoUri;
+
     public KakaoOAuthClient(ApiService apiService, OAuth2RequestFactory requestFactory, OAuth2ResponseParser parser) {
         super(apiService, requestFactory, parser);
     }
@@ -43,5 +46,10 @@ public class KakaoOAuthClient extends AbstractOAuth2Client{
     @Override
     protected String getReqUri() {
         return reqUri;
+    }
+
+    @Override
+    protected String getUserInfoUri() {
+        return userInfoUri;
     }
 }

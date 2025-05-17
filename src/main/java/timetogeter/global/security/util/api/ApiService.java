@@ -14,10 +14,6 @@ import java.util.Map;
 public class ApiService {
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public ResponseEntity<Map> send(String url, HttpEntity<?> request){
-        return restTemplate.postForEntity(url, request, Map.class);
-    }
-
     public ResponseEntity<Map> send(String url, HttpMethod httpMethod, HttpEntity<?> request){
         return restTemplate.exchange(url, httpMethod, request, Map.class);
     }

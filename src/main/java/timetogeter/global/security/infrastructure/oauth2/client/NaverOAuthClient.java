@@ -20,6 +20,9 @@ public class NaverOAuthClient extends AbstractOAuth2Client {
     @Value("${spring.security.oauth2.client.provider.naver.token-uri}")
     private String reqUri;
 
+    @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
+    private String userInfoUri;
+
     public NaverOAuthClient(ApiService apiService, OAuth2RequestFactory requestFactory, OAuth2ResponseParser parser) {
         super(apiService, requestFactory, parser);
     }
@@ -37,5 +40,10 @@ public class NaverOAuthClient extends AbstractOAuth2Client {
     @Override
     protected String getReqUri() {
         return reqUri;
+    }
+
+    @Override
+    protected String getUserInfoUri() {
+        return userInfoUri;
     }
 }

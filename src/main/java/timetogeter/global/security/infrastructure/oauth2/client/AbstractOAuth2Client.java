@@ -22,13 +22,14 @@ public abstract class AbstractOAuth2Client implements OAuth2Client{
     protected abstract String getClientId();
     protected abstract String getClientSecret();
     protected abstract String getReqUri();
+    protected abstract String getUserInfoUri();
 
     @Override
     public String getAccessToken(String code, String redirectUri) {
         ApiCommand command = new ApiCommand(getClientId(), getClientSecret(), code, redirectUri);
 
         HttpEntity<MultiValueMap<String, String>> request = requestFactory.create(command);
-        ResponseEntity<Map> response = apiService.send(getReqUri(), request);
+        ResponseEntity<Map> response = apiService.send(getReqUri(), HttpMethod.POST, request);
 
         return parser.extractAccessToken(response);
     }
@@ -38,7 +39,7 @@ public abstract class AbstractOAuth2Client implements OAuth2Client{
         HttpHeaders headers = requestFactory.create(accessToken);
 
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = apiService.send(getReqUri(), HttpMethod.GET, request);
+        ResponseEntity<Map> response = apiService.send(getUserInfoUri(), HttpMethod.GET, request);
 
         return response.getBody();
     }
