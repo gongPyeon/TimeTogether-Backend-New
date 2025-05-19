@@ -57,9 +57,9 @@ public class AuthController {
     public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
         TokenCommand token = authService.login(dto);
 
-        response.setHeader(AUTHORIZATION, BEARER + token.getAccessToken());
-        CookieUtil.addCookie(response, REFRESH_TOKEN, token.getRefreshToken(),
-                Math.toIntExact(token.getRefreshTokenExpirationTime()));
+        response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
+        CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
+                Math.toIntExact(token.refreshTokenExpirationTime()));
 
         return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
     }
@@ -70,9 +70,9 @@ public class AuthController {
                                       HttpServletResponse response) {
         TokenCommand token = authService.login(dto);
 
-        response.setHeader(AUTHORIZATION, BEARER + token.getAccessToken());
-        CookieUtil.addCookie(response, REFRESH_TOKEN, token.getRefreshToken(),
-                Math.toIntExact(token.getRefreshTokenExpirationTime()));
+        response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
+        CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
+                Math.toIntExact(token.refreshTokenExpirationTime()));
 
         return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
     }

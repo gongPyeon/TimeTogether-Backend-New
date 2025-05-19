@@ -55,7 +55,7 @@ public class AuthService {
     @Transactional
     public void signUp(UserSignUpDTO dto) {
         User user = new User(dto, passwordEncoder);
-        authValidator.validateDuplicateId(dto.getUserId());
+        authValidator.validateDuplicateId(dto.userId());
 
         userRepository.save(user);
     }
@@ -70,18 +70,18 @@ public class AuthService {
 
     // TODO: 로그인 예외처리 세분화
     public TokenCommand login(LoginReqDTO dto) {
-        String userId = dto.getUserId();
+        String userId = dto.userId();
         try {
             if(loginAttemptService.isLocked(userId)){
                 throw new AuthFailureException(BaseErrorCode.ACCOUNT_LOCKED, "[ERROR] 계정이 잠겨 있습니다. 나중에 다시 시도하세요.");
             }
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.getUserId(), dto.getPassword()));
+                    new UsernamePasswordAuthenticationToken(dto.userId(), dto.password()));
             // 성공 시 실패 카운트 초기화
             loginAttemptService.resetFailedAttempts(userId);
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.saveRefreshToken(dto.getUserId(), token.getRefreshToken());
+            redisUtil.saveRefreshToken(dto.userId(), token.refreshToken());
             return token;
         }catch(AuthenticationException e){
             // 인증 실패 시 카운트 증가
@@ -94,7 +94,7 @@ public class AuthService {
         try {
             Map<String, Object> attributes = getUserAttributes(dto);
             RegisterResponse registerResponse = oAuth2UserDetailService.loadOAuth2User(
-                    Provider.valueOf(dto.getProvider()), attributes);
+                    Provider.valueOf(dto.provider()), attributes);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     new UserPrincipal(registerResponse), null,
@@ -102,7 +102,7 @@ public class AuthService {
             );
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.saveRefreshToken(registerResponse.email(), token.getRefreshToken());
+            redisUtil.saveRefreshToken(registerResponse.email(), token.refreshToken());
 
             return token;
         }catch(Exception e){
@@ -112,9 +112,9 @@ public class AuthService {
     }
 
     private Map<String, Object> getUserAttributes(OAuth2LoginReqDTO dto) {
-        Provider provider = Provider.valueOf(dto.getProvider().toUpperCase());
+        Provider provider = Provider.valueOf(dto.provider().toUpperCase());
         OAuth2Client client = oAuth2ClientProvider.getClient(provider);
-        String accessToken = client.getAccessToken(dto.getCode(), dto.getRedirectUri());
+        String accessToken = client.getAccessToken(dto.code(), dto.redirectUri());
         return client.getUserInfo(accessToken);
     }
 

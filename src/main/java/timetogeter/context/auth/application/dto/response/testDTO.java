@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-public class testDTO {
+public class testDTO { // TODO: 삭제예정
     private String result;
 
     public testDTO(String result) {
