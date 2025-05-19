@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class AuthService {
 
     private final OAuth2ClientProvider oAuth2ClientProvider;
     private final OAuth2UserDetailService oAuth2UserDetailService;
+    private final LoginAttemptService loginAttemptService;
 
     @Transactional
     public void signUp(UserSignUpDTO dto) {
@@ -68,15 +70,22 @@ public class AuthService {
 
     // TODO: 로그인 예외처리 세분화
     public TokenCommand login(LoginReqDTO dto) {
+        String userId = dto.getUserId();
         try {
+            if(loginAttemptService.isLocked(userId)){
+                throw new AuthFailureException(BaseErrorCode.ACCOUNT_LOCKED, "[ERROR] 계정이 잠겨 있습니다. 나중에 다시 시도하세요.");
+            }
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.getUserId(), dto.getPassword()));
+            // 성공 시 실패 카운트 초기화
+            loginAttemptService.resetFailedAttempts(userId);
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-
             redisUtil.saveRefreshToken(dto.getUserId(), token.getRefreshToken());
             return token;
-        }catch(Exception e){
+        }catch(AuthenticationException e){
+            // 인증 실패 시 카운트 증가
+            loginAttemptService.increaseFailedAttempts(userId);
             throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 아이디 또는 비밀번호가 틀렸습니다.");
         }
     }

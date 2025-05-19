@@ -26,6 +26,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req,
                                     HttpServletResponse res,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         try {
             filterChain.doFilter(req, res);
         }catch (JwtException | AuthenticationException e){

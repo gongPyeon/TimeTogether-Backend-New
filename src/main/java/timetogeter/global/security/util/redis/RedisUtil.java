@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import timetogeter.context.auth.application.exception.RedisException;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class RedisUtil {
+public class RedisUtil { // TODO: Redis 리팩토링
 
     private static final String BEARER_TYPE = "Bearer";
     private final String REFRESH_TOKEN_KEY = "refresh";
@@ -73,5 +75,32 @@ public class RedisUtil {
         String key = "BL:" + token;
         String value = redisTemplate.opsForValue().get(key);
         return value != null;
+    }
+
+    public Boolean getBoolean(String userId) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(userId));
+    }
+
+    public Integer getInt(String userId) {
+        Object value = redisTemplate.opsForValue().get(userId);
+        if (value == null) return 0;
+
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 문자열을 숫자로 변환할 수 없습니다.");
+        }
+    }
+
+    public void delete(String s) {
+        redisTemplate.delete(s);
+    }
+
+    public void set(String key, Object value, long timeout, TimeUnit unit) {
+        redisTemplate.opsForValue().set(key, String.valueOf(value), timeout, unit);
+    }
+
+    public void set(String key, Object value, Duration duration) {
+        redisTemplate.opsForValue().set(key, String.valueOf(value), duration);
     }
 }
