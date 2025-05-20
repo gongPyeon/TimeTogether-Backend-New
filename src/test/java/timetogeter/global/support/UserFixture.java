@@ -4,7 +4,7 @@ import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.global.security.application.dto.RegisterUserCommand;
+import timetogeter.context.auth.application.dto.RegisterUserCommand;
 
 public class UserFixture {
     private static final String USER_ID = "test";

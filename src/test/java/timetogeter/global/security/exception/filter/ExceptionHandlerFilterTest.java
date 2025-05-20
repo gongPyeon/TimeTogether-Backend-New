@@ -12,12 +12,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.exception.InvalidJwtException;
 
 import java.io.IOException;
 

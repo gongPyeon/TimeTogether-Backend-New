@@ -1,10 +1,5 @@
 package timetogeter.context.auth.presentation.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -19,8 +14,8 @@ import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
-import timetogeter.global.security.application.dto.TokenCommand;
-import timetogeter.global.security.application.vo.principal.UserPrincipal;
+import timetogeter.context.auth.application.dto.TokenCommand;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.global.security.util.cookie.CookieUtil;
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 

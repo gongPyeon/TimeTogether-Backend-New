@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.exception.InvalidJwtException;
 
 import java.io.IOException;
 

@@ -9,7 +9,7 @@ import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.application.dto.RegisterUserCommand;
+import timetogeter.context.auth.application.dto.RegisterUserCommand;
 
 @Entity
 @Getter

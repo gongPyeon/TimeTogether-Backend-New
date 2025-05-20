@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.exception.AuthFailureException;
-import timetogeter.global.security.util.redis.RedisUtil;
+import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.global.common.util.redis.RedisUtil;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

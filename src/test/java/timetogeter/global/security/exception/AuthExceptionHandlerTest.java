@@ -10,9 +10,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import timetogeter.context.auth.application.exception.AuthExceptionHandler;
+import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.application.exception.InvalidJwtException;
+import timetogeter.context.auth.application.exception.UserNotFoundException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

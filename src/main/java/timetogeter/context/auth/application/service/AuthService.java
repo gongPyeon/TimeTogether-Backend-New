@@ -1,6 +1,5 @@
 package timetogeter.context.auth.application.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,23 +14,20 @@ import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
-import timetogeter.context.auth.application.exception.InvalidAuthException;
 import timetogeter.context.auth.application.validator.AuthValidator;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.application.dto.RegisterResponse;
-import timetogeter.global.security.application.dto.TokenCommand;
-import timetogeter.global.security.application.service.OAuth2UserDetailService;
-import timetogeter.global.security.application.vo.principal.UserPrincipal;
-import timetogeter.global.security.exception.AuthFailureException;
-import timetogeter.global.security.infrastructure.oauth2.client.OAuth2Client;
-import timetogeter.global.security.infrastructure.oauth2.client.OAuth2ClientProvider;
+import timetogeter.context.auth.application.dto.RegisterResponse;
+import timetogeter.context.auth.application.dto.TokenCommand;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.infrastructure.external.oauth2.client.OAuth2Client;
+import timetogeter.context.auth.infrastructure.external.oauth2.client.OAuth2ClientProvider;
 import timetogeter.global.security.util.jwt.JwtTokenProvider;
-import timetogeter.global.security.util.redis.RedisUtil;
+import timetogeter.global.common.util.redis.RedisUtil;
 
 import java.time.Duration;
 import java.util.List;
