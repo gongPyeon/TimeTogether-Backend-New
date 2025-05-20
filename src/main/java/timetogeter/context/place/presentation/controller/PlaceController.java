@@ -36,4 +36,22 @@ public class PlaceController {
         myPlaceService.deletePlace(userId, placeId);
         return new BaseResponse<>(BaseCode.SUCCESS_DELETE);
     }
+
+    @PostMapping("vote/{placeId}")
+    public BaseResponse<Object> votePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                            @PathVariable int placeId) {
+        String userId = userPrincipal.getId();
+        placeBoardService.vote(userId, placeId);
+        return new BaseResponse<>(BaseCode.SUCCESS_VOTE);
+    }
+
+    @DeleteMapping("vote/{placeId}")
+    public BaseResponse<Object> cancelVotePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                          @PathVariable int placeId) {
+        String userId = userPrincipal.getId();
+        placeBoardService.deleteVote(userId, placeId);
+        return new BaseResponse<>(BaseCode.SUCCESS_DELETE_VOTE);
+    }
+
+
 }

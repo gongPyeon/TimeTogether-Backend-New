@@ -13,29 +13,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Place {
+public class Vote {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int voteId;
     private int placeId;
+    private String userId;
 
-    private int promiseId;
-    private String placeName;
-    private String placeUrl;
-    private boolean isConfirmed;
-    private int voting;
-
-    private String userId; // 암호화된 사용자 고유 아이디
-
-    public boolean hasVotedBy(String userId) {
-        return this.userId == userId;
-    }
-
-    public void vote() {
-        voting++;
-    }
-
-    public void cancelVote() {
-        voting--;
+    public Vote(int placeId, String userId) {
+        this.placeId = placeId;
+        this.userId = userId;
     }
 }
