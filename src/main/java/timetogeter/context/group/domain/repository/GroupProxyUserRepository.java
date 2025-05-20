@@ -12,4 +12,8 @@ import java.util.*;
 public interface GroupProxyUserRepository extends JpaRepository<GroupProxyUser, String> {
     @Query("select g.encGroupId from GroupProxyUser g where g.userId = :userId")
     List<String> findEncGroupIdsByUserId(@Param("userId") String userId);
+
+    @Query("SELECT COUNT(g) > 0 FROM GroupProxyUser g WHERE g.encGroupId = :encGroupId")
+    boolean existsByEncGroupId(@Param("encGroupId") String encGroupIdCopy);
+
 }

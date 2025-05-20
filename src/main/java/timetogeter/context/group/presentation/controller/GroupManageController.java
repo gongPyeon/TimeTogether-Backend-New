@@ -5,14 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
-import timetogeter.context.group.application.dto.request.EditGroupInfoRequestDto;
-import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
-import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
-import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
-import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
-import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
-import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
+import timetogeter.context.group.application.dto.request.*;
+import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
@@ -83,6 +77,17 @@ public class GroupManageController {
         return SuccessResponse.from(response);
     }
 
+    /*
+    그룹 상세 - 그룹 초대하기
+     */
+    @PostMapping(value = "/invite", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<InviteGroupInfoResponseDto> inviteGroup(
+            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody InviteGroupInfoRequestDto request) throws Exception{
+        String userId = "manager_id_1"; //userPrincipal.getUsername();
+        InviteGroupInfoResponseDto response = groupManageMemberService.inviteGroup(request, userId);
+        return SuccessResponse.from(response);
+    }
 
 
 }
