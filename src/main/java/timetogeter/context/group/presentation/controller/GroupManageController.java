@@ -63,7 +63,7 @@ public class GroupManageController {
     }
 
     /*
-    그룹 관리 - 나가기
+    그룹 관리 - 나가기 //TODO: 약속 테이블 관련 내용도 사라져야함
      */
 
     /*
