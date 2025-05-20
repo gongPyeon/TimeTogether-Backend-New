@@ -30,6 +30,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest request = (HttpServletRequest) req;
         String accessToken = request.getHeader(HEADER);
+        if (accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);
+        }
 
         if(tokenValidator.validateToken(accessToken)) {
             Authentication authentication = authenticationProvider.getAuthentication(accessToken);

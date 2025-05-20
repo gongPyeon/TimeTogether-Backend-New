@@ -22,4 +22,8 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
         placeRepository.delete(place);
     }
+
+    public void registerPlace(String userId, int promiseId) {
+
+    }
 }

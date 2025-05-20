@@ -14,7 +14,8 @@ public enum BaseCode implements StatusCode {
     SUCCESS_LOGOUT("로그아웃에 성공했어요"),
     SUCCESS_DELETE("등록한 장소를 삭제했어요"), 
     SUCCESS_VOTE("투표했어요"),
-    SUCCESS_DELETE_VOTE("투표를 취소했어요");
+    SUCCESS_DELETE_VOTE("투표를 취소했어요"),
+    SUCCESS_REGISTER_PLACE("장소 등록에 성공했어요");
 
     private final int code;
     private final String message;

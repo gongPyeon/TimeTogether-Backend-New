@@ -53,5 +53,19 @@ public class PlaceController {
         return new BaseResponse<>(BaseCode.SUCCESS_DELETE_VOTE);
     }
 
+    // TODO: 직접 입력
+    @PostMapping("/")
+    public BaseResponse<Object> registerPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @PathVariable int promiseId) {
+        String userId = userPrincipal.getId();
+        myPlaceService.registerPlace(userId, promiseId);
+        return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
+    }
+
+    // TODO: AI 추천
+
+    // TODO: AI 추천 시 선택
+
+    // TODO: 방장일 시 장소 확정
 
 }
