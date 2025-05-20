@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import timetogeter.global.interceptor.response.error.dto.ErrorResponseDto;
-import timetogeter.global.interceptor.response.error.errorbase.ErrorCode;
+import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+import timetogeter.global.interceptor.response.StatusCode;
 
 @Slf4j
 @RestControllerAdvice
@@ -29,43 +30,41 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     //===================================
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
-        log.warn("handleIllegalArgument", e);
-        ErrorCode errorCode = GlobalErrorCode.INVALID_PARAMETER;
-        return handleExceptionInternal(errorCode, e.getMessage());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAllException(Exception ex) {
-        log.warn("handleAllException", ex);
-        ErrorCode errorCode = GlobalErrorCode.INTERNAL_SERVER_ERROR;
-        return handleExceptionInternal(errorCode);
-    }
-
-    private ResponseEntity<?> handleExceptionInternal(ErrorCode errorCode) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode));
-    }
-
-    private ErrorResponseDto makeErrorResponse(ErrorCode errorCode) {
-        return ErrorResponseDto.builder()
-                .code(errorCode.name())
-                .codenum(errorCode.getCodenum())
-                .message(errorCode.getMessage())
-                .build();
-    }
-
-    private ResponseEntity<?> handleExceptionInternal(ErrorCode errorCode, String message) {
-        return ResponseEntity.status(errorCode.getHttpStatus())
-                .body(makeErrorResponse(errorCode, message));
-    }
-
-    private ErrorResponseDto makeErrorResponse(ErrorCode errorCode, String message) {
-        return ErrorResponseDto.builder()
-                .code(errorCode.name())
-                .codenum(errorCode.getCodenum())
-                .message(message)
-                .build();
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<?> handleIllegalArgument(IllegalArgumentException e) {
+//        log.warn("handleIllegalArgument", e);
+//        StatusCode errorCode = BaseErrorCode.INVALID_PARAMETER;
+//        return handleExceptionInternal(errorCode, e.getMessage());
+//    }
+//
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<?> handleAllException(Exception ex) {
+//        log.warn("handleAllException", ex);
+//        StatusCode errorCode = BaseErrorCode.INTERNAL_SERVER_ERROR;
+//        return handleExceptionInternal(errorCode);
+//    }
+//
+//    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode) {
+//        return ResponseEntity.status(errorCode.getHttpStatus())
+//                .body(makeErrorResponse(errorCode));
+//    }
+//
+//    private ErrorResponse makeErrorResponse(StatusCode errorCode) {
+//        return ErrorResponse.builder()
+//                .code(errorCode.getCode())
+//                .message(errorCode.getMessage())
+//                .build();
+//    }
+//
+//    private ResponseEntity<?> handleExceptionInternal(StatusCode errorCode, String message) {
+//        return ResponseEntity.status(errorCode.getHttpStatus())
+//                .body(makeErrorResponse(errorCode, message));
+//    }
+//
+//    private ErrorResponse makeErrorResponse(StatusCode errorCode, String message) {
+//        return ErrorResponse.builder()
+//                .code(errorCode.getCode())
+//                .message(message)
+//                .build();
+//    }
 }

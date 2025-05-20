@@ -7,4 +7,5 @@ import timetogeter.context.group.domain.entity.GroupShareKey;
 
 @Repository
 public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, String> {
+    Long countGroupShareKeyByGroupId(String groupId);
 }

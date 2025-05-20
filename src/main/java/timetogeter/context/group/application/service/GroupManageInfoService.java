@@ -1,6 +1,7 @@
 package timetogeter.context.group.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
@@ -15,11 +16,13 @@ import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class GroupManageInfoService {
     private final GroupRepository groupRepository;
     private final GroupProxyUserRepository groupProxyUserRepository;
     private final GroupShareKeyRepository groupShareKeyRepository;
 
+    //그룹 만들기
     @Transactional
     public CreateGroupResponseDto createGroup(CreateGroupRequestDto request, String managerId) throws Exception{
         //1.Group 테이블에 저장
@@ -27,7 +30,7 @@ public class GroupManageInfoService {
         groupRepository.save(group);
 
         //2.GroupProxyUser 테이블에 저장
-        createGroupProxyUser(group, request.personalMasterKey());
+        createGroupProxyUser(group, managerId, request.personalMasterKey());
 
         //3. GroupShareKey 테이블에 저장
         createGroupShareKey(group, request.personalMasterKey());
@@ -43,17 +46,19 @@ public class GroupManageInfoService {
     //3
     private void createGroupShareKey(Group group, String personalMasterKey) {
         try {
-            //1. groupKey 생성 (Base64)
+            //1. 그룹키(groupKey) 생성 (Base64)
             String groupKey = EncryptUtil.generateRandomBase64AESKey();
 
-            //2. 사용자 고유 ID
-            String userId = group.getManagerId();  //managerId가 아니라 사용자Id로 수정예정
+            log.info("그룹키 : " + groupKey);
 
-            //3. 사용자 고유 ID를 groupKey로 암호화
+            //2. 사용자 고유 아이디
+            String userId = group.getManagerId();  //여기서는 managerId
+
+            //3. 그룹키(groupKey)로 암호화한 사용자 고유 아이디
             String encUserId = EncryptUtil.encryptAESGCM(userId, groupKey);
 
-            //4. groupKey를 personalMasterKey로 암호화
-            String encGroupKey = EncryptUtil.encryptAESGCM(groupKey, personalMasterKey);
+            //4. 개인키로 암호화한 그룹키(groupKey)
+            String encGroupKey = EncryptUtil.encryptAESGCM(groupKey,personalMasterKey);
 
             //5. groupShareKey 테이블에 저장
             GroupShareKey groupShareKey = GroupShareKey.of(group.getGroupId(), encUserId, encGroupKey);
@@ -65,16 +70,16 @@ public class GroupManageInfoService {
     }
 
     //2
-    private void createGroupProxyUser(Group group, String personalMasterKey) throws Exception{
-        String encGroupId = encryptWithKey(group.getGroupId(), personalMasterKey);
-        String encGroupMemberId = encryptWithKey(group.getGroupId(), personalMasterKey);
+    private void createGroupProxyUser(Group group, String managerId, String personalMasterKey) throws Exception{
+        String encGroupId = encryptWithKey(group.getGroupId(), personalMasterKey);//개인키로 암호화한 그룹 아이디
+        String encGroupMemberId = encryptWithKey(managerId, personalMasterKey);//개인키로 암호화한 사용자의 아이디
         long timestamp = System.currentTimeMillis();
 
         GroupProxyUser proxyUser = GroupProxyUser.of(
-                group.getGroupId(),
-                encGroupId,
-                encGroupMemberId,
-                timestamp
+                managerId, //사용자 고유 아이디
+                encGroupId, //개인키로 암호화한 그룹 아이디
+                encGroupMemberId, //개인키로 암호화한 사용자 아이디
+                timestamp //타임스탬프
         );
 
         groupProxyUserRepository.save(proxyUser);
@@ -83,5 +88,6 @@ public class GroupManageInfoService {
     private String encryptWithKey(String data, String key) throws Exception{
         return EncryptUtil.encryptAESGCM(data,key);
     }
+
 
 }

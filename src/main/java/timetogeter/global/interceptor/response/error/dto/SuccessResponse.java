@@ -1,14 +1,14 @@
 package timetogeter.global.interceptor.response.error.dto;
 
 import lombok.Getter;
-import timetogeter.global.interceptor.response.error.GlobalErrorCode;
+import timetogeter.global.interceptor.response.BaseCode;
 
 @Getter
 public class SuccessResponse<T> extends Response {
     private final T data;
 
     private SuccessResponse(T data){
-        super(GlobalErrorCode.OK.getCodenum(), GlobalErrorCode.OK.getMessage());
+        super(BaseCode.OK.getCode(), BaseCode.OK.getMessage());
         this.data = data;
     }
 

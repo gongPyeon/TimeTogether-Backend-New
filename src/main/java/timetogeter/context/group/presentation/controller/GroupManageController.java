@@ -2,11 +2,17 @@ package timetogeter.context.group.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
+import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
 import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
+import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
 import timetogeter.context.group.application.service.GroupManageInfoService;
+import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
+import timetogeter.global.security.application.vo.principal.UserPrincipal;
 
 @RestController
 @RequestMapping("/api/v1/group")
@@ -14,14 +20,18 @@ import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 public class GroupManageController {
 
     private final GroupManageInfoService groupManageInfoService;
+    private final GroupManageMemberService groupManageMemberService;
+
 
     /*
     그룹 관리 - 그룹 만들기
      */
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateGroupResponseDto> createGroup(@RequestBody CreateGroupRequestDto request) throws Exception{
-        String mockManagerId = "test-user-uuid"; // 실제 환경에서는 인증 정보에서 꺼냄
-        CreateGroupResponseDto response = groupManageInfoService.createGroup(request, mockManagerId);
+    public SuccessResponse<CreateGroupResponseDto> createGroup(
+            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CreateGroupRequestDto request) throws Exception{
+        String managerId = "manager_id_1"; //userPrincipal.getUsername();
+        CreateGroupResponseDto response = groupManageInfoService.createGroup(request, managerId);
         return SuccessResponse.from(response);
     }
 
@@ -29,9 +39,11 @@ public class GroupManageController {
     그룹 관리 - 초대 받기
      */
     @PostMapping(value = "/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateGroupResponseDto> joinGroup(@RequestBody CreateGroupRequestDto request) throws Exception{
-        String mockManagerId = "test-user-uuid"; // 실제 환경에서는 인증 정보에서 꺼냄
-        CreateGroupResponseDto response = groupManageInfoService.createGroup(request, mockManagerId);
+    public SuccessResponse<JoinGroupResponseDto> joinGroup(
+            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody JoinGroupRequestDto request) throws Exception{
+        String invitedId = "testuser_id_1";  //userPrincipal.getUsername();
+        JoinGroupResponseDto response = groupManageMemberService.joinGroup(request, invitedId);
         return SuccessResponse.from(response);
     }
 

@@ -64,7 +64,9 @@ public class SecurityConfig {
                 antMatcher(GET, "/docs/**"),
                 antMatcher(POST, "/static/docs/**"), // API 문서
                 antMatcher(POST, "/auth/**"), // 회원가입 & 로그인
-                antMatcher(GET, "/test/**")); // 테스트 시 (선택)
+                antMatcher(GET, "/test/**"), // 테스트 시 (선택)
+                antMatcher(POST, "/api/v1/group/**"));     /**내가 임의로 추가한 부분**/
+
         return requestMatchers.toArray(RequestMatcher[]::new);
     }
 
