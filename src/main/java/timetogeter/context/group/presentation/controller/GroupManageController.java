@@ -68,29 +68,5 @@ public class GroupManageController {
     그룹 관리 - 나가기 //TODO: 약속 테이블 관련 내용도 사라져야함
      */
 
-    /*
-    그룹 상세 - 그룹 정보 수정
-     */
-    @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<EditGroupInfoResponseDto> editGroup(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody EditGroupInfoRequestDto request) throws Exception{
-        String managerId = userPrincipal.getId();
-        EditGroupInfoResponseDto response = groupManageInfoService.editGroup(request, managerId);
-        return SuccessResponse.from(response);
-    }
-
-    /*
-    그룹 상세 - 그룹 초대하기
-     */
-    @PostMapping(value = "/invite", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<InviteGroupInfoResponseDto> inviteGroup(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody InviteGroupInfoRequestDto request) throws Exception{
-        String userId = userPrincipal.getId();
-        InviteGroupInfoResponseDto response = groupManageMemberService.inviteGroup(request, userId);
-        return SuccessResponse.from(response);
-    }
-
 
 }
