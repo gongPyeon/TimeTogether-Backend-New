@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -68,7 +69,6 @@ public class AuthService {
         return accessToken;
     }
 
-    // TODO: 로그인 예외처리 세분화
     public TokenCommand login(LoginReqDTO dto) {
         String userId = dto.userId();
         try {
@@ -97,7 +97,7 @@ public class AuthService {
                     Provider.valueOf(dto.provider()), attributes);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    new UserPrincipal(registerResponse), null,
+                    new UserPrincipal(registerResponse, attributes), null,
                     List.of(new SimpleGrantedAuthority(Role.USER.name()))
             );
 
@@ -105,6 +105,9 @@ public class AuthService {
             redisUtil.saveRefreshToken(registerResponse.email(), token.refreshToken());
 
             return token;
+        }catch (RedisConnectionFailureException e) {
+            log.info(e.getMessage());
+            throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 세션 저장에 실패했습니다.");
         }catch(Exception e){
             log.info(e.getMessage());
             throw new AuthFailureException(BaseErrorCode.FAIL_LOGIN, "[ERROR] 소셜로그인에 실패했습니다.");
@@ -118,13 +121,16 @@ public class AuthService {
         return client.getUserInfo(accessToken);
     }
 
-    // TODO: 도중에 실패했을 경우 고려
     public void logout(String userId, String accessToken) {
-        redisUtil.deleteRefreshToken(userId);
-
-        long expiration = jwtTokenProvider.getExpiration(accessToken);
-        if (expiration > 0) {
-            redisUtil.setBlackList(accessToken, "logout", expiration);
+        try {
+            redisUtil.deleteRefreshToken(userId);
+            long expiration = jwtTokenProvider.getExpiration(accessToken);
+            if (expiration > 0) {
+                redisUtil.setBlackList(accessToken, "logout", expiration);
+            }
+        } catch (RedisConnectionFailureException e) {
+            log.error("{}:{}", userId, e.getMessage());
+            throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 로그아웃 중 토큰 삭제에 실패했습니다.");
         }
     }
 }

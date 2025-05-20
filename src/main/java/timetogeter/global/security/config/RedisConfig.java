@@ -24,7 +24,7 @@ public class RedisConfig {
     }
 
     @Bean
-    @Primary // TODO: 충돌이 나는 이유 확인
+    @Primary
     public RedisTemplate<String, String> redisTemplate() {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());

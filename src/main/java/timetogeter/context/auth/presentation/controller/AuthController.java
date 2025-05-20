@@ -52,7 +52,6 @@ public class AuthController {
         return new BaseResponse<>(BaseCode.SUCCESS_SIGN_UP);
     }
 
-    // TODO: 동일한 아이디에 대해 비밀번호를 5번 실패할 경우 BLOCK 및 예외 발생
     @PostMapping("/login")
     public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
         TokenCommand token = authService.login(dto);

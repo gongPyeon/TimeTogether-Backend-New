@@ -31,7 +31,8 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰이 존재하지 않아요"),
     MISMATCH_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰과 일치하지 않아요"),
     FAIL_LOGIN(401, HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호를 확인해주세요"),
-    ACCOUNT_LOCKED(401, HttpStatus.UNAUTHORIZED, "계정이 잠겨 있습니다. 나중에 다시 시도하세요.");
+    ACCOUNT_LOCKED(401, HttpStatus.UNAUTHORIZED, "계정이 잠겨 있습니다. 나중에 다시 시도하세요."),
+    REDIS_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "세션 저장에 실패했어요");
 
     //로그인 에러
 
