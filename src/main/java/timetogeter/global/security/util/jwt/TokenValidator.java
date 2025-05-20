@@ -26,13 +26,16 @@ public class TokenValidator {
     }
 
     public boolean validateLogout(String token){
-        if (token.startsWith(BEARER_TYPE)) {
-            token = token.substring(7);
-        }
-
         if (redisUtil.getBoolean("BL:" + token)) {
             throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 블랙리스트 처리된 액세스 토큰 입니다.");
         }
         return true;
+    }
+
+    public String extract(String token){
+        if (token != null && token.startsWith(BEARER_TYPE)) {
+            token = token.substring(7);
+        }
+        return token;
     }
 }
