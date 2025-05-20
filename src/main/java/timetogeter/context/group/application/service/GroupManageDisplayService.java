@@ -15,6 +15,7 @@ import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,26 +121,45 @@ public class GroupManageDisplayService {
     }
 
     //4
+    // 4
     private List<String> getGroupKeyList(List<String> groupIdList, String masterKey) {
         return groupIdList.stream()
                 .map(groupId -> {
                     try {
-                        // 암호화된 그룹키 조회
-                        String encGroupKey = groupShareKeyRepository.findEncGroupKeyByGroupId(groupId);
-                        if (encGroupKey == null) {
+                        // 암호화된 그룹키들 조회
+                        List<String> encGroupKeys = groupShareKeyRepository.findEncGroupKeyByGroupId(groupId);
+                        if (encGroupKeys == null || encGroupKeys.isEmpty()) {
                             log.warn("GroupId={}에 해당하는 암호화된 그룹키가 존재하지 않음", groupId);
                             return null;
                         }
-                        // 복호화된 그룹키 반환
-                        return EncryptUtil.decryptAESGCM(encGroupKey, masterKey);
+
+                        // 복호화 가능한 첫 번째 그룹키 반환
+                        return encGroupKeys.stream()
+                                .map(encKey -> {
+                                    try {
+                                        return EncryptUtil.decryptAESGCM(encKey, masterKey);
+                                    } catch (Exception e) {
+                                        return null; // 복호화 실패한 것은 건너뜀
+                                    }
+                                })
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElseThrow(() -> {
+                                    log.error("GroupId={}의 어떤 그룹키도 복호화할 수 없음", groupId);
+                                    return new GroupIdDecryptException(BaseErrorCode.GROUP_KEY_DECRYPT_ERROR, "[ERROR] 복호화 가능한 그룹키 없음");
+                                });
+
+                    } catch (GroupIdDecryptException e) {
+                        throw e;
                     } catch (Exception e) {
-                        log.error("그룹키 복호화 실패: groupId={}, error={}", groupId, e.getMessage());
+                        log.error("그룹키 복호화 중 예외 발생: groupId={}, error={}", groupId, e.getMessage());
                         throw new GroupIdDecryptException(BaseErrorCode.GROUP_KEY_DECRYPT_ERROR, "[ERROR] 암호화된 그룹키 복호화 실패");
                     }
                 })
-                .filter(decryptedGroupKey -> decryptedGroupKey != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
+
 
     //3
     private List<ViewGroupInfoDto> getViewGroupInfoDtoList(List<String> groupIds) {

@@ -56,7 +56,7 @@ public class GroupManageController {
     /*
     그룹 관리 - 메인
      */
-    @GetMapping(value = "/view", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/view", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<List<ViewGroupsInResponseDto>> viewGroupsIn(
             //@AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody ViewGroupsInRequestDto request) throws Exception{
