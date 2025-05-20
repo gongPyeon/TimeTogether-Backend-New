@@ -7,12 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import timetogeter.context.auth.application.service.UserRegisterService;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.context.auth.domain.vo.Provider;
-import timetogeter.global.security.application.dto.RegisterResponse;
-import timetogeter.global.security.application.dto.RegisterUserCommand;
-import timetogeter.global.security.exception.UserNotFoundException;
+import timetogeter.context.auth.application.dto.RegisterResponse;
+import timetogeter.context.auth.application.dto.RegisterUserCommand;
+import timetogeter.context.auth.application.exception.UserNotFoundException;
 import timetogeter.global.support.UserFixture;
 
 import java.util.Optional;
