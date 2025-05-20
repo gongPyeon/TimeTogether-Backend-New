@@ -46,7 +46,7 @@ public class EncryptUtil {
         byteBuffer.put(ciphertext);
 
         // 최종 결과를 Base64 문자열로 인코딩해 반환
-        return Base64.getEncoder().encodeToString(byteBuffer.array());
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
     }
 
     /**
@@ -60,7 +60,7 @@ public class EncryptUtil {
         byte[] keyBytes = Base64.getDecoder().decode(base64MasterKey);
         SecretKey secretKey = new SecretKeySpec(keyBytes, AES);
 
-        byte[] cipherMessage = Base64.getDecoder().decode(base64CipherText);
+        byte[] cipherMessage = Base64.getUrlDecoder().decode(base64CipherText);
 
         // IV와 암호문 분리
         ByteBuffer byteBuffer = ByteBuffer.wrap(cipherMessage);

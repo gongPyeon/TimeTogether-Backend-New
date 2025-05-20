@@ -18,4 +18,6 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
 
     @Query("SELECT g.encUserId FROM GroupShareKey g WHERE g.groupId = :groupId")
     List<String> findEncUserIdsByGroupId(@Param("groupId") String groupId);
+
+    List<GroupShareKey> findAllByGroupId(String groupId);
 }

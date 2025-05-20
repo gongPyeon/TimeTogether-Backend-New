@@ -45,7 +45,8 @@ public class GroupManageController {
             //@AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody JoinGroupRequestDto request) throws Exception{
         String invitedId = "testuser_id_1";  //userPrincipal.getUsername();
-        JoinGroupResponseDto response = groupManageMemberService.joinGroup(request, invitedId);
+        JoinGroupInnerRequestDto req = groupManageMemberService.getRequestDto(request);
+        JoinGroupResponseDto response = groupManageMemberService.joinGroup(req, invitedId);
         return SuccessResponse.from(response);
     }
 

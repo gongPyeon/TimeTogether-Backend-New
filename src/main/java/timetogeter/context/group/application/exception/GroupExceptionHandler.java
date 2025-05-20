@@ -35,4 +35,10 @@ public class GroupExceptionHandler {
         log.error("GroupExceptionHandler.handle_GroupManagerMissException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
+
+    @ExceptionHandler(GroupInviteCodeExpired.class)
+    public ResponseEntity<ErrorResponse> handle_GroupInviteCodeExpired(GroupInviteCodeExpired e) {
+        log.error("GroupExceptionHandler.handle_GroupInviteCodeExpired <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }

@@ -1,7 +1,8 @@
 package timetogeter.context.group.application.dto.request;
 
-public record JoinGroupRequestDto(
-        String token,
+public record JoinGroupInnerRequestDto(
+        String groupId,
+        String groupKey,
         String personalMasterKey
 ) {
 }

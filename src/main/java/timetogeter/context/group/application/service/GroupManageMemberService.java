@@ -2,14 +2,17 @@ package timetogeter.context.group.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogeter.context.group.application.dto.request.InviteGroupInfoRequestDto;
+import timetogeter.context.group.application.dto.request.JoinGroupInnerRequestDto;
 import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
 import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
 import timetogeter.context.group.application.dto.response.InviteGroupInfoResponseDto;
 import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
 import timetogeter.context.group.application.exception.GroupIdNotFoundException;
+import timetogeter.context.group.application.exception.GroupInviteCodeExpired;
 import timetogeter.context.group.application.exception.GroupManagerMissException;
 import timetogeter.context.group.application.exception.GroupShareKeyException;
 import timetogeter.context.group.domain.entity.Group;
@@ -20,8 +23,10 @@ import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
-import java.util.List;
-import java.util.Optional;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,11 +36,41 @@ public class GroupManageMemberService {
     private final GroupRepository groupRepository;
     private final GroupProxyUserRepository groupProxyUserRepository;
     private final GroupShareKeyRepository groupShareKeyRepository;
+
     private final GroupManageDisplayService groupManageDisplayService;
+
+    private final StringRedisTemplate redisTemplate;
+
+    //그룹 초대되기 - redis
+    public JoinGroupInnerRequestDto getRequestDto(JoinGroupRequestDto request) throws Exception {
+        String token = request.token();
+
+        // 1. Redis에서 UUID 가져오기 (key = "INVITE_KEY:" + 앞6 + 뒤6)
+        String keyFragment = token.substring(0, 6) + token.substring(token.length() - 6);
+        String uuid = redisTemplate.opsForValue().get("INVITE_KEY:" + keyFragment);
+
+        if (uuid == null) {
+            throw new GroupInviteCodeExpired(BaseErrorCode.GROUP_INVITECODE_EXPIRED, "[ERROR] 초대코드가 유효하지 않거나 만료되었습니다.");
+        }
+
+        // 2. UUID를 키로 token 복호화
+        String decrypted = EncryptUtil.decryptAESGCM(token, uuid); // 예: groupId=xxx&groupKey=yyy
+
+        // 3. groupId, groupKey 추출
+        Map<String, String> paramMap = Arrays.stream(decrypted.split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(s -> s[0], s -> s[1]));
+
+        String groupId = paramMap.get("groupId");
+        String groupKey = paramMap.get("groupKey");
+
+        // 4. JoinGroupInnerRequestDto 생성 및 반환
+        return new JoinGroupInnerRequestDto(groupId, groupKey,request.personalMasterKey());
+    }
 
     //그룹 초대되기
     @Transactional
-    public JoinGroupResponseDto joinGroup(JoinGroupRequestDto request, String invitedId) throws Exception{
+    public JoinGroupResponseDto joinGroup(JoinGroupInnerRequestDto request, String invitedId) throws Exception{
         //1.Group 테이블에서 request.groupId()로 찾기
         Group groupFound = groupRepository.findById(request.groupId())
                 .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR] 존재하지 않는 그룹 ID 입니다."));
@@ -137,17 +172,52 @@ public class GroupManageMemberService {
     }
 
     //3
-    private String createInviteUrl(String groupId, String groupKey) {
+    public String createInviteUrl(String groupId, String groupKey) throws Exception {
+        //3-1. 초대에 사용할 랜덤 UUID 생성
+        String aesKey = EncryptUtil.generateRandomBase64AESKey();
+
+        //3-2. inviteData 구성
+        String plainData = "groupId=" + groupId + "&groupKey=" + groupKey;
+
+        //3-3. UUID를 키로 AES-GCM 암호화
+        String encrypted = EncryptUtil.encryptAESGCM(plainData, aesKey);
+
+        //3-4. Redis에 uuid 저장 (사용자 토큰 복호화용, 시간 제한도 가능)
+        String keyFragment = encrypted.substring(0, 6) + encrypted.substring(encrypted.length() - 6);
+        redisTemplate.opsForValue().set("INVITE_KEY:" + keyFragment, aesKey, Duration.ofMinutes(60)); // 60분 유효
+
+        //3-5. 최종 URL 반환
+        return "http://localhost:8080/group/join?token=" + encrypted;
     }
+
 
     //1
     private boolean isGroupMember(String groupId, String userId, String masterKey) throws Exception {
+        // 1-1. groupProxyUserRepository에서 groupId에 해당하는 레코드 리스트 반환
+        List<GroupShareKey> shareKeys = groupShareKeyRepository.findAllByGroupId(groupId);
 
-        //1-1. encGroupIdCopy(masterKey(개인키)로 암호화한 그룹 아이디) 복제 생성
-        String encGroupIdCopy = EncryptUtil.encryptAESGCM(groupId, masterKey);
+        for (GroupShareKey shareKey : shareKeys) {
+            try {
+                // 1-2-1. encGroupKey를 masterKey로 복호화 → 복호화 실패 시 catch
+                String groupKey = EncryptUtil.decryptAESGCM(shareKey.getEncGroupKey(), masterKey);
 
-        //1-2. encGroupIdCopy값이 groupProxyUser 테이블 내에 존재하는지 여부 반환
-        return groupProxyUserRepository.existsByEncGroupId(encGroupIdCopy);
+                // 1-2-2. encUserId를 groupKey로 복호화
+                String decryptedUserId = EncryptUtil.decryptAESGCM(shareKey.getEncUserId(), groupKey);
 
+                // 1-2-3. 복호화한 userId가 현재 사용자와 일치하면 true 반환
+                if (decryptedUserId.equals(userId)) {
+                    return true;
+                }
+
+            } catch (Exception e) {
+                // 복호화 실패 시 무시하고 다음 레코드 검사
+                continue;
+            }
+        }
+
+        // 모두 검사했지만 해당 userId가 없으면 false
+        return false;
     }
+
+
 }
