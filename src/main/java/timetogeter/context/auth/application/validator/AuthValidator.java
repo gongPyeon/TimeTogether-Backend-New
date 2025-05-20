@@ -9,6 +9,8 @@ import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.util.redis.RedisUtil;
 
+import static timetogeter.global.security.util.DataUtil.REFRESH_HEADER;
+
 @Component
 @RequiredArgsConstructor
 public class AuthValidator {
@@ -22,7 +24,7 @@ public class AuthValidator {
     }
 
     public void validateRefreshToken(String userId, String providedToken) {
-        String redisToken = redisUtil.getRefreshToken(userId);
+        String redisToken = redisUtil.get(REFRESH_HEADER + userId);
 
         if (redisToken == null) {
             throw new RedisException(BaseErrorCode.INVALID_TOKEN_REDIS, "[ERROR] Redis에 토큰이 없습니다.");

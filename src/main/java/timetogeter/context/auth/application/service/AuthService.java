@@ -33,8 +33,12 @@ import timetogeter.global.security.infrastructure.oauth2.client.OAuth2ClientProv
 import timetogeter.global.security.util.jwt.JwtTokenProvider;
 import timetogeter.global.security.util.redis.RedisUtil;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static timetogeter.global.security.util.DataUtil.*;
 
 
 @Service
@@ -75,13 +79,13 @@ public class AuthService {
             if(loginAttemptService.isLocked(userId)){
                 throw new AuthFailureException(BaseErrorCode.ACCOUNT_LOCKED, "[ERROR] 계정이 잠겨 있습니다. 나중에 다시 시도하세요.");
             }
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.userId(), dto.password()));
-            // 성공 시 실패 카운트 초기화
-            loginAttemptService.resetFailedAttempts(userId);
+            loginAttemptService.resetFailedAttempts(userId); // 성공 시 실패 카운트 초기화
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.saveRefreshToken(dto.userId(), token.refreshToken());
+            redisUtil.set(dto.userId(), token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
             return token;
         }catch(AuthenticationException e){
             // 인증 실패 시 카운트 증가
@@ -102,8 +106,7 @@ public class AuthService {
             );
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.saveRefreshToken(registerResponse.email(), token.refreshToken());
-
+            redisUtil.set(registerResponse.email(), REFRESH_HEADER + token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
             return token;
         }catch (RedisConnectionFailureException e) {
             log.info(e.getMessage());
@@ -123,10 +126,10 @@ public class AuthService {
 
     public void logout(String userId, String accessToken) {
         try {
-            redisUtil.deleteRefreshToken(userId);
+            redisUtil.delete(REFRESH_HEADER + userId);
             long expiration = jwtTokenProvider.getExpiration(accessToken);
             if (expiration > 0) {
-                redisUtil.setBlackList(accessToken, "logout", expiration);
+                redisUtil.set(BL_HEADER + accessToken, LOGOUT, Duration.ofSeconds(expiration));
             }
         } catch (RedisConnectionFailureException e) {
             log.error("{}:{}", userId, e.getMessage());

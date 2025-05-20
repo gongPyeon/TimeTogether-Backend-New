@@ -13,6 +13,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TokenValidator {
 
+    private static final String BEARER_TYPE = "Bearer";
     private final RedisUtil redisUtil;
     public boolean validateToken(String token) {
         return validateNotNull(token) && validateLogout(token);
@@ -21,13 +22,16 @@ public class TokenValidator {
     public boolean validateNotNull(String token){
         if(!Objects.nonNull(token)){
             return false;
-            // throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 토큰이 NULL 입니다.");
         }
         return true;
     }
 
     public boolean validateLogout(String token){
-        if (redisUtil.isBlackListed(token)) {
+        if (token.startsWith(BEARER_TYPE)) {
+            token = token.substring(7);
+        }
+
+        if (redisUtil.getBoolean("BL:" + token)) {
             throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, "[ERROR] 블랙리스트 처리된 액세스 토큰 입니다.");
         }
         return true;
