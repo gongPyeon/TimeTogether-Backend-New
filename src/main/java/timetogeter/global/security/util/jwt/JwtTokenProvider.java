@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.context.auth.application.dto.TokenCommand;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.auth.application.exception.InvalidJwtException;
+import timetogeter.context.auth.exception.InvalidJwtException;
 
 import java.security.Key;
 import java.util.Collection;

@@ -1,0 +1,38 @@
+package timetogeter.context.place.presentation.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
+import timetogeter.context.place.application.service.MyPlaceService;
+import timetogeter.context.place.application.service.PlaceBoardService;
+import timetogeter.global.interceptor.response.BaseCode;
+import timetogeter.global.interceptor.response.BaseResponse;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/place")
+public class PlaceController {
+
+    private final PlaceBoardService placeBoardService;
+    private final MyPlaceService myPlaceService;
+
+    @GetMapping("/{page}")
+    public BaseResponse<Object> viewPlaceBoard(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @PathVariable int page) {
+        String userId = userPrincipal.getId();
+        PlaceBoardDTO dto = placeBoardService.getPlaceBoard(userId, page);
+        return new BaseResponse<>(dto);
+    }
+
+    @DeleteMapping("/{placeId}")
+    public BaseResponse<Object> deletePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @PathVariable int placeId) {
+        String userId = userPrincipal.getId();
+        myPlaceService.deletePlace(userId, placeId);
+        return new BaseResponse<>(BaseCode.SUCCESS_DELETE);
+    }
+}

@@ -1,4 +1,4 @@
-package timetogeter.context.auth.application.exception;
+package timetogeter.context.auth.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

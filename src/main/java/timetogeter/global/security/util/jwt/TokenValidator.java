@@ -3,7 +3,7 @@ package timetogeter.global.security.util.jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.context.auth.application.exception.InvalidJwtException;
+import timetogeter.context.auth.exception.InvalidJwtException;
 import timetogeter.global.common.util.redis.RedisUtil;
 
 import java.util.Objects;
