@@ -8,12 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import timetogeter.context.auth.domain.vo.Provider;
+import timetogeter.context.auth.application.service.UserRegisterService;
 import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.global.security.application.dto.RegisterResponse;
-import timetogeter.global.security.exception.AuthFailureException;
-import timetogeter.global.security.exception.UserNotFoundException;
+import timetogeter.context.auth.application.dto.RegisterResponse;
+import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.application.exception.UserNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;

@@ -9,7 +9,7 @@ import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.application.dto.RegisterUserCommand;
+import timetogeter.context.auth.application.dto.RegisterUserCommand;
 
 @Entity
 @Getter
@@ -38,16 +38,16 @@ public class User {
     private Gender gender;
 
     public User(UserSignUpDTO dto, PasswordEncoder passwordEncoder) {
-        validate(dto.getUserId(), dto.getNickname(), dto.getEmail(), dto.getTelephone());
-        this.userId = dto.getUserId();
-        this.email = dto.getEmail();
-        this.nickname = dto.getNickname();
-        this.password = passwordEncoder.encode(dto.getPassword());
-        this.telephone = dto.getTelephone();
+        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
+        this.userId = dto.userId();
+        this.email = dto.email();
+        this.nickname = dto.nickname();
+        this.password = passwordEncoder.encode(dto.password());
+        this.telephone = dto.telephone();
         this.provider = Provider.GENERAL;
         this.role = Role.USER;
-        this.age = dto.getAge();
-        this.gender = dto.getGender();
+        this.age = dto.age();
+        this.gender = dto.gender();
     }
 
     public User(RegisterUserCommand dto){
@@ -65,6 +65,7 @@ public class User {
     }
 
     private void validate(String userId, String nickname, String email, String telephone){
+        validateUserId(userId);
         validateUserNickname(nickname);
         validateEmail(email);
         validatePhone(telephone);

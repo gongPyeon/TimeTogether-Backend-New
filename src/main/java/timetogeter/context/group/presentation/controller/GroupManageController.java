@@ -1,9 +1,10 @@
 package timetogeter.context.group.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.*;
@@ -11,13 +12,13 @@ import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
-import timetogeter.global.security.application.vo.principal.UserPrincipal;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/group")
 @RequiredArgsConstructor
+@Slf4j
 public class GroupManageController {
 
     private final GroupManageInfoService groupManageInfoService;
@@ -30,9 +31,10 @@ public class GroupManageController {
      */
     @PostMapping(value = "/new", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<CreateGroupResponseDto> createGroup(
-            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateGroupRequestDto request) throws Exception{
-        String managerId = "manager_id_1"; //userPrincipal.getUsername();
+        String managerId = userPrincipal.getId();
+        log.info("방장 아이디 : " + managerId);
         CreateGroupResponseDto response = groupManageInfoService.createGroup(request, managerId);
         return SuccessResponse.from(response);
     }
@@ -42,9 +44,9 @@ public class GroupManageController {
      */
     @PostMapping(value = "/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<JoinGroupResponseDto> joinGroup(
-            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody JoinGroupRequestDto request) throws Exception{
-        String invitedId = "testuser_id_1";  //userPrincipal.getUsername();
+        String invitedId = userPrincipal.getId();
         JoinGroupInnerRequestDto req = groupManageMemberService.getRequestDto(request);
         JoinGroupResponseDto response = groupManageMemberService.joinGroup(req, invitedId);
         return SuccessResponse.from(response);
@@ -55,9 +57,9 @@ public class GroupManageController {
      */
     @PostMapping(value = "/view", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<List<ViewGroupsInResponseDto>> viewGroupsIn(
-            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody ViewGroupsInRequestDto request) throws Exception{
-        String userId = "testuser_id_1";  //userPrincipal.getUsername();
+        String userId = userPrincipal.getId();
         List<ViewGroupsInResponseDto> response = groupManageDisplayService.viewGroupsIn(request, userId);
         return SuccessResponse.from(response);
     }
@@ -71,9 +73,9 @@ public class GroupManageController {
      */
     @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<EditGroupInfoResponseDto> editGroup(
-            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody EditGroupInfoRequestDto request) throws Exception{
-        String managerId = "manager_id_1"; //userPrincipal.getUsername();
+        String managerId = userPrincipal.getId();
         EditGroupInfoResponseDto response = groupManageInfoService.editGroup(request, managerId);
         return SuccessResponse.from(response);
     }
@@ -83,9 +85,9 @@ public class GroupManageController {
      */
     @PostMapping(value = "/invite", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<InviteGroupInfoResponseDto> inviteGroup(
-            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroupInfoRequestDto request) throws Exception{
-        String userId = "manager_id_1"; //userPrincipal.getUsername();
+        String userId = userPrincipal.getId();
         InviteGroupInfoResponseDto response = groupManageMemberService.inviteGroup(request, userId);
         return SuccessResponse.from(response);
     }

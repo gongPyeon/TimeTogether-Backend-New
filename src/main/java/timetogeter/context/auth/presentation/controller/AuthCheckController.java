@@ -18,7 +18,7 @@ public class AuthCheckController {
     private final AuthValidator authValidator;
     @PostMapping("/id")
     public BaseResponse<String> checkDuplicateId(@RequestBody UserIdDTO dto){
-        authValidator.validateDuplicateId(dto.getUserId());
+        authValidator.validateDuplicateId(dto.userId());
         return new BaseResponse<>(BaseCode.SUCCESS_ID);
     }
 }

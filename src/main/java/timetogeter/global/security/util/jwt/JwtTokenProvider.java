@@ -9,11 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.global.security.application.dto.TokenCommand;
-import timetogeter.global.security.application.vo.principal.UserPrincipal;
-import timetogeter.global.security.exception.InvalidJwtException;
+import timetogeter.context.auth.application.dto.TokenCommand;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.auth.application.exception.InvalidJwtException;
 
 import java.security.Key;
 import java.util.Collection;
@@ -106,6 +105,7 @@ public class JwtTokenProvider implements TokenProvider {
         }catch (IllegalArgumentException e){
             error = "[ERROR] JWT 클레임이 포함되어있지 않습니다.";
         }catch (Exception e) {
+            log.info(e.getMessage());
             error = "[ERROR] 유효하지 않은 토큰입니다.";
         }
 

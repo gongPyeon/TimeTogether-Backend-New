@@ -3,19 +3,11 @@ package timetogeter.global.security.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import timetogeter.context.auth.domain.vo.Provider;
-import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.context.promise.domain.entity.Promise;
-import timetogeter.global.security.application.dto.RegisterResponse;
-import timetogeter.global.security.application.dto.RegisterUserCommand;
-import timetogeter.global.security.application.vo.principal.UserPrincipal;
-import timetogeter.global.security.exception.UserNotFoundException;
-import timetogeter.global.security.infrastructure.oauth2.userInfo.OAuth2UserInfo;
-import timetogeter.global.security.infrastructure.oauth2.userInfo.OAuth2UserInfoFactory;
-
-import java.util.Map;
+import timetogeter.context.auth.application.dto.RegisterResponse;
+import timetogeter.context.auth.application.service.UserRegisterService;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.auth.application.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor

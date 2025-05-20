@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
-import timetogeter.global.security.exception.AuthFailureException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor

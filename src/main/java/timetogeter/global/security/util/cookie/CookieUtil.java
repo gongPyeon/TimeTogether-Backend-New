@@ -10,31 +10,12 @@ import java.util.Base64;
 import java.util.Optional;
 
 public class CookieUtil {
-    public static Optional<Cookie> getCookie(HttpServletRequest request, String name){
-        Cookie[]  cookies = request.getCookies();
-        if(cookies != null && cookies.length > 0){
-            for(Cookie cookie : cookies){
-                if(cookie.getName().equals(name)){
-                    return Optional.of(cookie);
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
-    // TODO: 필요할지 생각하기
-    public static Optional<String> readServletCookie(HttpServletRequest request, String name){
-        return Arrays.stream(request.getCookies())
-                .filter(cookie -> name.equals(cookie.getName()))
-                .map(Cookie::getValue)
-                .findAny();
-    }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge){
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setSecure(false);
+        cookie.setSecure(false); // 배포 후 true로 변경
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }
@@ -47,18 +28,11 @@ public class CookieUtil {
                     cookie.setValue("");
                     cookie.setPath("/");
                     cookie.setMaxAge(0);
+                    // cookie.setHttpOnly(true); // 원래 설정과 일치하도록
+                    // cookie.setSecure(true);   // HTTPS 환경이라면
                     response.addCookie(cookie);
                 }
             }
         }
-    }
-
-    public static String serialize(Object object){
-        return Base64.getUrlEncoder()
-                .encodeToString(SerializationUtils.serialize(object));
-    }
-
-    public static <T> T deserialize(Cookie cookie, Class<T> cls){
-        return cls.cast(SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.getValue())));
     }
 }
