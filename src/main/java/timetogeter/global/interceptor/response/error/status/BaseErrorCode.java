@@ -34,7 +34,10 @@ public enum BaseErrorCode implements StatusCode {
 
     //그룹 에러
     GROUP_ID_NOTFOUND(500, HttpStatus.NOT_FOUND, "존재하지 않는 그룹 아이디 입니다."),
-    GROUP_SHARE_KEY_INTERNAL_ERROR(501, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 공유키 테이블 저장 로직 중 에러 발생했습니다.");
+    GROUP_SHARE_KEY_INTERNAL_ERROR(501, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 공유키 테이블 저장 로직 중 에러 발생했습니다."),
+    GROUP_ID_DECRYPT_ERROR(502, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 아이디 복호화 로직 중 에러 발생했습니다."),
+    GROUP_KEY_DECRYPT_ERROR(503, HttpStatus.INTERNAL_SERVER_ERROR, "그룹키 복호화 로직 중 에러 발생했습니다.");
+
 
     //===================================
     private final int code;

@@ -80,10 +80,10 @@ public class GroupManageMemberService {
         String encGroupMemberId = encryptWithKey(group.getManagerId(), personalMasterKey);//개인키로 암호화한 사용자의 아이디
         long timestamp = System.currentTimeMillis();
 
-        log.info("[createGroupProxyUser] invitedId: {}", invitedId);
+        /*log.info("[createGroupProxyUser] invitedId: {}", invitedId);
         log.info("[createGroupProxyUser] encGroupId: {}", encGroupId);
         log.info("[createGroupProxyUser] encGroupMemberId: {}", encGroupMemberId);
-        log.info("[createGroupProxyUser] timestamp: {}", timestamp);
+        log.info("[createGroupProxyUser] timestamp: {}", timestamp);*/
 
         GroupProxyUser proxyUser = GroupProxyUser.of(
                 invitedId, //사용자 고유 아이디
@@ -93,7 +93,7 @@ public class GroupManageMemberService {
         );
 
         groupProxyUserRepository.save(proxyUser);
-        log.info("[createGroupProxyUser] GroupProxyUser 저장 완료: {}", proxyUser);
+        //log.info("[createGroupProxyUser] GroupProxyUser 저장 완료: {}", proxyUser);
     }
 
     private String encryptWithKey(String data, String key) throws Exception{

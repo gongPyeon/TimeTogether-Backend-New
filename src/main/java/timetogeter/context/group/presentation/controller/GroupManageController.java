@@ -7,12 +7,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
 import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
+import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
 import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
 import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
+import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
+import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 import timetogeter.global.security.application.vo.principal.UserPrincipal;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/group")
@@ -21,6 +26,7 @@ public class GroupManageController {
 
     private final GroupManageInfoService groupManageInfoService;
     private final GroupManageMemberService groupManageMemberService;
+    private final GroupManageDisplayService groupManageDisplayService;
 
 
     /*
@@ -47,6 +53,16 @@ public class GroupManageController {
         return SuccessResponse.from(response);
     }
 
-
+    /*
+    그룹 관리 - 메인
+     */
+    @GetMapping(value = "/view", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<List<ViewGroupsInResponseDto>> viewGroupsIn(
+            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody ViewGroupsInRequestDto request) throws Exception{
+        String userId = "testuser_id_1";  //userPrincipal.getUsername();
+        List<ViewGroupsInResponseDto> response = groupManageDisplayService.viewGroupsIn(request, userId);
+        return SuccessResponse.from(response);
+    }
 
 }

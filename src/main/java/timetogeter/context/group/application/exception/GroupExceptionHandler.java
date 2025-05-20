@@ -23,4 +23,10 @@ public class GroupExceptionHandler {
         log.error("GroupExceptionHandler.handle_GroupShareKeyException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
+
+    @ExceptionHandler(GroupIdDecryptException.class)
+    public ResponseEntity<ErrorResponse> handle_GroupIdDecryptException(GroupIdDecryptException e) {
+        log.error("GroupExceptionHandler.handle_GroupIdDecryptException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }
