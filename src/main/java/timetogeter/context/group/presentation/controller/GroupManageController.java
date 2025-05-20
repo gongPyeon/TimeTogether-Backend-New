@@ -34,7 +34,6 @@ public class GroupManageController {
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateGroupRequestDto request) throws Exception{
         String managerId = userPrincipal.getId();
-        log.info("방장 아이디 : " + managerId);
         CreateGroupResponseDto response = groupManageInfoService.createGroup(request, managerId);
         return SuccessResponse.from(response);
     }

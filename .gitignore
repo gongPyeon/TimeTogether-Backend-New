@@ -1,4 +1,6 @@
-src/main/resources/application.yml
+src/main/resources/application-local.yml
+src/main/resources/application-test.yml
+
 caches/
 daemon/
 native/

@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Promise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String promiseId;
 
     private String groupId;
@@ -29,5 +28,7 @@ public class Promise {
 
     private LocalDate startDate;
     private LocalDate endDate;
+
+   
 
 }

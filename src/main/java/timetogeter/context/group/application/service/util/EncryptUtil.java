@@ -1,4 +1,4 @@
-package timetogeter.context.group.application.service;
+package timetogeter.context.group.application.service.util;
 
 import javax.crypto.*;
 import javax.crypto.SecretKey;

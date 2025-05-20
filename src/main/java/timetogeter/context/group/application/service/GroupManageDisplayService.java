@@ -8,7 +8,7 @@ import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
 import timetogeter.context.group.application.dto.response.ViewGroupInfoDto;
 import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
 import timetogeter.context.group.application.exception.GroupIdDecryptException;
-import timetogeter.context.group.domain.entity.GroupProxyUser;
+import timetogeter.context.group.application.service.util.EncryptUtil;
 import timetogeter.context.group.domain.repository.GroupProxyUserRepository;
 import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
