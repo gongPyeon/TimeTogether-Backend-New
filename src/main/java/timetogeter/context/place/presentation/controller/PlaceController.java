@@ -20,11 +20,12 @@ public class PlaceController {
     private final PlaceBoardService placeBoardService;
     private final MyPlaceService myPlaceService;
 
-    @GetMapping("/{page}")
+    @GetMapping("/{promiseId}/{page}")
     public BaseResponse<Object> viewPlaceBoard(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                               @PathVariable int promiseId,
                                                @PathVariable int page) {
         String userId = userPrincipal.getId();
-        PlaceBoardDTO dto = placeBoardService.getPlaceBoard(userId, page);
+        PlaceBoardDTO dto = placeBoardService.getPlaceBoard(userId, promiseId, page);
         return new BaseResponse<>(dto);
     }
 

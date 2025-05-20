@@ -27,7 +27,7 @@ public class Place {
 
     private String userId; // 암호화된 사용자 고유 아이디
 
-    public boolean hasId(String userId) {
+    public boolean hasVotedBy(String userId) {
         return this.userId == userId;
     }
 }

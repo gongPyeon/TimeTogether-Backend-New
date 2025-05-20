@@ -20,13 +20,13 @@ import static timetogeter.global.common.util.PageUtil.PLACE_PAGE;
 public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PlaceRepository placeRepository;
-    public PlaceBoardDTO getPlaceBoard(String userId, int page) {
+    public PlaceBoardDTO getPlaceBoard(String userId, int promiseId, int page) {
         PageRequest pageRequest = PageRequest.of(page, PLACE_PAGE);
-        Page<Place> placePage = placeRepository.findAll(pageRequest);
+        Page<Place> placePage = placeRepository.findByPromiseId(promiseId, pageRequest);
 
         List<PlaceDTO> places = placePage.getContent()
                 .stream()
-                .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceUrl(), p.getVoting(), p.hasId(userId)))
+                .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceUrl(), p.getVoting(), p.hasVotedBy(userId)))
                 .collect(Collectors.toList());
 
         return new PlaceBoardDTO(page, placePage.getTotalPages(), places);
