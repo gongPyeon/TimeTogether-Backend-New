@@ -31,4 +31,15 @@ public class Group {
     public static Group of(String groupName, String groupImg, String managerId) {
         return new Group(groupName, groupImg, managerId);
     }
+
+    //=======================================================================
+
+    //업데이트 로직
+    public void updateName(String newName) {
+        this.groupName = newName;
+    }
+
+    public void updateImg(String img) {
+        this.groupImg = img;
+    }
 }

@@ -29,4 +29,10 @@ public class GroupExceptionHandler {
         log.error("GroupExceptionHandler.handle_GroupIdDecryptException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
+
+    @ExceptionHandler(GroupManagerMissException.class)
+    public ResponseEntity<ErrorResponse> handle_GroupManagerMissException(GroupManagerMissException e) {
+        log.error("GroupExceptionHandler.handle_GroupManagerMissException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }

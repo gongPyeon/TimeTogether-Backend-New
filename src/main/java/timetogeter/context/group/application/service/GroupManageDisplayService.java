@@ -51,11 +51,11 @@ public class GroupManageDisplayService {
         List<List<String>> decryptUserIdListPerGroup = getDecryptUserIdListPerGroup(encUserIdListPerGroup, groupKeyList);
 
         //7. <1>, <2> 모두 List<ViewGroupsInResponseDto>에 넣어서 반환
-        return listofViewGroupsIn(groupInfoList, decryptUserIdListPerGroup);
+        return listOfViewGroupsIn(groupInfoList, decryptUserIdListPerGroup);
     }
 
     //7
-    private List<ViewGroupsInResponseDto> listofViewGroupsIn(
+    private List<ViewGroupsInResponseDto> listOfViewGroupsIn(
             List<ViewGroupInfoDto> groupInfoList,
             List<List<String>> decryptedUserIdsPerGroup
     ) {
@@ -68,6 +68,7 @@ public class GroupManageDisplayService {
             List<String> members = decryptedUserIdsPerGroup.get(i);
 
             responseList.add(new ViewGroupsInResponseDto(
+                    info.groupId(),
                     info.groupName(),
                     info.groupImg(),
                     members
@@ -78,7 +79,7 @@ public class GroupManageDisplayService {
     }
 
     //6
-    private List<List<String>> getDecryptUserIdListPerGroup(List<List<String>> encUserIdsPerGroup, List<String> groupKeyList) {
+    public List<List<String>> getDecryptUserIdListPerGroup(List<List<String>> encUserIdsPerGroup, List<String> groupKeyList) {
         int size = Math.min(encUserIdsPerGroup.size(), groupKeyList.size());
 
         List<List<String>> decryptedUserIdsPerGroup = new java.util.ArrayList<>(size);
@@ -107,7 +108,7 @@ public class GroupManageDisplayService {
     }
 
     //5
-    private List<List<String>> getEncUserIdListPerGroup(List<String> groupIdList) {
+    public List<List<String>> getEncUserIdListPerGroup(List<String> groupIdList) {
         return groupIdList.stream()
                 .map(groupId -> {
                     List<String> encUserIds = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
@@ -122,7 +123,7 @@ public class GroupManageDisplayService {
 
     //4
     // 4
-    private List<String> getGroupKeyList(List<String> groupIdList, String masterKey) {
+    public List<String> getGroupKeyList(List<String> groupIdList, String masterKey) {
         return groupIdList.stream()
                 .map(groupId -> {
                     try {
@@ -174,7 +175,7 @@ public class GroupManageDisplayService {
     }
 
     //2
-    private static List<String> decryptEncGroupIdList(List<String> encGroupIds, String masterKey) {
+    public List<String> decryptEncGroupIdList(List<String> encGroupIds, String masterKey) {
         List<String> groupIds = encGroupIds.stream()
                 .map(encGroupId -> {
                     try {

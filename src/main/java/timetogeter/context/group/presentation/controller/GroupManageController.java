@@ -6,9 +6,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
+import timetogeter.context.group.application.dto.request.EditGroupInfoRequestDto;
 import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
 import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
 import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
+import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
 import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
 import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
@@ -64,5 +66,23 @@ public class GroupManageController {
         List<ViewGroupsInResponseDto> response = groupManageDisplayService.viewGroupsIn(request, userId);
         return SuccessResponse.from(response);
     }
+
+    /*
+    그룹 관리 - 나가기
+     */
+
+    /*
+    그룹 상세 - 그룹 정보 수정
+     */
+    @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<EditGroupInfoResponseDto> editGroup(
+            //@AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody EditGroupInfoRequestDto request) throws Exception{
+        String managerId = "manager_id_1"; //userPrincipal.getUsername();
+        EditGroupInfoResponseDto response = groupManageInfoService.editGroup(request, managerId);
+        return SuccessResponse.from(response);
+    }
+
+
 
 }
