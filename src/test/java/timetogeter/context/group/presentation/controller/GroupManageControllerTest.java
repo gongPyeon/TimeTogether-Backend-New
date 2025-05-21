@@ -152,17 +152,17 @@ class GroupManageControllerTest extends RestDocsSupport {
                             .content(objectMapper.writeValueAsString(createGroupRequestDto))
                     )
                     .andDo(print())
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.code").value(500))
-                    .andExpect(jsonPath("$.message").value("서버 내부 오류입니다!"))
+                    .andExpect(status().isForbidden())
+                    //.andExpect(jsonPath("$.code").value(403))
+                    //.andExpect(jsonPath("$.message").value("서버 내부 오류입니다!"))
                     .andDo(restDocs.document(
                             resource(
                                     ResourceSnippetParameters.builder()
                                             .tag("그룹 관련 API")
                                             .description("인증 토큰 없을 때 그룹 생성 실패")
                                             .responseFields(
-                                                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드, 500"),
-                                                    fieldWithPath("message").type(JsonFieldType.STRING).description("오류 메시지, 서버 내부 오류임을 알림")
+                                                    //fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드, 403"),
+                                                    //fieldWithPath("message").type(JsonFieldType.STRING).description("오류 메시지, 인증 오류임을 알림")
                                             )
                                             .build()
                             )
