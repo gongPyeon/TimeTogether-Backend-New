@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogeter.context.group.application.dto.request.EditGroup1Request;
 
 import java.util.UUID;
 
@@ -37,11 +38,23 @@ public class Group {
     //=======================================================================
 
     //업데이트 로직
-    public void updateName(String newName) {
-        this.groupName = newName;
+    public void update(EditGroup1Request req){
+        updateName(req.groupName());
+        updateExplain(req.explain());
+        updateImg(req.groupImg());
+    }
+    public void updateName(String name) {
+        if (name != null)
+            this.groupName = name;
+    }
+
+    public void updateExplain(String explain){
+        if (explain != null)
+            this.explain = explain;
     }
 
     public void updateImg(String img) {
-        this.groupImg = img;
+        if (img != null)
+            this.groupImg = img;
     }
 }

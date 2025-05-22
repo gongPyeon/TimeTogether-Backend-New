@@ -40,7 +40,7 @@ public class GroupManageController {
     public SuccessResponse<List<ViewGroup1Response>> viewGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
         String userId = userPrincipal.getId();
-        List<ViewGroup1Response> response = groupManageInfoService.viewGroup1(userId);
+        List<ViewGroup1Response> response = groupManageDisplayService.viewGroup1(userId);
         return SuccessResponse.from(response);
     }
 
@@ -57,7 +57,7 @@ public class GroupManageController {
     public SuccessResponse<List<ViewGroup2Response>> viewGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody List<ViewGroup2Request> requests) throws Exception{
-        List<ViewGroup2Response> response = groupManageInfoService.viewGroup2(requests);
+        List<ViewGroup2Response> response = groupManageDisplayService.viewGroup2(requests);
         return SuccessResponse.from(response);
     }
 
@@ -73,7 +73,7 @@ public class GroupManageController {
     public SuccessResponse<List<ViewGroup3Response>> viewGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody List<ViewGroup3Request> requests) throws Exception{
-        List<ViewGroup3Response> response = groupManageInfoService.viewGroup3(requests);
+        List<ViewGroup3Response> response = groupManageDisplayService.viewGroup3(requests);
         return SuccessResponse.from(response);
     }
 
@@ -117,25 +117,44 @@ public class GroupManageController {
     }
 
 //======================
-// 그룹 관리 - 초대하기 (Step1,2)
+// 그룹 관리 - 초대받기 (Step1)
 //======================
 
     /*
-    그룹 관리 - 초대 받기
-     *//*
-    @PostMapping(value = "/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<JoinGroupResponseDto> joinGroup(
+    그룹 관리 - 초대 받기 - step1
+
+
+    [웹] "http://localhost:8080/group/join?token=그룹키&그룹아이디&랜덤UUID"
+			해당 url에서 랜덤UUID만 추출후
+			랜덤 UUID,
+			개인키로 암호화한 그룹키 encGroupKey,
+			그룹키로 암호화한 사용자 고유 아이디 encUserId,
+			개인키로 암호화한 그룹 아이디 encGroupId,
+			개인키로 암호화한 encUserId - encencGroupMemberId
+			보냄
+		 /api/v1/group/join1
+		 ->
+    [서버] 랜덤 UUID 존재여부 확인후,
+			GroupProxyUser, GroupShareKey테이블 내 정보 저장
+			참여완료 메시지 보냄
+
+     */
+    @PostMapping(value = "/join1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<JoinGroup1Response> joinGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody JoinGroupRequestDto request) throws Exception{
-        String invitedId = userPrincipal.getId();
-        JoinGroupInnerRequestDto req = groupManageMemberService.getRequestDto(request);
-        JoinGroupResponseDto response = groupManageMemberService.joinGroup(req, invitedId);
+            @RequestBody JoinGroup1Request request) throws Exception{
+        String userId = userPrincipal.getId();
+        JoinGroup1Response response = groupManageMemberService.joinGroup1(request,userId);
         return SuccessResponse.from(response);
     }
 
-    *//*
+//======================
+// 그룹 관리 - 그룹 나가기
+//======================
+
+    /*
     그룹 관리 - 나가기 //TODO: 약속 테이블 관련 내용도 사라져야함
-     */
+    */
 
 
 }

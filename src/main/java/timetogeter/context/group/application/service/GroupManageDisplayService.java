@@ -4,18 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
-import timetogeter.context.group.application.dto.response.ViewGroupInfoDto;
-import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
-import timetogeter.context.group.application.exception.GroupIdDecryptException;
-import timetogeter.context.group.application.service.util.EncryptUtil;
+import timetogeter.context.group.application.dto.request.ViewGroup2Request;
+import timetogeter.context.group.application.dto.request.ViewGroup3Request;
+import timetogeter.context.group.application.dto.response.*;
+import timetogeter.context.group.application.exception.GroupIdNotFoundException;
+import timetogeter.context.group.application.exception.GroupShareKeyNotFoundException;
+import timetogeter.context.group.domain.entity.Group;
+import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.repository.GroupProxyUserRepository;
 import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,166 +29,73 @@ public class GroupManageDisplayService {
     private final GroupProxyUserRepository groupProxyUserRepository;
     private final GroupShareKeyRepository groupShareKeyRepository;
 
-    //그룹메인보기
-    public List<ViewGroupsInResponseDto> viewGroupsIn(ViewGroupsInRequestDto request, String userId) {
-        //0. 개인 마스터키 추출
-        String masterKey = request.personalMasterKey();
+//======================
+// 그룹 관리 - 그룹 메인 보기 (Step1,2,3)
+//======================
 
-        //1. 사용자 고유 아이디(userId)로 '개인키로 암호화한 그룹 아이디'(encGroupId) 찾기
-        List<String> encGroupIds = groupProxyUserRepository.findEncGroupIdsByUserId(userId);
+    //그룹 관리 - 그룹 메인 보기 - step1 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup1Response> viewGroup1(String userId) {
+        List<GroupProxyUser> groupProxyUserList = groupProxyUserRepository.findAllByUserId(userId);
 
-        //2. 개인키로 '개인키로 암호화한 그룹 아이디' 복호화 하기
-        List<String> groupIdList = decryptEncGroupIdList(encGroupIds, masterKey);
-
-        //3. 복호화한 그룹 아이디로 그룹 정보 반환 -- <1>
-        List<ViewGroupInfoDto> groupInfoList = getViewGroupInfoDtoList(groupIdList);
-
-        //4. 개인키로 '암호화한 그룹키'(encGroupKey) 복호화 하기
-        List<String> groupKeyList = getGroupKeyList(groupIdList ,masterKey);
-
-        //5. 그룹 아이디로 '그룹키로 암호화한 사용자 고유 아이디'(encUserId) 리스트 찾기
-        List<List<String>> encUserIdListPerGroup = getEncUserIdListPerGroup(groupIdList);
-
-        //6. 그룹키로 '사용자 고유 아이디' 복호화 하여 리스트 찾기 -- <2>
-        List<List<String>> decryptUserIdListPerGroup = getDecryptUserIdListPerGroup(encUserIdListPerGroup, groupKeyList);
-
-        //7. <1>, <2> 모두 List<ViewGroupsInResponseDto>에 넣어서 반환
-        return listOfViewGroupsIn(groupInfoList, decryptUserIdListPerGroup);
+        /*
+        '개인키로 암호화된 그룹 아이디'-> encGroupId
+        '개인키로 암호화한 (그룹키로 암호화한 사용자 고유 아이디)' -> encGroupMemberId
+         */
+        return groupProxyUserList.stream()
+                .map(gpu -> new ViewGroup1Response(gpu.getEncGroupId(), gpu.getEncGroupMemberId()))
+                .collect(Collectors.toList());
     }
 
-    //7
-    private List<ViewGroupsInResponseDto> listOfViewGroupsIn(
-            List<ViewGroupInfoDto> groupInfoList,
-            List<List<String>> decryptedUserIdsPerGroup
-    ) {
-        int size = Math.min(groupInfoList.size(), decryptedUserIdsPerGroup.size());
+    //그룹 관리 - 그룹 메인 보기 - step2 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup2Response> viewGroup2(List<ViewGroup2Request> requests) {
+        List<ViewGroup2Response> responses = new ArrayList<>();
 
-        List<ViewGroupsInResponseDto> responseList = new java.util.ArrayList<>(size);
+        for (ViewGroup2Request request : requests) {
+            String groupId = request.groupId();
+            String encGroupMemberId = request.encGroupMemberId();
 
-        for (int i = 0; i < size; i++) {
-            ViewGroupInfoDto info = groupInfoList.get(i);
-            List<String> members = decryptedUserIdsPerGroup.get(i);
+            String encGroupKey = groupShareKeyRepository.findEncGroupKey(groupId, encGroupMemberId)
+                    .orElseThrow(() -> new GroupShareKeyNotFoundException(
+                            BaseErrorCode.GROUP_SHARE_KEY_NOT_FOUND,
+                            "[ERROR]: 그룹 키 조회에 실패했습니다. groupId=" + groupId + ", encGroupMemberId=" + encGroupMemberId
+                    ));
 
-            responseList.add(new ViewGroupsInResponseDto(
-                    info.groupId(),
-                    info.groupName(),
-                    info.groupImg(),
-                    members
-            ));
+            responses.add(new ViewGroup2Response(encGroupKey));
         }
 
-        return responseList;
+        return responses;
     }
 
-    //6
-    public List<List<String>> getDecryptUserIdListPerGroup(List<List<String>> encUserIdsPerGroup, List<String> groupKeyList) {
-        int size = Math.min(encUserIdsPerGroup.size(), groupKeyList.size());
+    //그룹 관리 - 그룹 메인 보기 - step3 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup3Response> viewGroup3(List<ViewGroup3Request> requests) {
+        List<ViewGroup3Response> result = new ArrayList<>();
 
-        List<List<String>> decryptedUserIdsPerGroup = new java.util.ArrayList<>(size);
+        for (ViewGroup3Request request : requests) {
+            String groupId = request.groupId();
 
-        for (int i = 0; i < size; i++) {
-            final int index = i;
-            List<String> encUserIds = encUserIdsPerGroup.get(i);
-            String groupKey = groupKeyList.get(i);
+            // 그룹 정보 조회
+            Group group = groupRepository.findByGroupId(groupId)
+                    .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: " + groupId));
 
-            List<String> decryptedUserIds = encUserIds.stream()
-                    .map(encUserId -> {
-                        try {
-                            return EncryptUtil.decryptAESGCM(encUserId, groupKey);
-                        } catch (Exception e) {
-                            log.error("encUserId 복호화 실패: groupKeyIdx={}, encUserId={}, error={}", index, encUserId, e.getMessage());
-                            return null;
-                        }
-                    })
-                    .filter(decrypted -> decrypted != null)
-                    .collect(Collectors.toList());
+            // 해당 그룹에 속한 사용자 encId 목록 조회
+            List<String> encUserIdList = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
 
-            decryptedUserIdsPerGroup.add(decryptedUserIds);
+            // 응답 객체 생성
+            ViewGroup3Response response = new ViewGroup3Response(
+                    group.getGroupId(),
+                    group.getGroupName(),
+                    group.getGroupImg(),
+                    group.getManagerId(),
+                    encUserIdList
+            );
+
+            result.add(response);
         }
 
-        return decryptedUserIdsPerGroup;
+        return result;
     }
 
-    //5
-    public List<List<String>> getEncUserIdListPerGroup(List<String> groupIdList) {
-        return groupIdList.stream()
-                .map(groupId -> {
-                    List<String> encUserIds = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
-                    if (encUserIds == null) {
-                        log.warn("groupId={}에 대한 encUserId 리스트 없음", groupId);
-                        return List.<String>of();
-                    }
-                    return encUserIds;
-                })
-                .collect(Collectors.toList());
-    }
-
-    //4
-    // 4
-    public List<String> getGroupKeyList(List<String> groupIdList, String masterKey) {
-        return groupIdList.stream()
-                .map(groupId -> {
-                    try {
-                        // 암호화된 그룹키들 조회
-                        List<String> encGroupKeys = groupShareKeyRepository.findEncGroupKeyByGroupId(groupId);
-                        if (encGroupKeys == null || encGroupKeys.isEmpty()) {
-                            log.warn("GroupId={}에 해당하는 암호화된 그룹키가 존재하지 않음", groupId);
-                            return null;
-                        }
-
-                        // 복호화 가능한 첫 번째 그룹키 반환
-                        return encGroupKeys.stream()
-                                .map(encKey -> {
-                                    try {
-                                        return EncryptUtil.decryptAESGCM(encKey, masterKey);
-                                    } catch (Exception e) {
-                                        return null; // 복호화 실패한 것은 건너뜀
-                                    }
-                                })
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElseThrow(() -> {
-                                    log.error("GroupId={}의 어떤 그룹키도 복호화할 수 없음", groupId);
-                                    return new GroupIdDecryptException(BaseErrorCode.GROUP_KEY_DECRYPT_ERROR, "[ERROR] 복호화 가능한 그룹키 없음");
-                                });
-
-                    } catch (GroupIdDecryptException e) {
-                        throw e;
-                    } catch (Exception e) {
-                        log.error("그룹키 복호화 중 예외 발생: groupId={}, error={}", groupId, e.getMessage());
-                        throw new GroupIdDecryptException(BaseErrorCode.GROUP_KEY_DECRYPT_ERROR, "[ERROR] 암호화된 그룹키 복호화 실패");
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
-
-    //3
-    private List<ViewGroupInfoDto> getViewGroupInfoDtoList(List<String> groupIds) {
-        return groupRepository.findAllById(groupIds).stream()
-                .map(group -> new ViewGroupInfoDto(
-                        group.getGroupId(),
-                        group.getGroupName(),
-                        group.getGroupImg(),
-                        group.getManagerId()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    //2
-    public List<String> decryptEncGroupIdList(List<String> encGroupIds, String masterKey) {
-        List<String> groupIds = encGroupIds.stream()
-                .map(encGroupId -> {
-                    try {
-                        return EncryptUtil.decryptAESGCM(encGroupId, masterKey);
-                    } catch (Exception e) {
-                        log.error("복호화 실패: encGroupId={}, error={}", encGroupId, e.getMessage());
-                        throw new GroupIdDecryptException(BaseErrorCode.GROUP_ID_DECRYPT_ERROR, "[ERROR] 암호화된 그룹 아이디 복호화 실패");
-                    }
-                })
-                .filter(decrypted -> decrypted != null)
-                .collect(Collectors.toList());
-        return groupIds;
-    }
 }

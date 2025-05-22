@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.group.application.dto.request.EditGroup1Request;
-import timetogeter.context.group.application.dto.request.InviteGroupInfoRequestDto;
-import timetogeter.context.group.application.dto.response.EditGroup1Response;
-import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
-import timetogeter.context.group.application.dto.response.InviteGroupInfoResponseDto;
+import timetogeter.context.group.application.dto.request.*;
+import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
@@ -43,7 +40,7 @@ public class GroupDetailController {
 			encencGroupMemberId반환
     */
     @PostMapping(value = "/edit1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<EditGroup1Response> editGroup(
+    public SuccessResponse<EditGroup1Response> editGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody EditGroup1Request request) throws Exception{
         String managerId = userPrincipal.getId();
@@ -52,14 +49,84 @@ public class GroupDetailController {
     }
 
     /*
-    그룹 상세 - 그룹 초대하기
-     */
-    @PostMapping(value = "/invite", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<InviteGroupInfoResponseDto> inviteGroup(
+    그룹 상세 - 그룹 정보 수정 - step2
+
+    [웹] encencGroupMemberId를 개인키로 복호화한 후(encUserId = encGroupMemberId),
+		groupId, encUserId를 보냄 /api/v1/group/edit2->
+    [서버] GroupShareKey테이블 내에서 groupId, encUserId에 해당하는
+			레코드의 encGroupKey를 반환
+    */
+    @PostMapping(value = "/edit2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<EditGroup2Response> editGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody InviteGroupInfoRequestDto request) throws Exception{
-        String userId = userPrincipal.getId();
-        InviteGroupInfoResponseDto response = groupManageMemberService.inviteGroup(request, userId);
+            @RequestBody EditGroup2Request request) throws Exception{
+        EditGroup2Response response = groupManageInfoService.editGroup2(request);
+        return SuccessResponse.from(response);
+    }
+
+    /*
+    그룹 상세 - 그룹 정보 수정 - step3
+
+    [웹] 개인키로 encGroupKey를 복호화한 후 그룹키 저장, 그룹 아이디 보냄
+			/api/v1/group/edit3 ->
+    [서버] GroupShareKey테이블 내 groupId로 찾은
+			encUserId 리스트, 그룹 아이디에 따른 그룹 정보 반환
+    */
+    @PostMapping(value = "/edit3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<EditGroup3Response> editGroup3(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody EditGroup3Request request) throws Exception{
+        EditGroup3Response response = groupManageInfoService.editGroup3(request);
+        return SuccessResponse.from(response);
+    }
+
+
+//======================
+// 그룹 상세 - 그룹 초대하기 (Step1,2,3)
+//======================
+
+    /*
+    그룹 상세 - 그룹 초대하기 - step1
+
+    [웹] 그룹원이 groupId, 개인키로 암호화한 그룹 아이디를 보냄 /api/v1/group/invite1 ->
+    [서버] GroupProxyUser테이블 내 encencGroupMemberId 반환 ->
+     */
+    @PostMapping(value = "/invite1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<InviteGroup1Response> inviteGroup1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody InviteGroup1Request request) throws Exception{
+        InviteGroup1Response response = groupManageMemberService.inviteGroup1(request);
+        return SuccessResponse.from(response);
+    }
+
+    /*
+    그룹 상세 - 그룹 초대하기 - step2
+
+    [웹] 개인키로 encencGroupMemberId 복호화해서 encUserId 얻고,
+		encUserId, groupId 로 encGroupKey 요청 /api/v1/group/invite2 ->
+    [서버] GroupShareKey테이블 내 encGroupKey 반환->
+    */
+    @PostMapping(value = "/invite2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<InviteGroup2Response> inviteGroup2(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody InviteGroup2Request request) throws Exception{
+        InviteGroup2Response response = groupManageMemberService.inviteGroup2(request);
+        return SuccessResponse.from(response);
+    }
+
+    /*
+    그룹 상세 - 그룹 초대하기 - step3
+
+    [웹] 개인키로 그룹키 획득,
+		그룹키 + 그룹아이디 + 랜덤 UUID(해당 초대코드가 유효하다는 증거)
+		생성해서 랜덤 UUID만 보냄  /api/v1/group/invite3 ->
+    [서버] 받은 랜덤 UUID만 redis에 "INVITE_KEY:" key로 저장
+    */
+    @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<String> inviteGroup3(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody InviteGroup3Request request) throws Exception{
+        String response = groupManageMemberService.inviteGroup3(request);
         return SuccessResponse.from(response);
     }
 }

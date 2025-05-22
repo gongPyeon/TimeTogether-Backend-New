@@ -1,7 +1,7 @@
 package timetogeter.context.group.application.dto.request;
 
-public record InviteGroupInfoRequestDto(
+public record EditGroup2Request(
         String groupId,
-        String personalMasterKey
+        String encUserId
 ) {
 }

@@ -1,7 +1,0 @@
-package timetogeter.context.group.application.dto.request;
-
-public record JoinGroupRequestDto(
-        String token,
-        String personalMasterKey
-) {
-}

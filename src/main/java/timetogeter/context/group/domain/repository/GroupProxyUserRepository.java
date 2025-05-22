@@ -18,4 +18,10 @@ public interface GroupProxyUserRepository extends JpaRepository<GroupProxyUser, 
 
     @Query(value = "SELECT * FROM group_proxy_user WHERE user_id = :userId", nativeQuery = true)
     List<GroupProxyUser> findAllByUserId(@Param("userId") String userId);
+
+    @Query(value = "SELECT * FROM group_proxy_user WHERE user_id = :userId AND enc_group_id = :encGroupId", nativeQuery = true)
+    Optional<GroupProxyUser> findByUserIdAndEncGroupId(@Param("userId") String userId, @Param("encGroupId") String encGroupId);
+
+    @Query(value = "SELECT * FROM group_proxy_user WHERE group_id = :groupId AND enc_group_id = :encGroupId", nativeQuery = true)
+    Optional<GroupProxyUser> findByGroupIdAndEncGroupId(String groupId, String encGroupId);
 }

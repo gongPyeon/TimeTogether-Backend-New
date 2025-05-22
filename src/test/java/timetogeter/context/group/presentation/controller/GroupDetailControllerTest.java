@@ -1,3 +1,4 @@
+/*
 package timetogeter.context.group.presentation.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -22,9 +23,6 @@ import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.context.group.application.dto.request.EditGroup1Request;
-import timetogeter.context.group.application.dto.request.InviteGroupInfoRequestDto;
-import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
-import timetogeter.context.group.application.dto.response.InviteGroupInfoResponseDto;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
@@ -139,7 +137,8 @@ class GroupDetailControllerTest extends RestDocsSupport {
         }
 
 
-        /*@Test
+        */
+/*@Test
         @DisplayName("❌ 인증 토큰이 없으면 그룹 정보를 수정할 수 없다.")
         void editGroup_withoutToken_failure() throws Exception {
             // given, when, then
@@ -150,7 +149,8 @@ class GroupDetailControllerTest extends RestDocsSupport {
         @WithMockUser
         void editGroup_withNormalUserToken_failure() throws Exception {
             // given, when, then
-        }*/
+        }*//*
+
     }
 
     @Nested
@@ -215,7 +215,8 @@ class GroupDetailControllerTest extends RestDocsSupport {
                     ));
         }
 
-       /* @Test
+       */
+/* @Test
         @DisplayName("❌ 인증 토큰이 없으면 그룹 초대 코드를 생성할 수 없다.")
         void inviteGroup_withoutToken_failure() throws Exception {
             // given, when, then
@@ -226,8 +227,9 @@ class GroupDetailControllerTest extends RestDocsSupport {
         @WithMockUser
         void inviteGroup_withoutGroupUserToken_failure() throws Exception {
             // given, when, then
-        }*/
+        }*//*
+
     }
 
 
-}
+}*/

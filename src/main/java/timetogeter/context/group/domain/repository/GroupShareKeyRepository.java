@@ -8,6 +8,7 @@ import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.entity.GroupShareKey;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, String> {
@@ -23,9 +24,9 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
 
     @Query(value = "SELECT enc_group_key_with_user_private_key " +
             "FROM group_share_key " +
-            "WHERE group_id = :groupId AND enc_group_member_id = :encGroupMemberId",
+            "WHERE group_id = :groupId AND enc_user_id = :encUserId",
             nativeQuery = true)
-    String findEncGroupKey(@Param("groupId") String groupId,
-                           @Param("encGroupMemberId") String encGroupMemberId);
+    Optional<String> findEncGroupKey(@Param("groupId") String groupId,
+                           @Param("encUserId") String encUserId);
 
 }

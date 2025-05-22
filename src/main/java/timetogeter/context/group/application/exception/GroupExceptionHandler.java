@@ -17,8 +17,8 @@ public class GroupExceptionHandler {
         return ErrorResponse.of(e.getStatus());
     }
 
-    @ExceptionHandler(GroupShareKeyException.class)
-    public ResponseEntity<ErrorResponse> handle_GroupShareKeyException(GroupShareKeyException e) {
+    @ExceptionHandler(GroupShareKeyNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle_GroupShareKeyException(GroupShareKeyNotFoundException e) {
         log.error("GroupExceptionHandler.handle_GroupShareKeyException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
