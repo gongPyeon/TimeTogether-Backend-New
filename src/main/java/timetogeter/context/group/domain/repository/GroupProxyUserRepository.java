@@ -16,4 +16,6 @@ public interface GroupProxyUserRepository extends JpaRepository<GroupProxyUser, 
     @Query("SELECT COUNT(g) > 0 FROM GroupProxyUser g WHERE g.encGroupId = :encGroupId")
     boolean existsByEncGroupId(@Param("encGroupId") String encGroupIdCopy);
 
+    @Query(value = "SELECT * FROM group_proxy_user WHERE user_id = :userId", nativeQuery = true)
+    List<GroupProxyUser> findAllByUserId(@Param("userId") String userId);
 }

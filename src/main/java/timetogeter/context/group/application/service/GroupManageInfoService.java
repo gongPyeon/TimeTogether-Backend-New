@@ -4,13 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
-import timetogeter.context.group.application.dto.request.EditGroupInfoRequestDto;
-import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
-import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
+import timetogeter.context.group.application.dto.request.CreateGroup1Request;
+import timetogeter.context.group.application.dto.request.CreateGroup2Request;
+import timetogeter.context.group.application.dto.request.ViewGroup2Request;
+import timetogeter.context.group.application.dto.request.ViewGroup3Request;
+import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.exception.GroupIdNotFoundException;
-import timetogeter.context.group.application.exception.GroupManagerMissException;
-import timetogeter.context.group.application.service.util.EncryptUtil;
 import timetogeter.context.group.domain.entity.Group;
 import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.entity.GroupShareKey;
@@ -19,7 +18,9 @@ import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -34,7 +35,116 @@ public class GroupManageInfoService {
     private final GroupProxyUserRepository groupProxyUserRepository;
     private final GroupShareKeyRepository groupShareKeyRepository;
 
-    //그룹 만들기
+//======================
+// 그룹 관리 - 그룹 메인 보기 (Step1,2,3)
+//======================
+
+    //그룹 관리 - 그룹 메인 보기 - step1 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup1Response> viewGroup1(String userId) {
+        List<GroupProxyUser> groupProxyUserList = groupProxyUserRepository.findAllByUserId(userId);
+
+        /*
+        '개인키로 암호화된 그룹 아이디'-> encGroupId
+        '개인키로 암호화한 (그룹키로 암호화한 사용자 고유 아이디)' -> encGroupMemberId
+         */
+        return groupProxyUserList.stream()
+                .map(gpu -> new ViewGroup1Response(gpu.getEncGroupId(), gpu.getEncGroupMemberId()))
+                .collect(Collectors.toList());
+    }
+
+    //그룹 관리 - 그룹 메인 보기 - step2 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup2Response> viewGroup2(List<ViewGroup2Request> requests) {
+        List<ViewGroup2Response> responses = new ArrayList<>();
+
+        for (ViewGroup2Request request : requests) {
+            String groupId = request.groupId();
+            String encGroupMemberId = request.encGroupMemberId();
+
+            String encGroupKey = groupShareKeyRepository.findEncGroupKey(groupId, encGroupMemberId);
+
+            responses.add(new ViewGroup2Response(encGroupKey));
+        }
+
+        return responses;
+    }
+
+    //그룹 관리 - 그룹 메인 보기 - step3 - 메인 서비스 메소드
+    @Transactional
+    public List<ViewGroup3Response> viewGroup3(List<ViewGroup3Request> requests) {
+        List<ViewGroup3Response> result = new ArrayList<>();
+
+        for (ViewGroup3Request request : requests) {
+            String groupId = request.groupId();
+
+            // 그룹 정보 조회
+            Group group = groupRepository.findByGroupId(groupId)
+                    .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: " + groupId));
+
+            // 해당 그룹에 속한 사용자 encId 목록 조회
+            List<String> encUserIdList = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
+
+            // 응답 객체 생성
+            ViewGroup3Response response = new ViewGroup3Response(
+                    group.getGroupId(),
+                    group.getGroupName(),
+                    group.getGroupImg(),
+                    group.getManagerId(),
+                    encUserIdList
+            );
+
+            result.add(response);
+        }
+
+        return result;
+    }
+
+//======================
+// 그룹 관리 - 그룹 만들기 (Step1,2)
+//======================
+
+    //그룹 관리 - 그룹 만들기 - step1 - 메인 서비스 메소드
+    @Transactional
+    public CreateGroup1Response createGroup1(CreateGroup1Request request, String managerId) {
+        //Group 테이블에 저장
+        Group group = Group.of(request.groupName(), request.groupExplain(), request.groupImg(), managerId);
+        groupRepository.save(group);
+
+        //그룹 아이디 반환
+        return new CreateGroup1Response(group.getGroupId());
+    }
+
+    //그룹 관리 - 그룹 만들기 - step2 - 메인 서비스 메소드
+    @Transactional
+    public CreateGroup2Response createGroup2(CreateGroup2Request request, String userId) {
+        String groupId = request.groupId(); //그룹 아이디
+        String encGroupId = request.encGroupId(); //개인키로 암호화한 그룹 아이디
+        String encencGroupMemberId = request.encencGroupMemberId(); //개인키로 암호화한 (그룹키로 암호화한 사용자 고유 아이디)
+        String encUserId = request.encUserId(); //그룹키로 암호화한 사용자 고유 아이디
+        String encGroupKey = request.encGroupKey(); //개인키로 암호화한 그룹키
+
+        //GroupProxyUser테이블 내 저장
+        groupProxyUserRepository.save(GroupProxyUser.of(userId, encGroupId, encencGroupMemberId, System.currentTimeMillis()));
+        //GroupShareKey테이블 내 저장
+        groupShareKeyRepository.save(GroupShareKey.of(groupId, encUserId, encGroupKey));
+
+        Group groupFound = groupRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: " + groupId));
+
+        // 응답 반환
+        return new CreateGroup2Response(
+                groupFound.getGroupId(),
+                groupFound.getGroupName(),
+                groupFound.getExplain(),
+                groupFound.getGroupImg(),
+                groupFound.getManagerId()
+        );
+
+    }
+
+
+   /* //그룹 만들기
     @Transactional
     public CreateGroupResponseDto createGroup(CreateGroupRequestDto request, String managerId) throws Exception{
         //1.Group 테이블에 저장
@@ -159,7 +269,8 @@ public class GroupManageInfoService {
         groupFound.updateImg(request.groupImg());
 
         groupRepository.save(groupFound);
-    }
+    }*/
+
 
 
 }

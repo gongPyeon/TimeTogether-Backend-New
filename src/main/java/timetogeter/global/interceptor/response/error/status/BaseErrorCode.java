@@ -40,8 +40,8 @@ public enum BaseErrorCode implements StatusCode {
     GROUP_SHARE_KEY_INTERNAL_ERROR(501, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 공유키 테이블 저장 로직 중 에러 발생했습니다."),
     GROUP_ID_DECRYPT_ERROR(502, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 아이디 복호화 로직 중 에러 발생했습니다."),
     GROUP_KEY_DECRYPT_ERROR(503, HttpStatus.INTERNAL_SERVER_ERROR, "그룹키 복호화 로직 중 에러 발생했습니다."),
-    NOT_GROUO_MANAGER_ERROR(504, HttpStatus.UNAUTHORIZED, "그룹 방장이 아니므로 그룹 정보를 수정할 수 없습니다."),
-    NOT_GROUO_MEMBER_ERROR(505, HttpStatus.UNAUTHORIZED, "그룹 멤버가 아닙니다."),
+    NOT_GROUP_MANAGER_ERROR(504, HttpStatus.UNAUTHORIZED, "그룹 방장이 아니므로 그룹 정보를 수정할 수 없습니다."),
+    NOT_GROUP_MEMBER_ERROR(505, HttpStatus.UNAUTHORIZED, "그룹 멤버가 아닙니다."),
     GROUP_INVITECODE_EXPIRED(506, HttpStatus.FORBIDDEN, "초대코드가 만료되었거나 유효하지 않습니다.");
 
 

@@ -19,17 +19,19 @@ public class Group {
 
     private String groupName;
     private String groupImg;
+    private String explain;
     private String managerId; // userId
 
-    private Group(String groupName, String groupImg, String managerId) {
+    private Group(String groupName, String groupImg, String explain, String managerId) {
         this.groupId = UUID.randomUUID().toString();
         this.groupName = groupName;
+        this.explain = explain;
         this.groupImg = groupImg;
         this.managerId = managerId;
     }
 
-    public static Group of(String groupName, String groupImg, String managerId) {
-        return new Group(groupName, groupImg, managerId);
+    public static Group of(String groupName, String groupImg, String explain, String managerId) {
+        return new Group(groupName, groupImg, explain, managerId);
     }
 
     //=======================================================================

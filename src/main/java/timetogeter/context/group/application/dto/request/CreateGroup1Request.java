@@ -1,7 +1,8 @@
 package timetogeter.context.group.application.dto.request;
 
-public record CreateGroupRequestDto(
+public record CreateGroup1Request(
         String groupName,
+        String groupExplain,
         String groupImg,
-        String personalMasterKey
+        String explain
 ) {}

@@ -20,4 +20,12 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
     List<String> findEncUserIdsByGroupId(@Param("groupId") String groupId);
 
     List<GroupShareKey> findAllByGroupId(String groupId);
+
+    @Query(value = "SELECT enc_group_key_with_user_private_key " +
+            "FROM group_share_key " +
+            "WHERE group_id = :groupId AND enc_group_member_id = :encGroupMemberId",
+            nativeQuery = true)
+    String findEncGroupKey(@Param("groupId") String groupId,
+                           @Param("encGroupMemberId") String encGroupMemberId);
+
 }

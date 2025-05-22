@@ -21,11 +21,11 @@ import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.context.group.application.dto.request.CreateGroupRequestDto;
+import timetogeter.context.group.application.dto.request.CreateGroup1Request;
 import timetogeter.context.group.application.dto.request.JoinGroupInnerRequestDto;
 import timetogeter.context.group.application.dto.request.JoinGroupRequestDto;
 import timetogeter.context.group.application.dto.request.ViewGroupsInRequestDto;
-import timetogeter.context.group.application.dto.response.CreateGroupResponseDto;
+import timetogeter.context.group.application.dto.response.CreateGroup2Response;
 import timetogeter.context.group.application.dto.response.JoinGroupResponseDto;
 import timetogeter.context.group.application.dto.response.ViewGroupsInResponseDto;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
@@ -71,7 +71,7 @@ class GroupManageControllerTest extends RestDocsSupport {
         @DisplayName("✅ 정상적으로 그룹을 생성할 수 있다.")
         void createGroup_success() throws Exception {
             // given
-            CreateGroupRequestDto createGroupRequestDto = new CreateGroupRequestDto(
+            CreateGroup1Request createGroupRequestDto = new CreateGroup1Request(
                     "5만원권을 사랑하는 모임",
                     "5만원권 묶음",
                     "OTI1NTU2Nzg5MDQ0MzQ1Ng=="
@@ -94,7 +94,7 @@ class GroupManageControllerTest extends RestDocsSupport {
 
             // when
             given(groupManageInfoService.createGroup(createGroupRequestDto, userPrincipal.getId().toString())).willReturn(
-                    new CreateGroupResponseDto(
+                    new CreateGroup2Response(
                             "16f3f99e-fc2f-43a9-a8e5-83bc3e5ab793",
                             createGroupRequestDto.groupName(),
                             createGroupRequestDto.groupImg(),
@@ -141,7 +141,7 @@ class GroupManageControllerTest extends RestDocsSupport {
         @Test
         @DisplayName("❌ 인증 토큰이 없으면 그룹을 생성할 수 없다.")
         void createGroup_withoutToken_failure() throws Exception {
-            CreateGroupRequestDto createGroupRequestDto = new CreateGroupRequestDto(
+            CreateGroup1Request createGroupRequestDto = new CreateGroup1Request(
                     "5만원권을 사랑하는 모임",
                     "5만원권 묶음",
                     "OTI1NTU2Nzg5MDQ0MzQ1Ng=="

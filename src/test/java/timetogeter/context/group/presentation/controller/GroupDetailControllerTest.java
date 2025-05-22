@@ -21,7 +21,7 @@ import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
-import timetogeter.context.group.application.dto.request.EditGroupInfoRequestDto;
+import timetogeter.context.group.application.dto.request.EditGroup1Request;
 import timetogeter.context.group.application.dto.request.InviteGroupInfoRequestDto;
 import timetogeter.context.group.application.dto.response.EditGroupInfoResponseDto;
 import timetogeter.context.group.application.dto.response.InviteGroupInfoResponseDto;
@@ -68,7 +68,7 @@ class GroupDetailControllerTest extends RestDocsSupport {
         @WithMockUser
         void editGroup_success() throws Exception {
             // given
-            EditGroupInfoRequestDto requestDto = new EditGroupInfoRequestDto(
+            EditGroup1Request requestDto = new EditGroup1Request(
                     "a602b407-4e95-4ab1-b154-ceba94d680c2", // groupId
                     "MTIzNDU2Nzg5MDEyMzQ1Ng==",               // masterKey
                     "5만원권 모임3",                          // groupName
@@ -83,7 +83,7 @@ class GroupDetailControllerTest extends RestDocsSupport {
                     List.of("manager_id_1", "xpxp_id_1")
             );
 
-            given(groupManageInfoService.editGroup(any(EditGroupInfoRequestDto.class), anyString()))
+            given(groupManageInfoService.editGroup(any(EditGroup1Request.class), anyString()))
                     .willReturn(responseDto);
 
             RegisterUserCommand dto = new RegisterUserCommand(
