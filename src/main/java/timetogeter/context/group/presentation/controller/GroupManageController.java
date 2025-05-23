@@ -36,7 +36,7 @@ public class GroupManageController {
     [서버] GroupProxyUser의 userId에 해당하는 '개인키로 암호화된 그룹 아이디', '개인키로 암호화한
 		 (그룹키로 암호화한 사용자 고유 아이디)'를 반환
      */
-    @PostMapping(value = "/view1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<List<ViewGroup1Response>> viewGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
         String userId = userPrincipal.getId();

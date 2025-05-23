@@ -1,5 +1,6 @@
 package timetogeter.context.group.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -20,19 +21,19 @@ public class Group {
 
     private String groupName;
     private String groupImg;
-    private String explain;
+    private String description;
     private String managerId; // userId
 
-    private Group(String groupName, String groupImg, String explain, String managerId) {
+    private Group(String groupName, String groupImg, String description, String managerId) {
         this.groupId = UUID.randomUUID().toString();
         this.groupName = groupName;
-        this.explain = explain;
+        this.description = description;
         this.groupImg = groupImg;
         this.managerId = managerId;
     }
 
-    public static Group of(String groupName, String groupImg, String explain, String managerId) {
-        return new Group(groupName, groupImg, explain, managerId);
+    public static Group of(String groupName, String groupImg, String description, String managerId) {
+        return new Group(groupName, groupImg, description, managerId);
     }
 
     //=======================================================================
@@ -40,7 +41,7 @@ public class Group {
     //업데이트 로직
     public void update(EditGroup1Request req){
         updateName(req.groupName());
-        updateExplain(req.explain());
+        updateExplain(req.description());
         updateImg(req.groupImg());
     }
     public void updateName(String name) {
@@ -48,9 +49,9 @@ public class Group {
             this.groupName = name;
     }
 
-    public void updateExplain(String explain){
-        if (explain != null)
-            this.explain = explain;
+    public void updateExplain(String description){
+        if (description != null)
+            this.description = description;
     }
 
     public void updateImg(String img) {

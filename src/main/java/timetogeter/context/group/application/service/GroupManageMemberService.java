@@ -44,11 +44,12 @@ public class GroupManageMemberService {
 //======================
 
     //그룹 상세 - 그룹 초대하기 - step1 - 메인 서비스 메소드
-    public InviteGroup1Response inviteGroup1(InviteGroup1Request request) {
+    @Transactional
+    public InviteGroup1Response inviteGroup1(InviteGroup1Request request,String userId) {
         String groupId = request.groupId();
         String encGroupId = request.encGroupId();
 
-        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByGroupIdAndEncGroupId(groupId, encGroupId)
+        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByUserIdAndEncGroupId(userId, encGroupId)
                 .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다."));
         String encEncGroupMemberId = groupProxyUser.getEncGroupMemberId();
 
@@ -56,6 +57,7 @@ public class GroupManageMemberService {
     }
 
     //그룹 상세 - 그룹 초대하기 - step2 - 메인 서비스 메소드
+    @Transactional
     public InviteGroup2Response inviteGroup2(InviteGroup2Request request) {
         //encUserId, groupId 로 GroupShareKey 요청
         String encUserId = request.encUserId();
@@ -71,6 +73,7 @@ public class GroupManageMemberService {
     }
 
     //그룹 상세 - 그룹 초대하기 - step3 - 메인 서비스 메소드
+    @Transactional
     public String inviteGroup3(InviteGroup3Request request) {
         String validInviteCodeCheck = request.randomKeyForRedis();
 
@@ -84,6 +87,7 @@ public class GroupManageMemberService {
 //======================
 
     //그룹 관리 - 그룹 초대받기 - step1 - 메인 서비스 메소드
+    @Transactional
     public JoinGroup1Response joinGroup1(JoinGroup1Request request,String userId) {
         String randomUUID = request.randomUUID();
         String storedUUID = redisTemplate.opsForValue().get("INVITE_KEY:" + randomUUID);

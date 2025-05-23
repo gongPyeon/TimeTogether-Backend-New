@@ -5,6 +5,6 @@ public record EditGroup1Request(
         String encGroupId,
         String groupName,
         String groupImg,
-        String explain
+        String description
 ) {
 }

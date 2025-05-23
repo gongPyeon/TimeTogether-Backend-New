@@ -71,7 +71,7 @@ public class GroupManageInfoService {
         return new CreateGroup2Response(
                 groupFound.getGroupId(),
                 groupFound.getGroupName(),
-                groupFound.getExplain(),
+                groupFound.getDescription(),
                 groupFound.getGroupImg(),
                 groupFound.getManagerId()
         );
@@ -83,6 +83,7 @@ public class GroupManageInfoService {
 //======================
 
     //그룹 상세 - 그룹 정보 수정 - step1 - 메인 서비스 메소드
+    @Transactional
     public EditGroup1Response editGroup1(EditGroup1Request request, String managerId) {
         String groupId = request.groupId();
         /*
@@ -110,6 +111,7 @@ public class GroupManageInfoService {
     }
 
     //그룹 상세 - 그룹 정보 수정 - step2 - 메인 서비스 메소드
+    @Transactional
     public EditGroup2Response editGroup2(EditGroup2Request request) {
         String groupId = request.groupId();
         String encUserId = request.encUserId();
@@ -125,6 +127,7 @@ public class GroupManageInfoService {
     }
 
     //그룹 상세 - 그룹 정보 수정 - step3 - 메인 서비스 메소드
+    @Transactional
     public EditGroup3Response editGroup3(EditGroup3Request request) {
         String groupId = request.groupId();
 
@@ -143,7 +146,7 @@ public class GroupManageInfoService {
 
         return new EditGroup3Response(
                 group.getGroupName(),
-                group.getExplain(),
+                group.getDescription(),
                 group.getGroupImg(),
                 encUserIdList
         );

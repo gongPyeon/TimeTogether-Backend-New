@@ -95,7 +95,8 @@ public class GroupDetailController {
     public SuccessResponse<InviteGroup1Response> inviteGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroup1Request request) throws Exception{
-        InviteGroup1Response response = groupManageMemberService.inviteGroup1(request);
+        String userId = userPrincipal.getId();
+        InviteGroup1Response response = groupManageMemberService.inviteGroup1(request,userId);
         return SuccessResponse.from(response);
     }
 

@@ -22,7 +22,7 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
 
     List<GroupShareKey> findAllByGroupId(String groupId);
 
-    @Query(value = "SELECT enc_group_key_with_user_private_key " +
+    @Query(value = "SELECT enc_group_key " +
             "FROM group_share_key " +
             "WHERE group_id = :groupId AND enc_user_id = :encUserId",
             nativeQuery = true)
