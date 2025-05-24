@@ -64,10 +64,7 @@ public class SecurityConfig {
                 antMatcher(GET, "/docs/**"),
                 antMatcher(POST, "/static/docs/**"), // API 문서
                 antMatcher(POST, "/auth/**"), // 회원가입 & 로그인
-                antMatcher(GET, "/test/**"), // 테스트 시 (선택)
-                antMatcher(GET, "http://localhost:8080/docs/index.html"), //RestDocs 결과값
-                antMatcher(GET, "http://localhost:8080/swagger-ui.html"), //RestDocs 결과값
-                antMatcher(GET, "http://localhost:8080/swagger-ui/index.html")); //RestDocs 결과값
+                antMatcher(GET, "/test/**")); // 테스트 시 (선택)
 
 
         return requestMatchers.toArray(RequestMatcher[]::new);
