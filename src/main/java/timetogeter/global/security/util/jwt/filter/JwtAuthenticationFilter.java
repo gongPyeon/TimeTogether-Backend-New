@@ -25,6 +25,18 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtAuthenticationProvider authenticationProvider;
     private final TokenValidator tokenValidator;
 
+
+    /**내가 임의로 추가한 부분*
+    // 화이트리스트 경로
+    private final List<RequestMatcher> whiteList = List.of(
+            antMatcher(GET, "/docs/**"),
+            antMatcher(POST, "/static/docs/**"),
+            antMatcher(POST, "/auth/**"),
+            antMatcher(GET, "/test/**"),
+            antMatcher(POST, "/api/v1/group/**")
+    );*/
+
+
     @Override
     public void doFilter(ServletRequest req,
                          ServletResponse res,
@@ -32,6 +44,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         HttpServletRequest request = (HttpServletRequest) req;
         String accessToken = tokenValidator.extract(request.getHeader(HEADER));
+
+
+       /* *//**내가 임의로 추가한 부분**//*
+        for (RequestMatcher matcher : whiteList) {
+            if (matcher.matches(request)) {
+                filterChain.doFilter(request, res);
+                return;
+            }
+        }*/
 
         if(tokenValidator.validateToken(accessToken)) {
             Authentication authentication = authenticationProvider.getAuthentication(accessToken);
