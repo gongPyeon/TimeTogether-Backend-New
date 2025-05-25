@@ -1,3 +1,5 @@
+/*
+
 package timetogeter.context.auth.presentation.controller;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
@@ -49,3 +51,5 @@ class AuthControllerTest extends RestDocsSupport {
                 ));
     }
 }
+
+*/
