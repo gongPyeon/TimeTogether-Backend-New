@@ -1,6 +1,6 @@
 package timetogeter.context.promise.application.dto.request;
 
-public record CreatePromiseAlimRequest1(
+public record CreateJoinPromiseRequest1(
         String groupId,
         String encGroupId
 ) {

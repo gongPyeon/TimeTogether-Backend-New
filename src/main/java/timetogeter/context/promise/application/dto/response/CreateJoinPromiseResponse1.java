@@ -1,6 +1,6 @@
 package timetogeter.context.promise.application.dto.response;
 
-public record CreatePromiseAlimResponse1(
+public record CreateJoinPromiseResponse1(
         String encencGroupMemberId
 ) {
 }

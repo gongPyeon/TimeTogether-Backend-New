@@ -21,11 +21,15 @@ public class PromiseShareKey {
     private String encUserId;
     private String encPromiseKey;
 
-    PromiseShareKey(String promiseId, String scheduleId, String encUserId, String encPromiseKey) {
+    private PromiseShareKey(String promiseId, String scheduleId, String encUserId, String encPromiseKey) {
         this.promiseShareKeyId = UUID.randomUUID().toString();
         this.promiseId = promiseId;
         this.scheduleId = scheduleId;
         this.encUserId = encUserId;
         this.encPromiseKey = encPromiseKey;
+    }
+
+    public static PromiseShareKey of (String promiseId, String encUserId, String encPromiseKey,String scheduleId){
+        return new PromiseShareKey(promiseId, scheduleId,  encUserId,  encPromiseKey);
     }
 }
