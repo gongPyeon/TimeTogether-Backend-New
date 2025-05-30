@@ -20,7 +20,7 @@ import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 @RequiredArgsConstructor
 @Slf4j
 public class PromiseManageController {
-    private PromiseManageInfoService promiseManageInfoService;
+    private final PromiseManageInfoService promiseManageInfoService;
 
 //======================
 // 약속 만들기 - 기본 정보 입력 "화면" 보여주기 (Step1,2,3)

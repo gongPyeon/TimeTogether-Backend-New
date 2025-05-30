@@ -145,7 +145,7 @@ public class PromiseManageInfoService {
                 request.title(),
                 request.type(),
                 request.promiseImg(),
-                request.encManagerId(),
+                request.managerId(),
                 request.startDate(),
                 request.endDate()
 

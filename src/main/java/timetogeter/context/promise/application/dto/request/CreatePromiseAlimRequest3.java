@@ -10,7 +10,7 @@ public record CreatePromiseAlimRequest3(
         PromiseType type,
 
         String promiseImg,
-        String encManagerId, // userId
+        String managerId, // userId
 
         LocalDate startDate,
         LocalDate endDate
