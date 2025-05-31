@@ -49,6 +49,7 @@ public class PromiseManageInfoService {
 
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step1 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseViewResponse1 createPromiseView1(String userId, CreatePromiseViewRequest1 request) {
         String encGroupId = request.encGroupId();
         GroupProxyUser groupProxyUserFound = groupProxyUserRepository.findByUserIdAndEncGroupId(userId,encGroupId)
@@ -65,6 +66,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step2 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseViewResponse2 createPromiseView2(String userId, CreatePromiseViewRequest2 request) {
         String groupId = request.groupId();
         String encGroupMemberId = request.encGroupMemberId();
@@ -79,6 +81,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step3 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseViewResponse3 createPromiseView3(String userId, CreatePromiseViewRequest3 request) {
 
 
@@ -105,6 +108,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step1 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseAlimResponse1 createPromise1(String userId, CreatePromiseAlimRequest1 request) {
         String encGroupId = request.encGroupId();
 
@@ -116,6 +120,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step2 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseAlimResponse2 createPromise2(CreatePromiseAlimRequest2 request) {
         String groupId = request.groupId();
         String encGroupMemberId = request.encUserId();
@@ -131,6 +136,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step3 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseAlimResponse3 createPromise3(CreatePromiseAlimRequest3 request) {
         //1. Promise에 약속(임의)저장하기
         Promise savedPromise = createPromise(request);
@@ -139,6 +145,7 @@ public class PromiseManageInfoService {
 
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step3 - 서브 서비스 메소드(1)
+    @Transactional
     private Promise createPromise(CreatePromiseAlimRequest3 request) {
         Promise promise = Promise.of(
                 request.groupId(),
@@ -155,6 +162,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step4 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseAlimResponse4 createPromise4(String userId, CreatePromiseAlimRequest4 request) {
 
         String groupId = request.groupId();
@@ -176,6 +184,7 @@ public class PromiseManageInfoService {
 
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step5 - 메인 서비스 메소드
+    @Transactional
     public CreatePromiseAlimResponse5 createPromise5(String userId, CreatePromiseAlimRequest5 request) {
         //1-1. 약속을 만든 userId 사용자를 PromiseProxyUser 테이블에 저장
         //1-2. 약속을 만든 userId 사용자를 PromiseShareKey 테이블에 저장
@@ -236,6 +245,7 @@ public class PromiseManageInfoService {
 
 
     //약속 만들기 - 약속 만들기 알림 수락 Step1 - 메인 서비스 메소드
+    @Transactional
     public CreateJoinPromiseResponse1 createJoinPromise1(String userId, CreateJoinPromiseRequest1 request) {
         String encGroupId = request.encGroupId();
 
@@ -247,6 +257,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들기 알림 수락 Step2 - 메인 서비스 메소드
+    @Transactional
     public CreateJoinPromiseResponse2 createJoinPromise2(CreateJoinPromiseRequest2 request) {
         String groupId = request.groupId();
         String encGroupMemberId = request.encUserId();
@@ -261,6 +272,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들기 알림 수락 Step3 - 메인 서비스 메소드
+    @Transactional
     public CreateJoinPromiseResponse3 createJoinPromise3(CreateJoinPromiseRequest3 request) {
         String encUserId = request.encUserId();
 
@@ -280,6 +292,7 @@ public class PromiseManageInfoService {
     }
 
     //약속 만들기 - 약속 만들기 알림 수락 Step4 - 메인 서비스 메소드
+    @Transactional
     public CreateJoinPromiseResponse4 createJoinPromise4(String userId, CreateJoinPromiseRequest4 request) {
         //1-1. userId 사용자를 PromiseProxyUser 테이블에 저장
         //1-2. userId 사용자를 PromiseShareKey 테이블에 저장
