@@ -38,8 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -590,6 +589,219 @@ class PromiseManageControllerTest extends RestDocsSupport {
                             )
                     ));
         }*/
+
+
+
+
+    }
+
+    @Nested
+    @DisplayName("약속 알림 수락 API (/api/v1/promise/create/join)")
+    class joinPromise{
+
+        @Test
+        @DisplayName("✅ 약속 참여 알림 수락 Step1 (/api/v1/promise/create/join1)")
+        @WithMockUser
+        void testPromiseJoin1() throws Exception {
+            // given
+            RegisterUserCommand dto = new RegisterUserCommand(
+                    "bloomberg", "bloomberg@gmail.com",
+                    "010-1234-5678", "bloombergNickname", Provider.GENERAL, Role.USER, "20", Gender.MALE
+            );
+            User user = new User(dto);
+            RegisterResponse registerResponse = RegisterResponse.from(user);
+            UserPrincipal userPrincipal = new UserPrincipal(registerResponse);
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userPrincipal, null, userPrincipal.getAuthorities()
+            );
+
+            String groupId = "5e9c0739-1717-4574-84c7-60515c21284a";
+            String encGroupId = "pA53EOSdisanosC4/oguf2P+TanvZhPdBcilpVNVDLqHAZZEYJFJN3mMqaKyyHaAK3rnyQ==";
+
+            CreateJoinPromiseRequest1 request = new CreateJoinPromiseRequest1(groupId, encGroupId);
+
+            CreateJoinPromiseResponse1 mockResponse = new CreateJoinPromiseResponse1(
+                    "0gl/Hef+gY/93NjFsN1YPwbyUee4Yw+bAqzm/D5Rd8CaeJ8YzH3Nm6K13x/pO5zLnMplUA=="
+            );
+
+            given(promiseManageInfoService.createJoinPromise1(eq(userPrincipal.getId()),any(CreateJoinPromiseRequest1.class)))
+                    .willReturn(mockResponse);
+
+            // when & then
+            mockMvc.perform(post("/api/v1/promise/create/join1")
+                            .with(authentication(authentication))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data.encencGroupMemberId").value(mockResponse.encencGroupMemberId()))
+                    .andDo(restDocs.document(
+                            resource(
+                                    ResourceSnippetParameters.builder()
+                                            .tag("약속 관련 API")
+                                            .description("Step1 - 그룹 참여 요청 시 encGroupId를 보내고 encencGroupMemberId를 응답받는다.")
+                                            .requestFields(
+                                                    fieldWithPath("groupId").type(JsonFieldType.STRING).description("참여할 그룹 ID"),
+                                                    fieldWithPath("encGroupId").type(JsonFieldType.STRING).description("개인키로 암호화된 그룹 ID")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                                    fieldWithPath("data.encencGroupMemberId").type(JsonFieldType.STRING).description("서버가 추가 암호화한 그룹멤버 ID")
+                                            )
+                                            .build()
+                            )
+                    ));
+
+        }
+
+        @Test
+        @DisplayName("✅ 약속 참여 알림 수락 Step2 (/api/v1/promise/create/join2)")
+        @WithMockUser(username = "mockUserId")
+        void testCreateJoinPromise2() throws Exception {
+            // given
+            String encUserId = "Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==";
+            String groupId = "5e9c0739-1717-4574-84c7-60515c21284a";
+            CreateJoinPromiseRequest2 request = new CreateJoinPromiseRequest2(encUserId, groupId);
+
+            CreateJoinPromiseResponse2 mockResponse = new CreateJoinPromiseResponse2(
+                    "2C86SvvD3azjoYXwu+1CPGKiDMSSVBnNQCp3Fo9azTwJjOIRRp+K7A=="
+            );
+
+            given(promiseManageInfoService.createJoinPromise2(any(CreateJoinPromiseRequest2.class)))
+                    .willReturn(mockResponse);
+
+            // when & then
+            mockMvc.perform(post("/api/v1/promise/create/join2")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data.encGroupKey").value(mockResponse.encGroupKey()))
+                    .andDo(restDocs.document(
+                            resource(
+                                    ResourceSnippetParameters.builder()
+                                            .tag("약속 관련 API")
+                                            .description("Step2 - encencGroupMemberId 복호화 후 encUserId, groupId를 보내면 encGroupKey를 응답받음")
+                                            .requestFields(
+                                                    fieldWithPath("encUserId").type(JsonFieldType.STRING).description("개인키로 복호화한 암호화된 사용자 ID"),
+                                                    fieldWithPath("groupId").type(JsonFieldType.STRING).description("참여 그룹 ID")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                                    fieldWithPath("data.encGroupKey").type(JsonFieldType.STRING).description("암호화된 그룹 키")
+                                            )
+                                            .build()
+                            )
+                    ));
+        }
+
+
+        @Test
+        @DisplayName("✅ 약속 참여 알림 수락 Step3 (/api/v1/promise/create/join3)")
+        @WithMockUser(username = "mockUserId")
+        void testCreateJoinPromise3() throws Exception {
+            // given
+            String encUserId = "Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==";
+            CreateJoinPromiseRequest3 request = new CreateJoinPromiseRequest3(encUserId);
+
+            String mockValue = "55Nfbri0tOQpJs58WZgZhSJI3SC2Lh9Zx/Iq5xGLVx55fDQqIs20FQ==::01bb0b8f-ea3f-4d0d-8ed8-8b6ce07ca665";
+            CreateJoinPromiseResponse3 mockResponse = new CreateJoinPromiseResponse3(mockValue);
+
+            given(promiseManageInfoService.createJoinPromise3(any(CreateJoinPromiseRequest3.class)))
+                    .willReturn(mockResponse);
+
+            // when & then
+            mockMvc.perform(post("/api/v1/promise/create/join3")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data.value").value(mockValue))
+                    .andDo(restDocs.document(
+                            resource(
+                                    ResourceSnippetParameters.builder()
+                                            .tag("약속 관련 API")
+                                            .description("Step3 - encUserId를 보내 Redis에서 'PENDING' 상태인 알림 값 조회 및 반환")
+                                            .requestFields(
+                                                    fieldWithPath("encUserId").type(JsonFieldType.STRING).description("암호화된 사용자 ID")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                                    fieldWithPath("data.value").type(JsonFieldType.STRING).description("알림값")
+                                            )
+                                            .build()
+                            )
+                    ));
+        }
+
+
+        @Test
+        @DisplayName("✅ 약속 참여 알림 수락 Step4 (/api/v1/promise/create/join4)")
+        @WithMockUser
+        void testCreateJoinPromise4() throws Exception {
+            // given
+            RegisterUserCommand dto = new RegisterUserCommand(
+                    "bloomberg", "bloomberg@gmail.com",
+                    "010-1234-5678", "bloombergNickname", Provider.GENERAL, Role.USER, "20", Gender.MALE
+            );
+            User user = new User(dto);
+            RegisterResponse registerResponse = RegisterResponse.from(user);
+            UserPrincipal userPrincipal = new UserPrincipal(registerResponse);
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userPrincipal, null, userPrincipal.getAuthorities()
+            );
+
+            CreateJoinPromiseRequest4 request = new CreateJoinPromiseRequest4(
+                    "oVosEeTIgZmn9pa6r4guLmSuTam+YRzdC5qm9wMGCejUD5QQ/7ITXNm/O5GuXli7/K9rsA==",
+                    "8wchHLnI3I3t7wnc4koeSHMIhMY6jjNX+A=",
+                    "Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==",
+                    "/w5hEaXd94b7pK2xvfItJRyFKPCzVBnNnB/WYzX0B/hoy0DU3JzM1w=="
+            );
+
+            CreateJoinPromiseResponse4 mockResponse = new CreateJoinPromiseResponse4("약속 참여를 수락하셨습니다.");
+
+            given(promiseManageInfoService.createJoinPromise4(eq(userPrincipal.getId()), any(CreateJoinPromiseRequest4.class)))
+                    .willReturn(mockResponse);
+
+            // when & then
+            mockMvc.perform(post("/api/v1/promise/create/join4")
+                            .with(authentication(authentication))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.code").value(200))
+                    .andExpect(jsonPath("$.message").value("요청에 성공했습니다."))
+                    .andExpect(jsonPath("$.data.message").value("약속 참여를 수락하셨습니다."))
+                    .andDo(restDocs.document(
+                            resource(
+                                    ResourceSnippetParameters.builder()
+                                            .tag("약속 관련 API")
+                                            .description("Step4 - 약속 참여 수락 후 관련 테이블 저장")
+                                            .requestFields(
+                                                    fieldWithPath("encPromiseId").type(JsonFieldType.STRING).description("암호화된 약속 ID"),
+                                                    fieldWithPath("encPromiseMemberId").type(JsonFieldType.STRING).description("암호화된 약속원 ID"),
+                                                    fieldWithPath("encUserId").type(JsonFieldType.STRING).description("암호화된 사용자 ID"),
+                                                    fieldWithPath("encPromiseKey").type(JsonFieldType.STRING).description("암호화된 약속 키")
+                                            )
+                                            .responseFields(
+                                                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                                    fieldWithPath("data.message").type(JsonFieldType.STRING).description("응답 상세 메시지")
+                                            )
+                                            .build()
+                            )
+                    ));
+        }
+
+
 
 
     }
