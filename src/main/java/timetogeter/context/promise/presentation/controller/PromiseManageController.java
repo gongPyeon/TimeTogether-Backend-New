@@ -147,7 +147,7 @@ public class PromiseManageController {
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest4 request) throws Exception{
         String userId = userPrincipal.getId();
-        CreatePromiseAlimResponse4 response = promiseManageInfoService.createPromise4(userId,request);
+        CreatePromiseAlimResponse4 response = promiseManageInfoService.createPromise4(request);
         return SuccessResponse.from(response);
     }
 

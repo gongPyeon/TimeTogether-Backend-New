@@ -146,7 +146,7 @@ public class PromiseManageInfoService {
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step3 - 서브 서비스 메소드(1)
     @Transactional
-    private Promise createPromise(CreatePromiseAlimRequest3 request) {
+    public Promise createPromise(CreatePromiseAlimRequest3 request) {
         Promise promise = Promise.of(
                 request.groupId(),
                 request.title(),
@@ -163,7 +163,7 @@ public class PromiseManageInfoService {
 
     //약속 만들기 - 약속 만들고 알림 보내기 Step4 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseAlimResponse4 createPromise4(String userId, CreatePromiseAlimRequest4 request) {
+    public CreatePromiseAlimResponse4 createPromise4(CreatePromiseAlimRequest4 request) {
 
         String groupId = request.groupId();
         List<String> encUserIdList = request.encUserIdList();
