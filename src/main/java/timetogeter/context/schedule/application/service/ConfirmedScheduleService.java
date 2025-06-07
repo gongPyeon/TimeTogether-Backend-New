@@ -26,4 +26,13 @@ public class ConfirmedScheduleService {
 
         return new PromiseListResDTO(promiseResDTOList);
     }
+    public PromiseListResDTO getPromiseViewByGroup(String groupId, GetPromiseBatchReqDTO reqDTO) {
+        List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndIdIn(groupId, reqDTO.scheduleIdList());
+        List<PromiseResDTO> promiseResDTOList = schedules.stream()
+                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
+                .collect(Collectors.toList());
+
+        return new PromiseListResDTO(promiseResDTOList);
+    }
+
 }
