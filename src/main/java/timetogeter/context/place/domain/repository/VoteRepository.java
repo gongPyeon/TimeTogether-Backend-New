@@ -1,7 +1,7 @@
-package timetogeter.context.vote.domain.repository;
+package timetogeter.context.place.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import timetogeter.context.vote.domain.entity.Vote;
+import timetogeter.context.place.domain.entity.Vote;
 
 import java.util.Optional;
 

@@ -1,12 +1,11 @@
-package timetogeter.context.vote.application.service;
+package timetogeter.context.place.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import timetogeter.context.vote.domain.entity.Vote;
-import timetogeter.context.vote.domain.repository.VoteRepository;
-import timetogeter.context.vote.exception.VoteNotFoundException;
-import timetogeter.context.vote.domain.repository.VoteRepository;
+import timetogeter.context.place.domain.entity.Vote;
+import timetogeter.context.place.domain.repository.VoteRepository;
+import timetogeter.context.place.exception.VoteNotFoundException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 @Component

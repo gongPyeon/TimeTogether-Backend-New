@@ -1,4 +1,4 @@
-package timetogeter.context.vote.domain.entity;
+package timetogeter.context.place.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

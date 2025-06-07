@@ -14,8 +14,6 @@ import timetogeter.context.place.domain.repository.PlaceRepository;
 import timetogeter.context.place.exception.PlaceNotFoundException;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.context.promise.application.service.PromiseConfirmService;
-import timetogeter.context.promise.domain.repository.PromiseRepository;
-import timetogeter.context.vote.application.service.VotingService;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;

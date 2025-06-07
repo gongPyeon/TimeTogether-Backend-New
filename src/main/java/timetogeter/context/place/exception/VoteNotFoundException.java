@@ -1,4 +1,4 @@
-package timetogeter.context.vote.exception;
+package timetogeter.context.place.exception;
 
 import timetogeter.global.interceptor.response.error.CustomException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
