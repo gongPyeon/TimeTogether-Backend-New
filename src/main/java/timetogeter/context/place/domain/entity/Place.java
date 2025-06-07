@@ -30,11 +30,11 @@ public class Place {
 
     public Place(int promiseId, String placeName, String placeUrl, String goal, String userId) {
         this.promiseId = promiseId;
-        this.placeName = placeName; // TODO: 이름 조건 있는지
-        this.placeUrl = placeUrl; // TODO: 필수일지 선택일지, 여러개의 사진을 받을지
-        this.goal = goal; // TODO: 목표 어떤 형식으로 어떻게 받을지
+        this.placeName = placeName; // TODO: 이름 조건 있는지 -> 1자 이상 30자 이내
+        this.placeUrl = placeUrl; // TODO: 필수일지 선택일지, 여러개의 사진을 받을지 -> X
+        this.goal = goal; // TODO: 목표 어떤 형식으로 어떻게 받을지 -> X
         this.isConfirmed = false;
-        this.voting = 0; // TODO: 투표 최대값 설정
+        this.voting = 0; // TODO: 투표 최대값 설정 -> 인원소
         this.userId = userId;
     }
 

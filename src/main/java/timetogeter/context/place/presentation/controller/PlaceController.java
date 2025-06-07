@@ -60,7 +60,7 @@ public class PlaceController {
     }
 
     // 장소 등록 (일반 / AI)
-    // TODO: 한번에 최대 5개 등록 가능 - 확인
+    // TODO: 한번에 최대 10개 등록 가능 - 확인 (중복, 10개)
     @PostMapping("/register/{promiseId}")
     public BaseResponse<Object> registerPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                @RequestBody List<PlaceRegisterDTO> dto,
@@ -70,7 +70,7 @@ public class PlaceController {
         return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
     }
 
-    // TODO: AI 추천 최대 8개 반환 - 확인 (FAST API JSON 형식이 나오면 적용 예정)
+    // TODO: AI 추천 최대 10개 반환 - 확인 (FAST API JSON 형식이 나오면 적용 예정)
     @PostMapping("/check/ai/{promiseId}")
     public BaseResponse<Object> checkAIPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                               @PathVariable int promiseId) {
