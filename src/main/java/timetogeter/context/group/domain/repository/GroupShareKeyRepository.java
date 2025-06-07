@@ -29,4 +29,10 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
     Optional<String> findEncGroupKey(@Param("groupId") String groupId,
                            @Param("encUserId") String encUserId);
 
+    @Query(value = "SELECT gsk.enc_group_key " +
+            "FROM group_share_key as gsk " +
+            "WHERE gsk.group_id = :groupId " +
+            "AND gsk.enc_user_id = :encUserId",
+            nativeQuery = true)
+    Optional<String> findByEncGroupIdAndEncUserId(@Param("groupId") String groupId, @Param("encUserId") String encUserId);
 }
