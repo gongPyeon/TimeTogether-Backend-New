@@ -8,6 +8,7 @@ import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.application.service.MyPlaceService;
 import timetogeter.context.place.application.service.PlaceBoardService;
+import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
 
@@ -75,27 +76,30 @@ public class PlaceController {
     public BaseResponse<Object> checkAIPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                               @PathVariable int promiseId) {
         String userId = userPrincipal.getId();
-        // myPlaceService.recommendPlace(userId, promiseId);
+        myPlaceService.recommendPlace(userId, promiseId);
         return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
     }
 
 
     // 방장일 시 장소 확정
+    // TODO: PromiseRegisterDTO의 위치
     @PostMapping("/confirm/{placeId}")
     public BaseResponse<Object> confirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                              @PathVariable String promiseId,
                                               @PathVariable int placeId) {
         String userId = userPrincipal.getId();
-        placeBoardService.confirmedPlace(userId, placeId);
-        return new BaseResponse<>(BaseCode.SUCCESS_CONFIRM_PLACE);
+        PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
+        return new BaseResponse<>(dto);
     }
 
     // 방장일 시 장소 수정
     @PostMapping("/confirm/re/{placeId}")
     public BaseResponse<Object> reConfirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                               @PathVariable int placeId) {
+                                                 @PathVariable String promiseId,
+                                                 @PathVariable int placeId) {
         String userId = userPrincipal.getId();
-        placeBoardService.reConfirmedPlace(userId, placeId);
-        return new BaseResponse<>(BaseCode.SUCCESS_CONFIRM_PLACE);
+        PromiseRegisterDTO dto = placeBoardService.reConfirmedPlace(userId, promiseId, placeId);
+        return new BaseResponse<>(dto);
     }
 
 }

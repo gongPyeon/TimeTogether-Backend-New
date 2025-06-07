@@ -49,4 +49,12 @@ public class Place {
     public void cancelVote() {
         voting--;
     }
+
+    public void confirm() {
+        this.isConfirmed = true;
+    }
+
+    public void revokeConfirmation() {
+        this.isConfirmed = false;
+    }
 }

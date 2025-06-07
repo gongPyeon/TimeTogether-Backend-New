@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
     private final PlaceRepository placeRepository;
+    private final AIPlaceClient aiPlaceClient;
+
     public void deletePlace(String userId, int placeId) {
         Place place = placeRepository.findByPlaceId(placeId)
                 .orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 아이디에 해당하는 장소를 찾을 수 없습니다."));
@@ -32,11 +34,15 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
     @Transactional
     public void registerPlace(String userId, int promiseId, List<PlaceRegisterDTO> dto) {
-        if(dto.size() > 5) throw new InvalidPlaceNumException(BaseErrorCode.INVALID_PLACE_NUM, "[ERROR] DTO의 사이즈가 5개를 넘습니다. 현재 "+dto.size()+"개 입니다.");
+        if(dto.size() > 10) throw new InvalidPlaceNumException(BaseErrorCode.INVALID_PLACE_NUM, "[ERROR] DTO의 사이즈가 10개를 넘습니다. 현재 "+dto.size()+"개 입니다.");
         List<Place> places = dto.stream()
                 .map(p -> new Place(promiseId, p.placeName(), p.placeUrl(), p.goal(), userId))
                 .collect(Collectors.toList());
 
         placeRepository.saveAll(places);
+    }
+
+    public void recommendPlace(String userId, int promiseId) {
+
     }
 }

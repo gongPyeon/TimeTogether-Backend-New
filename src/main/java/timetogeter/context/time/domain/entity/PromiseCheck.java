@@ -20,5 +20,6 @@ public class PromiseCheck {
 
     private int dateId;
     private int promiseId;
+    private String dateTime; // TODO: 추가
     private boolean isConfirmed;
 }

@@ -5,11 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import timetogeter.context.auth.exception.UserNotFoundException;
 import timetogeter.context.place.application.dto.PlaceDTO;
+import timetogeter.context.place.application.dto.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.domain.entity.Place;
 import timetogeter.context.place.domain.repository.PlaceRepository;
 import timetogeter.context.place.exception.PlaceNotFoundException;
+import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
+import timetogeter.context.promise.application.service.PromiseConfirmService;
+import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.vote.application.service.VotingService;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
@@ -24,6 +29,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PlaceRepository placeRepository;
     private final VotingService votingService; // place <= vote 의존
+    private final PromiseConfirmService promiseConfirmService; // promise <= place 의존
 
     public PlaceBoardDTO getPlaceBoard(String userId, int promiseId, int page) {
         PageRequest pageRequest = PageRequest.of(page, PLACE_PAGE);
@@ -55,18 +61,26 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         placeRepository.save(place);
     }
 
-    public void confirmedPlace(String userId, int placeId) {
-        // TODO: Promise Service에서 약속장 확인
+    public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId) {
+        boolean isConfirmed = promiseConfirmService.confirmedPlaceManager(userId, promiseId);
+        if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        // TODO: Promise Service에 확정된 Place DTO 넘기기 (장소이름, 장소유형, 장소URL) - 목표까지 필요한지 확인
+        Place place = get(placeId); place.confirm();
 
+        PlaceRegisterDTO PlaceRegisterDTO = new PlaceRegisterDTO(place.getPlaceId(), place.getPlaceName(), place.getPlaceUrl());
+        return promiseConfirmService.confirmedSchedule(promiseId, PlaceRegisterDTO);
     }
 
-    public void reConfirmedPlace(String userId, int placeId) {
-        // TODO: Promise Service에서 약속장 확인
+    public PromiseRegisterDTO reConfirmedPlace(String userId, String promiseId, int placeId) {
+        boolean isConfirmed = promiseConfirmService.confirmedPlaceManager(userId, promiseId);
+        if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        // TODO: Promise Service에 확정된 Place DTO 넘기기 - 기존에 있는 Schedule을 가져와서 수정해서 반영
+        Place currentConfirmed = placeRepository.findConfirmPlaceById(promiseId).orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 약속에 해당하는 확정된 장소를 찾을 수 없습니다."));
+        currentConfirmed.revokeConfirmation();
+        Place newPlace = get(placeId); newPlace.confirm();
 
+        PlaceRegisterDTO updatePlaceRegisterDTO = new PlaceRegisterDTO(newPlace.getPlaceId(), newPlace.getPlaceName(), newPlace.getPlaceUrl());
+        return promiseConfirmService.confirmedSchedule(promiseId, updatePlaceRegisterDTO);
     }
 
     private Place get(int placeId){
