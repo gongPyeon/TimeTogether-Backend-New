@@ -91,7 +91,7 @@ public class JwtTokenProvider implements TokenProvider {
     @Override
     public String validateToken(String token) {
         String error = "";
-
+        System.out.println("토큰 : " + token);
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
@@ -105,6 +105,7 @@ public class JwtTokenProvider implements TokenProvider {
         }catch (IllegalArgumentException e){
             error = "[ERROR] JWT 클레임이 포함되어있지 않습니다.";
         }catch (Exception e) {
+            log.info(e.getMessage());
             error = "[ERROR] 유효하지 않은 토큰입니다.";
         }
 

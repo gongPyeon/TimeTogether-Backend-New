@@ -34,12 +34,19 @@ public enum BaseErrorCode implements StatusCode {
     ACCOUNT_LOCKED(401, HttpStatus.UNAUTHORIZED, "계정이 잠겨 있습니다. 나중에 다시 시도하세요."),
     REDIS_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "세션 저장에 실패했어요"),
     PLACE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "장소를 찾을 수 없어요"),
-    INVALID_PLACE_NUM(400, HttpStatus.BAD_REQUEST, "장소 등록은 최대 5개까지 가능해요");
+    INVALID_PLACE_NUM(400, HttpStatus.BAD_REQUEST, "장소 등록은 최대 5개까지 가능해요"),
 
-    //로그인 에러
 
     //그룹 에러
-
+    GROUP_ID_NOTFOUND(400, HttpStatus.NOT_FOUND, "존재하지 않는 그룹 아이디 입니다."),
+    GROUP_SHARE_KEY_INTERNAL_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 공유키 테이블 저장 로직 중 에러 발생했습니다."),
+    GROUP_ID_DECRYPT_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "그룹 아이디 복호화 로직 중 에러 발생했습니다."),
+    GROUP_KEY_DECRYPT_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "그룹키 복호화 로직 중 에러 발생했습니다."),
+    NOT_GROUP_MANAGER_ERROR(500, HttpStatus.UNAUTHORIZED, "그룹 방장이 아니므로 그룹 정보를 수정할 수 없습니다."),
+    NOT_GROUP_MEMBER_ERROR(403, HttpStatus.UNAUTHORIZED, "그룹 멤버가 아닙니다."),
+    GROUP_INVITECODE_EXPIRED(403, HttpStatus.FORBIDDEN, "초대코드가 만료되었거나 유효하지 않습니다."),
+    GROUP_PROXY_USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "해당 객체가 존재하지 않습니다."),
+    GROUP_SHARE_KEY_NOT_FOUND(404,HttpStatus.NOT_FOUND, "해당 객체가 존재하지 않습니다." );
 
     //===================================
     private final int code;

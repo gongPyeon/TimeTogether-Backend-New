@@ -20,10 +20,14 @@ public class GroupShareKey {
     private String encUserId;
     private String encGroupKey;
 
-    GroupShareKey(String groupId, String encUserId, String encGroupKey) {
+    private GroupShareKey(String groupId, String encUserId, String encGroupKey) {
         this.groupShareKeyId = UUID.randomUUID().toString();
         this.groupId = groupId;
         this.encUserId = encUserId;
         this.encGroupKey = encGroupKey;
+    }
+
+    public static GroupShareKey of(String groupId, String encUserId, String encGroupKey) {
+        return new GroupShareKey(groupId, encUserId, encGroupKey);
     }
 }
