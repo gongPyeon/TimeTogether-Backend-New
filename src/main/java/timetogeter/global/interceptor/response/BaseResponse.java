@@ -22,4 +22,9 @@ public class BaseResponse<T> {
         code = baseCode.getCode();
         message = baseCode.getMessage();
     }
+
+    public BaseResponse(T result, BaseCode baseCode) {
+        code = baseCode.getCode();
+        message = baseCode.getMessage();
+    }
 }

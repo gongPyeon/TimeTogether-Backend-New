@@ -29,6 +29,7 @@ public class Promise {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private int num; // TODO: (추가함) 약속 인원수
 
     private Promise(String groupId, String title, PromiseType promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
         this.promiseId = UUID.randomUUID().toString();

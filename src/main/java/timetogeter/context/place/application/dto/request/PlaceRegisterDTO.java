@@ -3,6 +3,7 @@ package timetogeter.context.place.application.dto.request;
 import jakarta.validation.constraints.NotNull;
 
 public record PlaceRegisterDTO (@NotNull String placeName,
+                                @NotNull String placeAddress,
                                 String placeUrl,
-                                @NotNull String goal){ // TODO: 장소에 이미지도 받아? 오 목적도 받아? (장소 이름 / 장소 설명)
+                                String placeInfo){
 }

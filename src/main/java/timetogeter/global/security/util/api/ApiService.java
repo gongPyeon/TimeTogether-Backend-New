@@ -1,6 +1,7 @@
 package timetogeter.global.security.util.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -16,5 +17,9 @@ public class ApiService {
 
     public ResponseEntity<Map> send(String url, HttpMethod httpMethod, HttpEntity<?> request){
         return restTemplate.exchange(url, httpMethod, request, Map.class);
+    }
+
+    public <T> ResponseEntity<T> send(String url, HttpMethod httpMethod, HttpEntity<?> request, ParameterizedTypeReference<T> typeRef) {
+        return restTemplate.exchange(url, httpMethod, request, typeRef);
     }
 }

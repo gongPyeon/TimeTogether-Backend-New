@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface PlaceRepository extends JpaRepository<Place, String> {
     Optional<Place> findByPlaceId(int placeId);
 
-    Page<Place> findByPromiseId(int promiseId, PageRequest pageRequest);
+    Page<Place> findByPromiseId(String promiseId, PageRequest pageRequest);
 
 
     @Query("SELECT p FROM Place p WHERE p.promiseId = :promiseId AND p.isConfirmed = true")

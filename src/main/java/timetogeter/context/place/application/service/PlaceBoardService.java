@@ -31,13 +31,13 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     private final VotingService votingService; // place <= vote 의존
     private final PromiseConfirmService promiseConfirmService; // promise <= place 의존
 
-    public PlaceBoardDTO getPlaceBoard(String userId, int promiseId, int page) {
+    public PlaceBoardDTO getPlaceBoard(String userId, String promiseId, int page) {
         PageRequest pageRequest = PageRequest.of(page, PLACE_PAGE);
         Page<Place> placePage = placeRepository.findByPromiseId(promiseId, pageRequest);
 
         List<PlaceDTO> places = placePage.getContent()
                 .stream()
-                .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceUrl(), p.getVoting(),
+                .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceAddr(), p.getPlaceUrl(), p.getVoting(),
                         p.hasVotedBy(userId),  // 투표 유무
                         votingService.hasVotedBy(userId, p.getPlaceId()))) // 투표 취소가 가능한지
                 .collect(Collectors.toList());
@@ -46,10 +46,12 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     }
 
     @Transactional
-    public void vote(String userId, int placeId) {
-        votingService.vote(userId, placeId);
-
+    public void vote(String userId, String promiseId, int placeId) {
         Place place = get(placeId);
+        int voteNum = place.getVoting();
+        promiseConfirmService.checkTotalVote(promiseId, voteNum);
+
+        votingService.vote(userId, placeId);
         place.vote();
         placeRepository.save(place);
     }

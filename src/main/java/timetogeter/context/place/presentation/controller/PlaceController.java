@@ -5,6 +5,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
+import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.application.service.MyPlaceService;
 import timetogeter.context.place.application.service.PlaceBoardService;
@@ -25,7 +26,7 @@ public class PlaceController {
     // 올려진 장소 확인
     @GetMapping("/{promiseId}/{page}")
     public BaseResponse<Object> viewPlaceBoard(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                               @PathVariable int promiseId,
+                                               @PathVariable String promiseId,
                                                @PathVariable int page) {
         String userId = userPrincipal.getId();
         PlaceBoardDTO dto = placeBoardService.getPlaceBoard(userId, promiseId, page);
@@ -43,11 +44,12 @@ public class PlaceController {
 
     // 투표
     // TODO: Vote Controller의 위치
-    @PostMapping("vote/{placeId}")
+    @PostMapping("vote/{promiseId}/{placeId}")
     public BaseResponse<Object> votePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                          @PathVariable String promiseId,
                                           @PathVariable int placeId) {
         String userId = userPrincipal.getId();
-        placeBoardService.vote(userId, placeId);
+        placeBoardService.vote(userId, promiseId, placeId);
         return new BaseResponse<>(BaseCode.SUCCESS_VOTE);
     }
 
@@ -61,23 +63,24 @@ public class PlaceController {
     }
 
     // 장소 등록 (일반 / AI)
-    // TODO: 한번에 최대 10개 등록 가능 - 확인 (중복, 10개)
+    // 한번에 최대 10개 등록 가능 - 확인 (중복허용, 10개)
     @PostMapping("/register/{promiseId}")
     public BaseResponse<Object> registerPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                @RequestBody List<PlaceRegisterDTO> dto,
-                                               @PathVariable int promiseId) {
+                                               @PathVariable String promiseId) {
         String userId = userPrincipal.getId();
         myPlaceService.registerPlace(userId, promiseId, dto);
         return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
     }
 
-    // TODO: AI 추천 최대 10개 반환 - 확인 (FAST API JSON 형식이 나오면 적용 예정)
+    // 장소 추천 (AI)
     @PostMapping("/check/ai/{promiseId}")
     public BaseResponse<Object> checkAIPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                              @PathVariable int promiseId) {
-        String userId = userPrincipal.getId();
-        myPlaceService.recommendPlace(userId, promiseId);
-        return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
+                                             @RequestBody UserAIInfoReqDTO reqDTO,
+                                             @PathVariable String promiseId) {
+        String userId = userPrincipal.getId(); // 이미 다 암호화되어있음
+        List<PlaceRegisterDTO> dto = myPlaceService.recommendPlace(userId, promiseId, reqDTO);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_REGISTER_PLACE);
     }
 
 
@@ -89,7 +92,7 @@ public class PlaceController {
                                               @PathVariable int placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
-        return new BaseResponse<>(dto);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
     // 방장일 시 장소 수정
@@ -99,7 +102,7 @@ public class PlaceController {
                                                  @PathVariable int placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.reConfirmedPlace(userId, promiseId, placeId);
-        return new BaseResponse<>(dto);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
 }
