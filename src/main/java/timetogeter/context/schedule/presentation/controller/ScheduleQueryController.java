@@ -2,16 +2,15 @@ package timetogeter.context.schedule.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;
 import timetogeter.context.schedule.application.service.ConfirmedScheduleService;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,10 +39,20 @@ public class ScheduleQueryController {
     }
 
     // 약속 공유키가 존재한다고 가정
-    @PostMapping("/promise/get/{scheduleId}/detail")
-    public BaseResponse<Object> getPromiseView(
+    @GetMapping("/promise/get/{scheduleId}/detail")
+    public BaseResponse<Object> getPromiseDetailView(
             @PathVariable String scheduleId){
         PromiseDetailResDTO dto = confirmedScheduleService.getPromiseDetailView(scheduleId);
         return new BaseResponse<>(dto);
     }
+
+    // 약속 공유키가 존재한다고 가정
+    @GetMapping("/promise/get")
+    public BaseResponse<Object> searchPromiseView(
+            @RequestParam String query, @RequestParam(required = false) List<String> filter){
+        PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query, filter);
+        return new BaseResponse<>(dto);
+    }
+
+
 }

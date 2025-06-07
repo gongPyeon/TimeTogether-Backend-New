@@ -10,7 +10,7 @@ import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;
 import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.exception.ScheduleNotFoundException;
-import timetogeter.context.schedule.infrastructure.repository.ScheduleRepository;
+import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class ConfirmedScheduleService {
 
 
     public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO) {
-        List<Schedule> schedules = scheduleRepository.findAllByIdIn(reqDTO.scheduleIdList());
+        List<Schedule> schedules = scheduleRepository.findAllByScheduleIdIn(reqDTO.scheduleIdList());
         List<PromiseResDTO> promiseResDTOList = schedules.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
                 .collect(Collectors.toList());
@@ -34,7 +34,7 @@ public class ConfirmedScheduleService {
         return new PromiseListResDTO(promiseResDTOList);
     }
     public PromiseListResDTO getPromiseViewByGroup(String groupId, GetPromiseBatchReqDTO reqDTO) {
-        List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndIdIn(groupId, reqDTO.scheduleIdList());
+        List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndScheduleIdIn(groupId, reqDTO.scheduleIdList());
         List<PromiseResDTO> promiseResDTOList = schedules.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
                 .collect(Collectors.toList());
@@ -53,5 +53,15 @@ public class ConfirmedScheduleService {
                 .collect(Collectors.toList());
 
         return new PromiseDetailResDTO(scheduleId, schedule.getTitle(), schedule.getType(), schedule.getPlace(), groupName, names);
+    }
+
+    public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
+        List<Schedule> result = scheduleRepository.searchByQueryAndFilters(query, filter);
+
+        List<PromiseResDTO> dtoList = result.stream()
+                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
+                .toList();
+
+        return new PromiseListResDTO(dtoList);
     }
 }

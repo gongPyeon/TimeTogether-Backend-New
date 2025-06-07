@@ -22,5 +22,6 @@ public class Schedule {
     private String place;
     private String placeUrl;
     private String groupId; // TODO: 추가함
+    private String groupName; // TODO: 추가함
     private String promiseId; // TODO: 추가함
 }
