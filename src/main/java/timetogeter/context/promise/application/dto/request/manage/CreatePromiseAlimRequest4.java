@@ -1,4 +1,4 @@
-package timetogeter.context.promise.application.dto.request;
+package timetogeter.context.promise.application.dto.request.manage;
 import java.util.*;
 
 public record CreatePromiseAlimRequest4(
