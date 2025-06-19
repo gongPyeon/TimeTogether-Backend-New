@@ -1,4 +1,4 @@
-package timetogeter.context.auth.application.exception;
+package timetogeter.context.auth.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,12 @@ public class AuthExceptionHandler {
     @ExceptionHandler(AuthFailureException.class)
     public ResponseEntity<ErrorResponse> handle_AuthFailureException(AuthFailureException e) {
         log.error("AuthExceptionHandler.handle_AuthFailureException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
+
+    @ExceptionHandler(InvalidAuthException.class)
+    public ResponseEntity<ErrorResponse> handle_InvalidAuthException(InvalidAuthException e) {
+        log.error("AuthExceptionHandler.handle_InvalidAuthException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
 

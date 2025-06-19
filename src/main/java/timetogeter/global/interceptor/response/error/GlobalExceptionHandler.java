@@ -3,9 +3,11 @@ package timetogeter.global.interceptor.response.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import timetogeter.context.auth.exception.InvalidAuthException;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.interceptor.response.StatusCode;
@@ -13,7 +15,6 @@ import timetogeter.global.interceptor.response.StatusCode;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
 
     //로그인 예외 처리
     /*

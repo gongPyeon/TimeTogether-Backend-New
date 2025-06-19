@@ -45,15 +45,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) req;
         String accessToken = tokenValidator.extract(request.getHeader(HEADER));
 
-
-       /* *//**내가 임의로 추가한 부분**//*
-        for (RequestMatcher matcher : whiteList) {
-            if (matcher.matches(request)) {
-                filterChain.doFilter(request, res);
-                return;
-            }
-        }*/
-
         if(tokenValidator.validateToken(accessToken)) {
             Authentication authentication = authenticationProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);

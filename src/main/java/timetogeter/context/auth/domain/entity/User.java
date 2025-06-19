@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
-import timetogeter.context.auth.application.exception.InvalidAuthException;
+import timetogeter.context.auth.exception.InvalidAuthException;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
@@ -17,6 +17,7 @@ import timetogeter.context.auth.application.dto.RegisterUserCommand;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+    // TODO: 어떤 필드가 암호화된 상태로 오는지 확인한 후 검증 리팩토링
     @Id
     @Column(unique = true, nullable = false)
     private String userId;

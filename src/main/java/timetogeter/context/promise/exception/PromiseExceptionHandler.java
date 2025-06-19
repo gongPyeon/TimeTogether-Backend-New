@@ -1,4 +1,4 @@
-package timetogeter.context.promise.application.exception;
+package timetogeter.context.promise.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import timetogeter.context.group.application.exception.GroupIdNotFoundException;
+import timetogeter.context.place.exception.VoteNotFoundException;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 
 @RestControllerAdvice
@@ -18,4 +19,10 @@ public class PromiseExceptionHandler {
         log.error("PromiseExceptionHandler.handle_PromiseIdNotFoundException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }*/
+
+    @ExceptionHandler(PromiseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle_PromiseNotFoundException(PromiseNotFoundException e) {
+        log.error("PromiseExceptionHandler.handle_PromiseNotFoundException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }

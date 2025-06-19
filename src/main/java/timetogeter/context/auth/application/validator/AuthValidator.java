@@ -2,8 +2,8 @@ package timetogeter.context.auth.application.validator;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import timetogeter.context.auth.application.exception.InvalidAuthException;
-import timetogeter.context.auth.application.exception.RedisException;
+import timetogeter.context.auth.exception.InvalidAuthException;
+import timetogeter.context.auth.exception.RedisException;
 import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.common.util.redis.RedisUtil;

@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import timetogeter.context.auth.application.service.UserRegisterService;
 import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.context.auth.application.dto.RegisterResponse;
-import timetogeter.context.auth.application.exception.AuthFailureException;
-import timetogeter.context.auth.application.exception.UserNotFoundException;
+import timetogeter.context.auth.exception.AuthFailureException;
+import timetogeter.context.auth.exception.UserNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
