@@ -32,6 +32,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     public PlaceBoardDTO getPlaceBoard(String userId, String promiseId, int page) {
         PageRequest pageRequest = PageRequest.of(page - 1, PLACE_PAGE);
         Page<Place> placePage = placeRepository.findByPromiseId(promiseId, pageRequest);
+        if(page > placePage.getTotalPages()) throw new PlaceNotFoundException(BaseErrorCode.PAGE_NOT_FOUND, "[ERROR] 총 페이지를 초과한 요청입니다.");
 
         List<PlaceDTO> places = placePage.getContent()
                 .stream()
