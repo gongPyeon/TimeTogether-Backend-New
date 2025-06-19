@@ -1,6 +1,7 @@
 package timetogeter.context.place.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/place")
+@Slf4j
 public class PlaceController {
 
     private final PlaceBoardService placeBoardService;
@@ -26,8 +28,8 @@ public class PlaceController {
     // 올려진 장소 확인
     @GetMapping("/{promiseId}/{page}")
     public BaseResponse<Object> viewPlaceBoard(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                               @PathVariable String promiseId,
-                                               @PathVariable int page) {
+                                               @PathVariable("promiseId") String promiseId,
+                                               @PathVariable("page") int page) {
         String userId = userPrincipal.getId();
         PlaceBoardDTO dto = placeBoardService.getPlaceBoard(userId, promiseId, page);
         return new BaseResponse<>(dto);

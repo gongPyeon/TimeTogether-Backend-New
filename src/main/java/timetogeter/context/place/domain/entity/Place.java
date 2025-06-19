@@ -41,7 +41,7 @@ public class Place {
     }
 
     public boolean hasVotedBy(String userId) {
-        return this.userId == userId;
+        return this.userId != null && this.userId.equals(userId);
     }
 
     public void vote() {

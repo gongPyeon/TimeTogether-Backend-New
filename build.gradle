@@ -192,3 +192,8 @@ clean {
 tasks.withType(JavaCompile) {
 	options.generatedSourceOutputDirectory = file('src/main/generated')
 }
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs += '-parameters'
+}
+

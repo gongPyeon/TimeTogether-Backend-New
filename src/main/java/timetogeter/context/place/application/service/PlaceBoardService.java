@@ -30,13 +30,13 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     private final PromiseConfirmService promiseConfirmService; // promise <= place 의존
 
     public PlaceBoardDTO getPlaceBoard(String userId, String promiseId, int page) {
-        PageRequest pageRequest = PageRequest.of(page, PLACE_PAGE);
+        PageRequest pageRequest = PageRequest.of(page - 1, PLACE_PAGE);
         Page<Place> placePage = placeRepository.findByPromiseId(promiseId, pageRequest);
 
         List<PlaceDTO> places = placePage.getContent()
                 .stream()
                 .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceAddr(), p.getPlaceUrl(), p.getVoting(),
-                        p.hasVotedBy(userId),  // 투표 유무
+                        p.hasVotedBy(userId),  // 장소 삭제 유무
                         votingService.hasVotedBy(userId, p.getPlaceId()))) // 투표 취소가 가능한지
                 .collect(Collectors.toList());
 
