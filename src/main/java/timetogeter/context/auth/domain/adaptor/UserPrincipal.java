@@ -9,7 +9,7 @@ import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.context.auth.application.dto.RegisterResponse;
-import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.exception.AuthFailureException;
 
 import java.util.Collection;
 import java.util.Collections;

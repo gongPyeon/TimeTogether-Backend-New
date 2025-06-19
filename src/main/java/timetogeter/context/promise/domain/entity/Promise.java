@@ -1,9 +1,6 @@
 package timetogeter.context.promise.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import timetogeter.context.group.domain.entity.Group;
 import timetogeter.context.promise.domain.vo.PromiseType;
@@ -22,6 +19,8 @@ public class Promise {
 
     private String groupId;
     private String title;
+
+    @Enumerated(EnumType.STRING)
     private PromiseType type;
 
     private String promiseImg;
@@ -29,6 +28,7 @@ public class Promise {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private int num; // TODO: (추가함) 약속 인원수
 
     private Promise(String groupId, String title, PromiseType promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
         this.promiseId = UUID.randomUUID().toString();

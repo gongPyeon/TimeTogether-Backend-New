@@ -12,6 +12,7 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_PARAMETER(1000,HttpStatus.BAD_REQUEST, "파라미터 값이 없습니다!"),
     INTERNAL_SERVER_ERROR(500,HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류입니다!"),
     RESOURCE_NOT_FOUND(1002,HttpStatus.NOT_FOUND, "요청 url이 존재하지 않습니다!"),
+    BAD_REQUEST(400 ,HttpStatus.BAD_REQUEST, "잘못된 URL 요청이에요. 요청 포맷을 확인해주세요"),
 
     //인증&인가 에러
     INVALID_LOGIN(400, HttpStatus.BAD_REQUEST, "예외처리 아이디 또는 비밀번호를 확인해주세요"),
@@ -33,8 +34,19 @@ public enum BaseErrorCode implements StatusCode {
     FAIL_LOGIN(401, HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호를 확인해주세요"),
     ACCOUNT_LOCKED(401, HttpStatus.UNAUTHORIZED, "계정이 잠겨 있습니다. 나중에 다시 시도하세요."),
     REDIS_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "세션 저장에 실패했어요"),
+
     SCHEDULE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "일정이 존재하지 않아요"),
     GROUP_NOT_FOUND(404, HttpStatus.NOT_FOUND, "그룹이 존재하지 않아요"),
+    PLACE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "장소를 찾을 수 없어요"),
+    INVALID_PLACE_NUM(400, HttpStatus.BAD_REQUEST, "장소 등록은 최대 5개까지 가능해요"),
+    PROMISE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속을 찾을 수 없어요"),
+    PROMISE_MANGER_FORBIDDEN(403, HttpStatus.FORBIDDEN, "약속장에 대한 접근 권한이 없어요"),
+    VOTE_NUM_MAX(400, HttpStatus.BAD_REQUEST, "더이상 투표할 수 없어요"),
+    PAGE_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "총 페이지를 초과한 요청이에요"),
+    INVALID_VOTE(400, HttpStatus.BAD_REQUEST, "투표를 취소권한이 없어요"),
+    PLACE_NULL(400, HttpStatus.BAD_REQUEST, "장소등록에 필수정보가 누락됐어요"),
+    INVALID_PLACE_NAME(400, HttpStatus.BAD_REQUEST, "장소등록은 1자 이상 30자 이내여야해요"),
+    INVALID_PLACE_INFO(400, HttpStatus.BAD_REQUEST, "장소정보는 200자 이내여야해요"),
 
 
     //그룹 에러

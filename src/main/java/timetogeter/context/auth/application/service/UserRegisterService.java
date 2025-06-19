@@ -8,7 +8,7 @@ import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.context.auth.application.dto.RegisterResponse;
 import timetogeter.context.auth.application.dto.RegisterUserCommand;
-import timetogeter.context.auth.application.exception.UserNotFoundException;
+import timetogeter.context.auth.exception.UserNotFoundException;
 
 @Service
 @Transactional

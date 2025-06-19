@@ -1,11 +1,8 @@
 package timetogeter.global.common.util.redis;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import timetogeter.context.auth.application.exception.RedisException;
-import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

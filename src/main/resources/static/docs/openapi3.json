@@ -497,40 +497,461 @@
                     }
                 }
             }
+        },
+        "/api/v1/promise/create1": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey\ub85c \uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "description": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey\ub85c \uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "operationId": "create-promise/test-promise-create1",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create11109087919"
+                            },
+                            "examples": {
+                                "create-promise/test-promise-create1": {
+                                    "value": "{\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\",\n  \"encGroupId\" : \"21R517Z8ICrEK7vskd3gNq9yA1VWfEVgkx1hpjf8U+O8oS54tK16QepuIjRk8Rtm4XbYRA==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create1907128396"
+                                },
+                                "examples": {
+                                    "create-promise/test-promise-create1": {
+                                        "value": "{\n  \"data\" : {\n    \"encencGroupMemberId\" : \"rUN52v4hfGbYIua7lci6dqgnZFkrZhx00WkYwXTlNeG56FddH8d/WffmYQoX5TrOmzSKUA==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create2": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "description": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "operationId": "create-promise/test-promise-create2",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create2-911754331"
+                            },
+                            "examples": {
+                                "create-promise/test-promise-create2": {
+                                    "value": "{\n  \"encUserId\" : \"Cr9nxjou18jf38nu0aJ4Iyn9tDLVvzT37qMD\",\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create21722234578"
+                                },
+                                "examples": {
+                                    "create-promise/test-promise-create2": {
+                                        "value": "{\n  \"data\" : {\n    \"encGroupKey\" : \"p3U0jakid0CAKP6k1LiMda4uQjgrTk9wQ+Ks+q/wxgItTlzwb7OE3Q==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create3": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc57d\uc18d\uc7a5 \uc815\ubcf4\ub97c \ub118\uae30\uace0 \uc57d\uc18d\uc744 \uc0dd\uc131\ud558\uc5ec \uc57d\uc18d ID\ub97c \ubc18\ud658\ud55c\ub2e4.",
+                "description": "\uc57d\uc18d\uc7a5 \uc815\ubcf4\ub97c \ub118\uae30\uace0 \uc57d\uc18d\uc744 \uc0dd\uc131\ud558\uc5ec \uc57d\uc18d ID\ub97c \ubc18\ud658\ud55c\ub2e4.",
+                "operationId": "create-promise/test-promise-create3",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create3953253930"
+                            },
+                            "examples": {
+                                "create-promise/test-promise-create3": {
+                                    "value": "{\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\",\n  \"title\" : \"\uc9c4\ub2ec\ub798\uc804 \uc5f0\uad6c1\",\n  \"type\" : \"ONLINE\",\n  \"promiseImg\" : \"\uc9c4\ub2ec\ub798\uc804 \uc5f0\uad6c \uadf8\ub9bc\",\n  \"encManagerId\" : \"bloomberg\",\n  \"startDate\" : \"2025-05-30\",\n  \"endDate\" : \"2025-06-03\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create3-1197217228"
+                                },
+                                "examples": {
+                                    "create-promise/test-promise-create3": {
+                                        "value": "{\n  \"data\" : {\n    \"promiseId\" : \"01bb0b8f-ea3f-4d0d-8ed8-8b6ce07ca665\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create4": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc608\ube44 \uc57d\uc18d\uc6d0\ub4e4\uc758 \uac1c\uc778\ud0a4\ub85c \uc554\ud638\ud654\ud55c \uadf8\ub8f9\ud0a4 \ub9ac\uc2a4\ud2b8\ub97c \ubc18\ud658\ud55c\ub2e4.",
+                "description": "\uc608\ube44 \uc57d\uc18d\uc6d0\ub4e4\uc758 \uac1c\uc778\ud0a4\ub85c \uc554\ud638\ud654\ud55c \uadf8\ub8f9\ud0a4 \ub9ac\uc2a4\ud2b8\ub97c \ubc18\ud658\ud55c\ub2e4.",
+                "operationId": "create-promise/test-promise-create4",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create4978184609"
+                            },
+                            "examples": {
+                                "create-promise/test-promise-create4": {
+                                    "value": "{\n  \"encUserIdList\" : [ \"Cr9nxjou18jf38nu0aJ4Iyn9tDLVvzT37qMD\", \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\" ],\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create4608894360"
+                                },
+                                "examples": {
+                                    "create-promise/test-promise-create4": {
+                                        "value": "{\n  \"data\" : {\n    \"encGroupKeyList\" : [ \"p3U0jakid0CAKP6k1LiMda4uQjgrTk9wQ+Ks+q/wxgItTlzwb7OE3Q==\", \"2C86SvvD3azjoYXwu+1CPGKiDMSSVBnNQCp3Fo9azTwJjOIRRp+K7A==\" ]\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/createView1": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "description": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "operationId": "create-promise-view/test-view-group1",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-createView1264906456"
+                            },
+                            "examples": {
+                                "create-promise-view/test-view-group1": {
+                                    "value": "{\n  \"encGroupId\" : \"21R517Z8ICrEK7vskd3gNq9yA1VWfEVgkx1hpjf8U+O8oS54tK16QepuIjRk8Rtm4XbYRA==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-createView1889451167"
+                                },
+                                "examples": {
+                                    "create-promise-view/test-view-group1": {
+                                        "value": "{\n  \"data\" : {\n    \"encGroupId\" : \"21R517Z8ICrEK7vskd3gNq9yA1VWfEVgkx1hpjf8U+O8oS54tK16QepuIjRk8Rtm4XbYRA==\",\n    \"encencGroupMemberId\" : \"rUN52v4hfGbYIua7lci6dqgnZFkrZhx00WkYwXTlNeG56FddH8d/WffmYQoX5TrOmzSKUA==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/createView2": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "description": "\uc0ac\uc6a9\uc790\uac00 \uc18d\ud55c \uadf8\ub8f9\uc758 encGroupKey \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "operationId": "create-promise-view/test-view-group2",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-createView2657229359"
+                            },
+                            "examples": {
+                                "create-promise-view/test-view-group2": {
+                                    "value": "{\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\",\n  \"encGroupMemberId\" : \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create21722234578"
+                                },
+                                "examples": {
+                                    "create-promise-view/test-view-group2": {
+                                        "value": "{\n  \"data\" : {\n    \"encGroupKey\" : \"2C86SvvD3azjoYXwu+1CPGKiDMSSVBnNQCp3Fo9azTwJjOIRRp+K7A==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/createView3": {
+            "post": {
+                "tags": [
+                    "\uadf8\ub8f9 \uad00\ub828 API"
+                ],
+                "summary": "\uadf8\ub8f9 ID\ub85c \ud574\ub2f9 \uadf8\ub8f9\uc5d0 \uc18d\ud55c \uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "description": "\uadf8\ub8f9 ID\ub85c \ud574\ub2f9 \uadf8\ub8f9\uc5d0 \uc18d\ud55c \uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 \uc815\ubcf4\ub97c \uc870\ud68c\ud55c\ub2e4.",
+                "operationId": "create-promise-view/test-view-group3",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-createView31330730678"
+                            },
+                            "examples": {
+                                "create-promise-view/test-view-group3": {
+                                    "value": "{\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-createView3-1283647294"
+                                },
+                                "examples": {
+                                    "create-promise-view/test-view-group3": {
+                                        "value": "{\n  \"data\" : {\n    \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\",\n    \"groupName\" : \"\uc9c4\ub2ec\ub798\uc804\",\n    \"groupImg\" : \"\uc9c4\ub2ec\ub798\uba39\uae30\ubaa8\uc784\",\n    \"managerId\" : \"bloomberg\",\n    \"encUserId\" : [ \"Cr9nxjou18jf38nu0aJ4Iyn9tDLVvzT37qMD\", \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\" ]\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create/join1": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "Step1 - \uadf8\ub8f9 \ucc38\uc5ec \uc694\uccad \uc2dc encGroupId\ub97c \ubcf4\ub0b4\uace0 encencGroupMemberId\ub97c \uc751\ub2f5\ubc1b\ub294\ub2e4.",
+                "description": "Step1 - \uadf8\ub8f9 \ucc38\uc5ec \uc694\uccad \uc2dc encGroupId\ub97c \ubcf4\ub0b4\uace0 encencGroupMemberId\ub97c \uc751\ub2f5\ubc1b\ub294\ub2e4.",
+                "operationId": "join-promise/test-promise-join1",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create-join1-843643097"
+                            },
+                            "examples": {
+                                "join-promise/test-promise-join1": {
+                                    "value": "{\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\",\n  \"encGroupId\" : \"pA53EOSdisanosC4/oguf2P+TanvZhPdBcilpVNVDLqHAZZEYJFJN3mMqaKyyHaAK3rnyQ==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create-join1533011955"
+                                },
+                                "examples": {
+                                    "join-promise/test-promise-join1": {
+                                        "value": "{\n  \"data\" : {\n    \"encencGroupMemberId\" : \"0gl/Hef+gY/93NjFsN1YPwbyUee4Yw+bAqzm/D5Rd8CaeJ8YzH3Nm6K13x/pO5zLnMplUA==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create/join2": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "Step2 - encencGroupMemberId \ubcf5\ud638\ud654 \ud6c4 encUserId, groupId\ub97c \ubcf4\ub0b4\uba74 encGroupKey\ub97c \uc751\ub2f5\ubc1b\uc74c",
+                "description": "Step2 - encencGroupMemberId \ubcf5\ud638\ud654 \ud6c4 encUserId, groupId\ub97c \ubcf4\ub0b4\uba74 encGroupKey\ub97c \uc751\ub2f5\ubc1b\uc74c",
+                "operationId": "join-promise/test-create-join-promise2",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create-join21536048800"
+                            },
+                            "examples": {
+                                "join-promise/test-create-join-promise2": {
+                                    "value": "{\n  \"encUserId\" : \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\",\n  \"groupId\" : \"5e9c0739-1717-4574-84c7-60515c21284a\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create21722234578"
+                                },
+                                "examples": {
+                                    "join-promise/test-create-join-promise2": {
+                                        "value": "{\n  \"data\" : {\n    \"encGroupKey\" : \"2C86SvvD3azjoYXwu+1CPGKiDMSSVBnNQCp3Fo9azTwJjOIRRp+K7A==\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create/join3": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "Step3 - encUserId\ub97c \ubcf4\ub0b4 Redis\uc5d0\uc11c 'PENDING' \uc0c1\ud0dc\uc778 \uc54c\ub9bc \uac12 \uc870\ud68c \ubc0f \ubc18\ud658",
+                "description": "Step3 - encUserId\ub97c \ubcf4\ub0b4 Redis\uc5d0\uc11c 'PENDING' \uc0c1\ud0dc\uc778 \uc54c\ub9bc \uac12 \uc870\ud68c \ubc0f \ubc18\ud658",
+                "operationId": "join-promise/test-create-join-promise3",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create-join3-1755935794"
+                            },
+                            "examples": {
+                                "join-promise/test-create-join-promise3": {
+                                    "value": "{\n  \"encUserId\" : \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create-join31178076350"
+                                },
+                                "examples": {
+                                    "join-promise/test-create-join-promise3": {
+                                        "value": "{\n  \"data\" : {\n    \"value\" : \"55Nfbri0tOQpJs58WZgZhSJI3SC2Lh9Zx/Iq5xGLVx55fDQqIs20FQ==::01bb0b8f-ea3f-4d0d-8ed8-8b6ce07ca665\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/promise/create/join4": {
+            "post": {
+                "tags": [
+                    "\uc57d\uc18d \uad00\ub828 API"
+                ],
+                "summary": "Step4 - \uc57d\uc18d \ucc38\uc5ec \uc218\ub77d \ud6c4 \uad00\ub828 \ud14c\uc774\ube14 \uc800\uc7a5",
+                "description": "Step4 - \uc57d\uc18d \ucc38\uc5ec \uc218\ub77d \ud6c4 \uad00\ub828 \ud14c\uc774\ube14 \uc800\uc7a5",
+                "operationId": "join-promise/test-create-join-promise4",
+                "requestBody": {
+                    "content": {
+                        "application/json;charset=UTF-8": {
+                            "schema": {
+                                "$ref": "#/components/schemas/api-v1-promise-create-join4-901272191"
+                            },
+                            "examples": {
+                                "join-promise/test-create-join-promise4": {
+                                    "value": "{\n  \"encPromiseId\" : \"oVosEeTIgZmn9pa6r4guLmSuTam+YRzdC5qm9wMGCejUD5QQ/7ITXNm/O5GuXli7/K9rsA==\",\n  \"encPromiseMemberId\" : \"8wchHLnI3I3t7wnc4koeSHMIhMY6jjNX+A=\",\n  \"encUserId\" : \"Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A==\",\n  \"encPromiseKey\" : \"/w5hEaXd94b7pK2xvfItJRyFKPCzVBnNnB/WYzX0B/hoy0DU3JzM1w==\"\n}"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "200",
+                        "content": {
+                            "application/json;charset=UTF-8": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/api-v1-promise-create-join4-1783582307"
+                                },
+                                "examples": {
+                                    "join-promise/test-create-join-promise4": {
+                                        "value": "{\n  \"data\" : {\n    \"message\" : \"\uc57d\uc18d \ucc38\uc5ec\ub97c \uc218\ub77d\ud558\uc168\uc2b5\ub2c8\ub2e4.\"\n  },\n  \"code\" : 200,\n  \"message\" : \"\uc694\uccad\uc5d0 \uc131\uacf5\ud588\uc2b5\ub2c8\ub2e4.\"\n}"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
         "schemas": {
-            "api-v1-group-edit2-1374996181": {
-                "type": "object",
-                "properties": {
-                    "groupId": {
-                        "type": "string",
-                        "description": "\uadf8\ub8f9 ID (UUID)"
-                    },
-                    "encUserId": {
-                        "type": "string",
-                        "description": "\uc0ac\uc6a9\uc790\uc758 \uc554\ud638\ud654\ub41c ID"
-                    }
-                }
-            },
-            "api-v1-group-invite31455123611": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "number",
-                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
-                    },
-                    "data": {
-                        "type": "string",
-                        "description": "\ucd08\ub300\ucf54\ub4dc \uc720\ud6a8\uae30\uac04 \uc548\ub0b4 \uba54\uc2dc\uc9c0"
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
-                    }
-                }
-            },
             "api-v1-group-new11900566729": {
                 "type": "object",
                 "properties": {
@@ -553,17 +974,9 @@
                     }
                 }
             },
-            "api-v1-group-new21050840647": {
+            "api-v1-promise-create2-911754331": {
                 "type": "object",
                 "properties": {
-                    "encGroupKey": {
-                        "type": "string",
-                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \ud0a4"
-                    },
-                    "encencGroupMemberId": {
-                        "type": "string",
-                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
-                    },
                     "groupId": {
                         "type": "string",
                         "description": "\uadf8\ub8f9 ID"
@@ -571,10 +984,69 @@
                     "encUserId": {
                         "type": "string",
                         "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
-                    },
-                    "encGroupId": {
+                    }
+                }
+            },
+            "api-v1-promise-createView2657229359": {
+                "type": "object",
+                "properties": {
+                    "encGroupMemberId": {
                         "type": "string",
-                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                    },
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-group-view1-1075332319": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "encencGroupMemberId": {
+                                    "type": "string",
+                                    "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                                },
+                                "encGroupId": {
+                                    "type": "string",
+                                    "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                                }
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-create-join4-901272191": {
+                "type": "object",
+                "properties": {
+                    "encPromiseKey": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc57d\uc18d \ud0a4"
+                    },
+                    "encPromiseId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc57d\uc18d ID"
+                    },
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
+                    },
+                    "encPromiseMemberId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc57d\uc18d\uc6d0 ID"
                     }
                 }
             },
@@ -628,25 +1100,43 @@
                     }
                 }
             },
-            "api-v1-group-view1-1075332319": {
+            "api-v1-promise-create-join31178076350": {
                 "type": "object",
                 "properties": {
                     "code": {
                         "type": "number",
-                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "description": "\uc54c\ub9bc\uac12"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-view22090364689": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
                     },
                     "data": {
                         "type": "array",
                         "items": {
                             "type": "object",
                             "properties": {
-                                "encencGroupMemberId": {
+                                "encGroupKey": {
                                     "type": "string",
-                                    "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
-                                },
-                                "encGroupId": {
-                                    "type": "string",
-                                    "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                                    "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \ud0a4"
                                 }
                             }
                         }
@@ -654,6 +1144,361 @@
                     "message": {
                         "type": "string",
                         "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-view3319494336": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "groupName": {
+                                    "type": "string",
+                                    "description": "\uadf8\ub8f9 \uc774\ub984"
+                                },
+                                "groupId": {
+                                    "type": "string",
+                                    "description": "\uadf8\ub8f9 ID"
+                                },
+                                "encUserId": {
+                                    "type": "array",
+                                    "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID \ubaa9\ub85d",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "object"
+                                            },
+                                            {
+                                                "type": "boolean"
+                                            },
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "number"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "groupImg": {
+                                    "type": "string",
+                                    "description": "\uadf8\ub8f9 \uc774\ubbf8\uc9c0"
+                                },
+                                "managerId": {
+                                    "type": "string",
+                                    "description": "\uadf8\ub8f9 \uad00\ub9ac\uc790 ID"
+                                }
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-create-join1-843643097": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\ucc38\uc5ec\ud560 \uadf8\ub8f9 ID"
+                    },
+                    "encGroupId": {
+                        "type": "string",
+                        "description": "\uac1c\uc778\ud0a4\ub85c \uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-promise-create4608894360": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encGroupKeyList": {
+                                "type": "array",
+                                "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9\ud0a4 \ub9ac\uc2a4\ud2b8",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        },
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-createView1264906456": {
+                "type": "object",
+                "properties": {
+                    "encGroupId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-promise-create3-1197217228": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "promiseId": {
+                                "type": "string",
+                                "description": "\uc0dd\uc131\ub41c \uc57d\uc18d ID"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-create-join3-1755935794": {
+                "type": "object",
+                "properties": {
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
+                    }
+                }
+            },
+            "api-v1-group-invite1-338505591": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encencGroupMemberId": {
+                                "type": "string",
+                                "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-createView1889451167": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encencGroupMemberId": {
+                                "type": "string",
+                                "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                            },
+                            "encGroupId": {
+                                "type": "string",
+                                "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-invite2839906899": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID (UUID)"
+                    },
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
+                    }
+                }
+            },
+            "api-v1-group-edit3-1212575388": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID (UUID)"
+                    }
+                }
+            },
+            "api-v1-promise-create1907128396": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encencGroupMemberId": {
+                                "type": "string",
+                                "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-invite1-1434218147": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID (UUID)"
+                    },
+                    "encGroupId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-group-new2-1490398539": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "groupName": {
+                                "type": "string",
+                                "description": "\uadf8\ub8f9 \uc774\ub984"
+                            },
+                            "groupId": {
+                                "type": "string",
+                                "description": "\uc0dd\uc131\ub41c \uadf8\ub8f9 ID"
+                            },
+                            "groupImg": {
+                                "type": "string",
+                                "description": "\uadf8\ub8f9 \uc774\ubbf8\uc9c0"
+                            },
+                            "managerId": {
+                                "type": "string",
+                                "description": "\uadf8\ub8f9 \uad00\ub9ac\uc790 ID"
+                            },
+                            "groupExplain": {
+                                "type": "string",
+                                "description": "\uadf8\ub8f9 \uc124\uba85"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-edit2-1374996181": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID (UUID)"
+                    },
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uc0ac\uc6a9\uc790\uc758 \uc554\ud638\ud654\ub41c ID"
+                    }
+                }
+            },
+            "api-v1-group-invite31455123611": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
+                    },
+                    "data": {
+                        "type": "string",
+                        "description": "\ucd08\ub300\ucf54\ub4dc \uc720\ud6a8\uae30\uac04 \uc548\ub0b4 \uba54\uc2dc\uc9c0"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-group-new21050840647": {
+                "type": "object",
+                "properties": {
+                    "encGroupKey": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \ud0a4"
+                    },
+                    "encencGroupMemberId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
+                    },
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID"
+                    },
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
+                    },
+                    "encGroupId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-promise-createView31330730678": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID"
                     }
                 }
             },
@@ -720,31 +1565,6 @@
                     }
                 }
             },
-            "api-v1-group-view22090364689": {
-                "type": "object",
-                "properties": {
-                    "code": {
-                        "type": "number",
-                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
-                    },
-                    "data": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "encGroupKey": {
-                                    "type": "string",
-                                    "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \ud0a4"
-                                }
-                            }
-                        }
-                    },
-                    "message": {
-                        "type": "string",
-                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
-                    }
-                }
-            },
             "api-v1-group-edit1-1229538209": {
                 "type": "object",
                 "properties": {
@@ -770,7 +1590,36 @@
                     }
                 }
             },
-            "api-v1-group-view3319494336": {
+            "api-v1-promise-create4978184609": {
+                "type": "object",
+                "properties": {
+                    "encUserIdList": {
+                        "type": "array",
+                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID \ub9ac\uc2a4\ud2b8",
+                        "items": {
+                            "oneOf": [
+                                {
+                                    "type": "object"
+                                },
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "number"
+                                }
+                            ]
+                        }
+                    },
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-promise-create-join4-1783582307": {
                 "type": "object",
                 "properties": {
                     "code": {
@@ -778,52 +1627,30 @@
                         "description": "\uc751\ub2f5 \ucf54\ub4dc"
                     },
                     "data": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "groupName": {
-                                    "type": "string",
-                                    "description": "\uadf8\ub8f9 \uc774\ub984"
-                                },
-                                "groupId": {
-                                    "type": "string",
-                                    "description": "\uadf8\ub8f9 ID"
-                                },
-                                "encUserId": {
-                                    "type": "array",
-                                    "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID \ubaa9\ub85d",
-                                    "items": {
-                                        "oneOf": [
-                                            {
-                                                "type": "object"
-                                            },
-                                            {
-                                                "type": "boolean"
-                                            },
-                                            {
-                                                "type": "string"
-                                            },
-                                            {
-                                                "type": "number"
-                                            }
-                                        ]
-                                    }
-                                },
-                                "groupImg": {
-                                    "type": "string",
-                                    "description": "\uadf8\ub8f9 \uc774\ubbf8\uc9c0"
-                                },
-                                "managerId": {
-                                    "type": "string",
-                                    "description": "\uadf8\ub8f9 \uad00\ub9ac\uc790 ID"
-                                }
+                        "type": "object",
+                        "properties": {
+                            "message": {
+                                "type": "string",
+                                "description": "\uc751\ub2f5 \uc0c1\uc138 \uba54\uc2dc\uc9c0"
                             }
                         }
                     },
                     "message": {
                         "type": "string",
                         "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-create-join21536048800": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\ucc38\uc5ec \uadf8\ub8f9 ID"
+                    },
+                    "encUserId": {
+                        "type": "string",
+                        "description": "\uac1c\uc778\ud0a4\ub85c \ubcf5\ud638\ud654\ud55c \uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
                     }
                 }
             },
@@ -854,6 +1681,63 @@
                     "groupExplain": {
                         "type": "string",
                         "description": "\uadf8\ub8f9 \uc124\uba85"
+                    }
+                }
+            },
+            "api-v1-promise-create11109087919": {
+                "type": "object",
+                "properties": {
+                    "groupId": {
+                        "type": "string",
+                        "description": "\uadf8\ub8f9 ID"
+                    },
+                    "encGroupId": {
+                        "type": "string",
+                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                    }
+                }
+            },
+            "api-v1-promise-create21722234578": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encGroupKey": {
+                                "type": "string",
+                                "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 \ud0a4"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
+                    }
+                }
+            },
+            "api-v1-promise-create-join1533011955": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "description": "\uc751\ub2f5 \ucf54\ub4dc"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "encencGroupMemberId": {
+                                "type": "string",
+                                "description": "\uc11c\ubc84\uac00 \ucd94\uac00 \uc554\ud638\ud654\ud55c \uadf8\ub8f9\uba64\ubc84 ID"
+                            }
+                        }
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
                     }
                 }
             },
@@ -895,64 +1779,40 @@
                     }
                 }
             },
-            "api-v1-group-invite1-338505591": {
+            "api-v1-promise-create3953253930": {
                 "type": "object",
                 "properties": {
-                    "code": {
-                        "type": "number",
-                        "description": "\uc751\ub2f5 \ucf54\ub4dc (200)"
-                    },
-                    "data": {
-                        "type": "object",
-                        "properties": {
-                            "encencGroupMemberId": {
-                                "type": "string",
-                                "description": "\uc774\uc911 \uc554\ud638\ud654\ub41c \uadf8\ub8f9 \uba64\ubc84 ID"
-                            }
-                        }
-                    },
-                    "message": {
+                    "endDate": {
                         "type": "string",
-                        "description": "\uc751\ub2f5 \uba54\uc2dc\uc9c0"
-                    }
-                }
-            },
-            "api-v1-group-invite2839906899": {
-                "type": "object",
-                "properties": {
+                        "description": "\uc885\ub8cc \ub0a0\uc9dc (yyyy-MM-dd)"
+                    },
                     "groupId": {
                         "type": "string",
-                        "description": "\uadf8\ub8f9 ID (UUID)"
+                        "description": "\uadf8\ub8f9 ID"
                     },
-                    "encUserId": {
+                    "encManagerId": {
                         "type": "string",
-                        "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID"
-                    }
-                }
-            },
-            "api-v1-group-edit3-1212575388": {
-                "type": "object",
-                "properties": {
-                    "groupId": {
-                        "type": "string",
-                        "description": "\uadf8\ub8f9 ID (UUID)"
-                    }
-                }
-            },
-            "api-v1-group-invite1-1434218147": {
-                "type": "object",
-                "properties": {
-                    "groupId": {
-                        "type": "string",
-                        "description": "\uadf8\ub8f9 ID (UUID)"
+                        "description": "\uc554\ud638\ud654\ub41c \uc57d\uc18d\uc7a5 \uc0ac\uc6a9\uc790 ID"
                     },
-                    "encGroupId": {
+                    "type": {
                         "type": "string",
-                        "description": "\uc554\ud638\ud654\ub41c \uadf8\ub8f9 ID"
+                        "description": "\uc57d\uc18d \uc720\ud615 (\uc608: ONLINE, OFFLINE)"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "\uc57d\uc18d \uc81c\ubaa9"
+                    },
+                    "promiseImg": {
+                        "type": "string",
+                        "description": "\uc57d\uc18d \uc774\ubbf8\uc9c0 \ub610\ub294 \uc124\uba85"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "description": "\uc2dc\uc791 \ub0a0\uc9dc (yyyy-MM-dd)"
                     }
                 }
             },
-            "api-v1-group-new2-1490398539": {
+            "api-v1-promise-createView3-1283647294": {
                 "type": "object",
                 "properties": {
                     "code": {
@@ -968,7 +1828,27 @@
                             },
                             "groupId": {
                                 "type": "string",
-                                "description": "\uc0dd\uc131\ub41c \uadf8\ub8f9 ID"
+                                "description": "\uadf8\ub8f9 ID"
+                            },
+                            "encUserId": {
+                                "type": "array",
+                                "description": "\uc554\ud638\ud654\ub41c \uc0ac\uc6a9\uc790 ID \ubaa9\ub85d",
+                                "items": {
+                                    "oneOf": [
+                                        {
+                                            "type": "object"
+                                        },
+                                        {
+                                            "type": "boolean"
+                                        },
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "number"
+                                        }
+                                    ]
+                                }
                             },
                             "groupImg": {
                                 "type": "string",
@@ -976,11 +1856,7 @@
                             },
                             "managerId": {
                                 "type": "string",
-                                "description": "\uadf8\ub8f9 \uad00\ub9ac\uc790 ID"
-                            },
-                            "groupExplain": {
-                                "type": "string",
-                                "description": "\uadf8\ub8f9 \uc124\uba85"
+                                "description": "\uadf8\ub8f9\uc7a5 ID"
                             }
                         }
                     },

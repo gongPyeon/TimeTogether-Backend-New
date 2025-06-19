@@ -1,7 +1,7 @@
 package timetogeter.context.auth.infrastructure.external.oauth2.userInfo;
 
 import timetogeter.context.auth.domain.vo.Provider;
-import timetogeter.context.auth.application.exception.InvalidProviderException;
+import timetogeter.context.auth.exception.InvalidProviderException;
 
 import java.util.Map;
 
