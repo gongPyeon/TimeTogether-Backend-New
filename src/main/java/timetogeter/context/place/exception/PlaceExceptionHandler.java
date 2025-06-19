@@ -41,4 +41,10 @@ public class PlaceExceptionHandler {
         log.error("PlaceExceptionHandler.handle_VoteNotFoundException <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
+
+    @ExceptionHandler(InvalidPlaceInfoException.class)
+    public ResponseEntity<ErrorResponse> handle_InvalidPlaceInfoException(InvalidPlaceInfoException e) {
+        log.error("PlaceExceptionHandler.handle_InvalidPlaceInfoException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }

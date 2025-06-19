@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/place")
-@Slf4j
 public class PlaceController {
 
     private final PlaceBoardService placeBoardService;
@@ -38,7 +37,7 @@ public class PlaceController {
     // 내가 올린 장소 삭제
     @DeleteMapping("/{placeId}")
     public BaseResponse<Object> deletePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                               @PathVariable int placeId) {
+                                               @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         myPlaceService.deletePlace(userId, placeId);
         return new BaseResponse<>(BaseCode.SUCCESS_DELETE);
@@ -46,10 +45,10 @@ public class PlaceController {
 
     // 투표
     // TODO: Vote Controller의 위치
-    @PostMapping("vote/{promiseId}/{placeId}")
+    @PostMapping("/vote/{promiseId}/{placeId}")
     public BaseResponse<Object> votePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                          @PathVariable String promiseId,
-                                          @PathVariable int placeId) {
+                                          @PathVariable("promiseId") String promiseId,
+                                          @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         placeBoardService.vote(userId, promiseId, placeId);
         return new BaseResponse<>(BaseCode.SUCCESS_VOTE);
@@ -58,7 +57,7 @@ public class PlaceController {
     // 투표 취소
     @DeleteMapping("vote/{placeId}")
     public BaseResponse<Object> cancelVotePlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                @PathVariable int placeId) {
+                                                @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         placeBoardService.deleteVote(userId, placeId);
         return new BaseResponse<>(BaseCode.SUCCESS_DELETE_VOTE);
@@ -69,7 +68,7 @@ public class PlaceController {
     @PostMapping("/register/{promiseId}")
     public BaseResponse<Object> registerPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                @RequestBody List<PlaceRegisterDTO> dto,
-                                               @PathVariable String promiseId) {
+                                               @PathVariable("promiseId") String promiseId) {
         String userId = userPrincipal.getId();
         myPlaceService.registerPlace(userId, promiseId, dto);
         return new BaseResponse<>(BaseCode.SUCCESS_REGISTER_PLACE);
@@ -79,7 +78,7 @@ public class PlaceController {
     @PostMapping("/check/ai/{promiseId}")
     public BaseResponse<Object> checkAIPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                              @RequestBody UserAIInfoReqDTO reqDTO,
-                                             @PathVariable String promiseId) {
+                                             @PathVariable("promiseId") String promiseId) {
         String userId = userPrincipal.getId(); // 이미 다 암호화되어있음
         List<PlaceRegisterDTO> dto = myPlaceService.recommendPlace(userId, promiseId, reqDTO);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_REGISTER_PLACE);
