@@ -12,12 +12,10 @@ import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.promise.application.dto.request.detail.OverallPromiseViewRequest3;
 import timetogeter.context.promise.application.dto.request.detail.OverallPromiseViewRequest4;
 import timetogeter.context.promise.application.dto.request.detail.OverallPromiseviewRequest2;
-import timetogeter.context.promise.application.dto.request.manage.CreatePromiseViewRequest1;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse1;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse2;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse3;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse4;
-import timetogeter.context.promise.application.dto.response.manage.CreatePromiseViewResponse1;
 import timetogeter.context.promise.application.service.PromiseDetailInfoService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
