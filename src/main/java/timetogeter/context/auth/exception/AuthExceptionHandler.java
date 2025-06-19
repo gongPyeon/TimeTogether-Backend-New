@@ -17,6 +17,12 @@ public class AuthExceptionHandler {
         return ErrorResponse.of(e.getStatus());
     }
 
+    @ExceptionHandler(InvalidAuthException.class)
+    public ResponseEntity<ErrorResponse> handle_InvalidAuthException(InvalidAuthException e) {
+        log.error("AuthExceptionHandler.handle_InvalidAuthException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
+
     @ExceptionHandler(InvalidJwtException.class)
     public ResponseEntity<ErrorResponse> handle_InvalidJwtException(InvalidJwtException e) {
         log.error("AuthExceptionHandler.handle_InvalidJwtException <{}> {}", e.getMessage(), e);
