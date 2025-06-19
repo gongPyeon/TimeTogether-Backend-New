@@ -27,7 +27,7 @@ public class PromiseConfirmService {
                 .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND,
                 "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));
 
-        return managerId == userId;
+        return managerId.equals(userId);
     }
 
     public PromiseRegisterDTO confirmedSchedule(String promiseId, PlaceRegisterDTO place) {

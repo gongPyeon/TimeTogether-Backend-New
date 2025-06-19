@@ -17,5 +17,5 @@ public interface PlaceRepository extends JpaRepository<Place, String> {
 
 
     @Query("SELECT p FROM Place p WHERE p.promiseId = :promiseId AND p.isConfirmed = true")
-    Optional<Place> findConfirmPlaceById(String promiseId);
+    Optional<Place> findConfirmPlaceById(@Param("promiseId") String promiseId);
 }

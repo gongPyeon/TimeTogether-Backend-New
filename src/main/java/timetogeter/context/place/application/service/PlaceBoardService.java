@@ -62,16 +62,19 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         placeRepository.save(place);
     }
 
+    @Transactional
     public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId) {
         boolean isConfirmed = promiseConfirmService.confirmedPlaceManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
         Place place = get(placeId); place.confirm();
+        placeRepository.save(place);
 
         PlaceRegisterDTO PlaceRegisterDTO = new PlaceRegisterDTO(place.getPlaceId(), place.getPlaceName(), place.getPlaceUrl());
         return promiseConfirmService.confirmedSchedule(promiseId, PlaceRegisterDTO);
     }
 
+    @Transactional
     public PromiseRegisterDTO reConfirmedPlace(String userId, String promiseId, int placeId) {
         boolean isConfirmed = promiseConfirmService.confirmedPlaceManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
@@ -79,6 +82,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         Place currentConfirmed = placeRepository.findConfirmPlaceById(promiseId).orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 약속에 해당하는 확정된 장소를 찾을 수 없습니다."));
         currentConfirmed.revokeConfirmation();
         Place newPlace = get(placeId); newPlace.confirm();
+        placeRepository.save(newPlace);
 
         PlaceRegisterDTO updatePlaceRegisterDTO = new PlaceRegisterDTO(newPlace.getPlaceId(), newPlace.getPlaceName(), newPlace.getPlaceUrl());
         return promiseConfirmService.confirmedSchedule(promiseId, updatePlaceRegisterDTO);

@@ -19,12 +19,13 @@ public class BaseResponse<T> {
     }
 
     public BaseResponse(BaseCode baseCode) {
-        code = baseCode.getCode();
-        message = baseCode.getMessage();
+        this.code = baseCode.getCode();
+        this.message = baseCode.getMessage();
     }
 
     public BaseResponse(T result, BaseCode baseCode) {
-        code = baseCode.getCode();
-        message = baseCode.getMessage();
+        this.code = baseCode.getCode();
+        this.message = baseCode.getMessage();
+        this.result = result;
     }
 }

@@ -87,20 +87,20 @@ public class PlaceController {
 
     // 방장일 시 장소 확정
     // TODO: PromiseRegisterDTO의 위치
-    @PostMapping("/confirm/{placeId}")
+    @PostMapping("/confirm/{promiseId}/{placeId}")
     public BaseResponse<Object> confirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                              @PathVariable String promiseId,
-                                              @PathVariable int placeId) {
+                                              @PathVariable("promiseId") String promiseId,
+                                              @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
     // 방장일 시 장소 수정
-    @PostMapping("/confirm/re/{placeId}")
+    @PostMapping("/confirm/re/{promiseId}/{placeId}")
     public BaseResponse<Object> reConfirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 @PathVariable String promiseId,
-                                                 @PathVariable int placeId) {
+                                                 @PathVariable("promiseId") String promiseId,
+                                                 @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.reConfirmedPlace(userId, promiseId, placeId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
