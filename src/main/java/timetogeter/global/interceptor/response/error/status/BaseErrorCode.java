@@ -48,7 +48,7 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_PLACE_NAME(400, HttpStatus.BAD_REQUEST, "장소등록은 1자 이상 30자 이내여야해요"),
     INVALID_PLACE_INFO(400, HttpStatus.BAD_REQUEST, "장소정보는 200자 이내여야해요"),
     PROMISE_TIME_RANGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속에 시간범위 정보가 존재하지 않아요"),
-
+    PROMISE_CHECK_NOT_FOUND(404, HttpStatus.NOT_FOUND, "임시 약속 테이블을 찾을 수 없어요"),
 
     //그룹 에러
     GROUP_ID_NOTFOUND(400, HttpStatus.NOT_FOUND, "존재하지 않는 그룹 아이디 입니다."),

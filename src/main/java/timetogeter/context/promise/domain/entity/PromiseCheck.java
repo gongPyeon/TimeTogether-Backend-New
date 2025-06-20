@@ -1,4 +1,4 @@
-package timetogeter.context.time.domain.entity;
+package timetogeter.context.promise.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,8 +18,15 @@ public class PromiseCheck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int promiseCheckId;
 
-    private int dateId;
     private String promiseId;
-    private String dateTime; // TODO: 추가
-    private boolean isConfirmed;
+    private String dateTime;
+    private int placeId;
+
+    public PromiseCheck(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public PromiseCheck(int placeId) {
+        this.placeId = placeId;
+    }
 }

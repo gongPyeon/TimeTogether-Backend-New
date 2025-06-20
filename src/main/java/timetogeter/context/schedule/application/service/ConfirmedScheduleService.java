@@ -2,6 +2,7 @@ package timetogeter.context.schedule.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import timetogeter.context.schedule.application.dto.PromiseDetailDTO;
 import timetogeter.context.schedule.application.dto.PromiseResDTO;
 import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
@@ -44,12 +45,12 @@ public class ConfirmedScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ScheduleNotFoundException(BaseErrorCode.SCHEDULE_NOT_FOUND, "[ERROR} " + scheduleId + "에 해당하는 일정이 존재하지 않습니다."));
 
-        // TODO: PromiseId는 별도의 테이블에서 관리해야함 -> Schedule에서 Promise에 접근할 수 있도록
-        List<String> names = promiseShareKeyRepository.findByPromiseId(schedule.getPromiseId()).stream()
+        List<String> names = promiseShareKeyRepository.findByPromiseId(schedule.getScheduleId()).stream()
                 .map(s -> s.getEncUserId())
                 .collect(Collectors.toList());
 
-        return new PromiseDetailResDTO(scheduleId, schedule.getTitle(), schedule.getType(), schedule.getPlace(), schedule.getGroupName(), names);
+        PromiseDetailDTO dto = scheduleRepository.findDetailByScheduleId(scheduleId);
+        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), names);
     }
 
     public PromiseListResDTO searchPromiseView(String query, List<String> filter) {

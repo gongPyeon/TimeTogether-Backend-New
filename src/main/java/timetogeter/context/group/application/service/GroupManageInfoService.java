@@ -71,7 +71,7 @@ public class GroupManageInfoService {
         return new CreateGroup2Response(
                 groupFound.getGroupId(),
                 groupFound.getGroupName(),
-                groupFound.getDescription(),
+                groupFound.getGroupInfo(),
                 groupFound.getGroupImg(),
                 groupFound.getManagerId()
         );
@@ -146,7 +146,7 @@ public class GroupManageInfoService {
 
         return new EditGroup3Response(
                 group.getGroupName(),
-                group.getDescription(),
+                group.getGroupInfo(),
                 group.getGroupImg(),
                 encUserIdList
         );

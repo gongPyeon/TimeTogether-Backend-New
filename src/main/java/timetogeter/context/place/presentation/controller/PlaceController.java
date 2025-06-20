@@ -96,14 +96,4 @@ public class PlaceController {
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
-    // 방장일 시 장소 수정
-    @PostMapping("/confirm/re/{promiseId}/{placeId}")
-    public BaseResponse<Object> reConfirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 @PathVariable("promiseId") String promiseId,
-                                                 @PathVariable("placeId") int placeId) {
-        String userId = userPrincipal.getId();
-        PromiseRegisterDTO dto = placeBoardService.reConfirmedPlace(userId, promiseId, placeId);
-        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
-    }
-
 }

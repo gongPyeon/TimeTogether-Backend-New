@@ -15,32 +15,31 @@ import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Place {
+public class PromisePlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int placeId;
 
     private String promiseId;
+    private String userId;
+
     private String placeName;
-    private String placeAddr; // 주소
-    private String placeUrl;
-    private String placeInfo; // goal >> placeInfo
-    private boolean isConfirmed;
+    private String placeAddr;
+    private String placeInfo;
+
     private int voting;
+    private Boolean aiPlace;
 
-    private String userId; // 암호화된 사용자 고유 아이디
-
-    public Place(String promiseId, String placeName, String placeAddr, String placeUrl, String placeInfo, String userId) {
+    public PromisePlace(String promiseId, String placeName, String placeAddr, String placeInfo, String userId, boolean aiPlace) {
         validatePlace(placeName, placeAddr, placeInfo);
         this.promiseId = promiseId;
         this.placeAddr = placeAddr;
         this.placeName = placeName;
-        this.placeUrl = placeUrl;
         this.placeInfo = placeInfo;
-        this.isConfirmed = false;
         this.voting = 0;
         this.userId = userId;
+        this.aiPlace = aiPlace;
     }
 
     private void validatePlace(String placeName, String placeAddr, String placeInfo) {
@@ -76,13 +75,5 @@ public class Place {
 
     public void cancelVote() {
         voting--;
-    }
-
-    public void confirm() {
-        this.isConfirmed = true;
-    }
-
-    public void revokeConfirmation() {
-        this.isConfirmed = false;
     }
 }
