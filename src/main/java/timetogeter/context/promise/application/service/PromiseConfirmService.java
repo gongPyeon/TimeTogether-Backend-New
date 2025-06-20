@@ -20,7 +20,7 @@ public class PromiseConfirmService {
     private final PromiseCheckRepository promiseCheckRepository;
 
 
-    public boolean confirmedPlaceManager(String userId, String promiseId){
+    public boolean confirmedPromiseManager(String userId, String promiseId){
         String managerId = promiseRepository.findMangerById(promiseId)
                 .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND,
                 "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));

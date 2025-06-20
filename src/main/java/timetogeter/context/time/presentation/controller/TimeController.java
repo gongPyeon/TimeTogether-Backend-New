@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
 import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
@@ -49,6 +50,15 @@ public class TimeController {
                                                  @PathVariable("promiseId") String promiseId) {
         String userId = userPrincipal.getId();
         UserScheduleResDTO dto = myTimeService.loadUserSchedule(userId, promiseId);
+        return new BaseResponse<>(dto);
+    }
+
+    @PostMapping("/confirm/{promiseId}")
+    public BaseResponse<Object> confirmDateTime(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                @PathVariable("promiseId") String promiseId,
+                                                @RequestBody String dateTime) {
+        String userId = userPrincipal.getId();
+        PromiseRegisterDTO dto = timeBoardService.confirmDateTime(userId, promiseId, dateTime);
         return new BaseResponse<>(dto);
     }
 }

@@ -63,7 +63,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     @Transactional
     public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId) {
-        boolean isConfirmed = promiseConfirmService.confirmedPlaceManager(userId, promiseId);
+        boolean isConfirmed = promiseConfirmService.confirmedPromiseManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
         promiseConfirmService.confirmPromisePlace(promiseId, placeId);

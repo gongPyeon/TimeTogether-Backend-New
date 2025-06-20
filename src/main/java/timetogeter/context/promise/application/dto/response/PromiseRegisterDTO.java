@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class PromiseRegisterDTO {
     private String dateTime;
     private String title;
-    private PromiseType type;
+    private String purpose;
     private int placeId;
 }
 

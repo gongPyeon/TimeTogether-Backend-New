@@ -1,8 +1,10 @@
 package timetogeter.context.schedule.application.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import timetogeter.context.schedule.application.dto.PromiseDetailDTO;
+import timetogeter.context.schedule.application.dto.request.ScheduleConfirmReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseResDTO;
 import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
@@ -11,6 +13,7 @@ import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.exception.ScheduleNotFoundException;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
+import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -57,9 +60,15 @@ public class ConfirmedScheduleService {
         List<Schedule> result = scheduleRepository.searchByQueryAndFilters(query, filter);
 
         List<PromiseResDTO> dtoList = result.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
+                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
                 .toList();
 
         return new PromiseListResDTO(dtoList);
+    }
+
+    @Transactional
+    public void confirmSchedule(String groupId, ScheduleConfirmReqDTO reqDTO) {
+        Schedule schedule = new Schedule(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
+        scheduleRepository.save(schedule);
     }
 }
