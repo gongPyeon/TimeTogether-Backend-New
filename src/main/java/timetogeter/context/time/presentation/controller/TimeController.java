@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
 import timetogeter.context.time.application.dto.response.TimeBoardResDTO;

@@ -5,13 +5,9 @@ import org.springframework.stereotype.Service;
 import timetogeter.context.promise.application.dto.TimeRange;
 import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
-import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
-import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.schedule.application.dto.PromiseRangeDTO;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +39,11 @@ public class PromiseQueryService { // promise 테이블에 대한 단순 조회 
         Promise promise = get(promiseId);
 
         return new PromiseRangeDTO(promise.getStartDate(), promise.getEndDate());
+    }
+
+    public String getPromiseManager(String promiseId) {
+        Promise promise = get(promiseId);
+
+        return promise.getManagerId();
     }
 }

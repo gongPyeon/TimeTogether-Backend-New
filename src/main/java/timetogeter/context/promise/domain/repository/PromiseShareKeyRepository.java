@@ -13,5 +13,5 @@ public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey
     List<PromiseShareKey> findByPromiseId(String promiseId);
 
     @Query("SELECT p.encUserId FROM PromiseShareKey p WHERE p.promiseId = :promiseId")
-    List<String> findAllUserByPromiseId(String promiseId);
+    List<String> findUserIdsByPromiseId(String promiseId);
 }
