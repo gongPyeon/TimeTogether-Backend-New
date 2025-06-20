@@ -17,7 +17,8 @@ public enum BaseCode implements StatusCode {
     SUCCESS_DELETE_VOTE("투표를 취소했어요"),
     SUCCESS_REGISTER_PLACE("장소 등록에 성공했어요"),
     SUCCESS_CONFIRM_PLACE("장소를 확정했어요. 확정 후 일주일 뒤엔 수정이 불가능하니 다시 한번 확인해주세요"),
-    SUCCESS_RECONFIRM_PLACE("장소를 재확정했어요. 확정 후 일주일 뒤엔 수정이 불가능하니 다시 한번 확인해주세요"); // TODO: 기간 확인
+    SUCCESS_RECONFIRM_PLACE("장소를 재확정했어요. 확정 후 일주일 뒤엔 수정이 불가능하니 다시 한번 확인해주세요"),
+    TIME_OK("내 시간을 저장했어요"); // TODO: 기간 확인
 
     private final int code;
     private final String message;

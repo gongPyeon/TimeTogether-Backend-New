@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -25,4 +26,10 @@ public class PromiseTime {
 
     private LocalTime time;
     private String userId;
+
+    public PromiseTime(int dateId, LocalTime time, String userId) {
+        this.dateId = dateId;
+        this.time = time;
+        this.userId = userId;
+    }
 }

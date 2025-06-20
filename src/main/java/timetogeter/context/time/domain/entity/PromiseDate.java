@@ -20,6 +20,12 @@ public class PromiseDate {
 
     @Enumerated(EnumType.STRING)
     private WeekDay weekDay;
-    private LocalDate day; // 1-31
+    private LocalDate date; // 1-31
     private String promiseId;
+
+    public PromiseDate(WeekDay weekDay, LocalDate date, String promiseId) {
+        this.weekDay = weekDay;
+        this.date = date;
+        this.promiseId = promiseId;
+    }
 }

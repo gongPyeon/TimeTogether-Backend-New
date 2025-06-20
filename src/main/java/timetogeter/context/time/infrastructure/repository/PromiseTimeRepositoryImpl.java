@@ -29,16 +29,16 @@ public class PromiseTimeRepositoryImpl implements PromiseTimeRepositoryCustom {
         QPromiseTime t = QPromiseTime.promiseTime;
 
         List<Tuple> result = queryFactory
-                .select(d.day, t.time)
+                .select(d.date, t.time)
                 .from(d)
                 .join(t).on(d.dateId.eq(t.dateId))
                 .where(d.promiseId.eq(promiseId))
-                .orderBy(d.day.asc(), t.time.asc())
+                .orderBy(d.date.asc(), t.time.asc())
                 .fetch();
 
         Map<LocalDate, List<TimeSlotDTO>> grouped = result.stream()
                 .collect(Collectors.groupingBy(
-                        tuple -> tuple.get(d.day),
+                        tuple -> tuple.get(d.date),
                         Collectors.mapping(
                                 tuple -> new TimeSlotDTO(
                                         tuple.get(t.time),
@@ -67,7 +67,7 @@ public class PromiseTimeRepositoryImpl implements PromiseTimeRepositoryCustom {
                 .join(u).on(t.userId.eq(u.userId))
                 .where(
                         d.promiseId.eq(promiseId),
-                        d.day.eq(date),
+                        d.date.eq(date),
                         t.time.eq(time)
                 )
                 .fetch();
