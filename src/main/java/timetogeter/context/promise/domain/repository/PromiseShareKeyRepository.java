@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey, String> {
@@ -14,4 +15,7 @@ public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey
 
     @Query("SELECT p.encUserId FROM PromiseShareKey p WHERE p.promiseId = :promiseId")
     List<String> findUserIdsByPromiseId(String promiseId);
+
+    @Query("SELECT p FROM PromiseShareKey p WHERE p.encPromiseKey = :encPromiseKey")
+    Optional<PromiseShareKey> findByEncPromiseKey(String encPromiseKey);
 }

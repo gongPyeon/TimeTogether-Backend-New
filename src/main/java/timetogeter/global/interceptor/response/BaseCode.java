@@ -18,6 +18,7 @@ public enum BaseCode implements StatusCode {
     SUCCESS_REGISTER_PLACE("장소 등록에 성공했어요"),
     SUCCESS_CONFIRM_PLACE("장소를 확정했어요."),
     SUCCESS_SCHEDULE_UPDATE("일정 등록에 성공했어요"),
+    SUCCESS_EXIT_PROMISE("약속을 나갔어요"),
     TIME_OK("내 시간을 저장했어요"); // TODO: 기간 확인
 
     private final int code;

@@ -31,4 +31,8 @@ public class PromiseShareKey {
     public static PromiseShareKey of (String promiseId, String encUserId, String encPromiseKey,String scheduleId){
         return new PromiseShareKey(promiseId, scheduleId,  encUserId,  encPromiseKey);
     }
+
+    public void updateScheduleId(String scheduleId) {
+        this.scheduleId = scheduleId;
+    }
 }

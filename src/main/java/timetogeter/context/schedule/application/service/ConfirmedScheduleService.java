@@ -3,6 +3,8 @@ package timetogeter.context.schedule.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import timetogeter.context.promise.domain.entity.PromiseShareKey;
+import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.context.schedule.application.dto.PromiseDetailDTO;
 import timetogeter.context.schedule.application.dto.request.ScheduleConfirmReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseResDTO;
@@ -30,7 +32,7 @@ public class ConfirmedScheduleService {
     public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO) {
         List<Schedule> schedules = scheduleRepository.findAllByScheduleIdIn(reqDTO.scheduleIdList());
         List<PromiseResDTO> promiseResDTOList = schedules.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
+                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
                 .collect(Collectors.toList());
 
         return new PromiseListResDTO(promiseResDTOList);
@@ -38,7 +40,7 @@ public class ConfirmedScheduleService {
     public PromiseListResDTO getPromiseViewByGroup(String groupId, GetPromiseBatchReqDTO reqDTO) {
         List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndScheduleIdIn(groupId, reqDTO.scheduleIdList());
         List<PromiseResDTO> promiseResDTOList = schedules.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))
+                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
                 .collect(Collectors.toList());
 
         return new PromiseListResDTO(promiseResDTOList);
@@ -70,5 +72,11 @@ public class ConfirmedScheduleService {
     public void confirmSchedule(String groupId, ScheduleConfirmReqDTO reqDTO) {
         Schedule schedule = new Schedule(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
         scheduleRepository.save(schedule);
+
+        PromiseShareKey promiseShareKey = promiseShareKeyRepository.findByEncPromiseKey(reqDTO.encPromiseKey())
+                .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_KEY_NOT_FOUND, "[ERROR] 약속 공유키 테이블을 찾을 수 없습니다."));
+
+        promiseShareKey.updateScheduleId(reqDTO.scheduleId());
+        promiseShareKeyRepository.save(promiseShareKey);
     }
 }
