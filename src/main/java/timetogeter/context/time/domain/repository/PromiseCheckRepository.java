@@ -1,4 +1,4 @@
-package timetogeter.context.time.infrastructure.repository;
+package timetogeter.context.time.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

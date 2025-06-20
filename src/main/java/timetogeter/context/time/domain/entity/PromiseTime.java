@@ -1,22 +1,27 @@
 package timetogeter.context.time.domain.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogeter.context.time.domain.vo.WeekDay;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalTime;
 
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Date {
+public class PromiseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int timeId;
+
     private int dateId;
 
-    @Enumerated(EnumType.STRING)
-    private WeekDay weekDay;
-    private int day; // 1-31
+    private LocalTime time;
 }

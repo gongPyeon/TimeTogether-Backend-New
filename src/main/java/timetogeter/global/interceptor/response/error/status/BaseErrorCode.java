@@ -47,6 +47,7 @@ public enum BaseErrorCode implements StatusCode {
     PLACE_NULL(400, HttpStatus.BAD_REQUEST, "장소등록에 필수정보가 누락됐어요"),
     INVALID_PLACE_NAME(400, HttpStatus.BAD_REQUEST, "장소등록은 1자 이상 30자 이내여야해요"),
     INVALID_PLACE_INFO(400, HttpStatus.BAD_REQUEST, "장소정보는 200자 이내여야해요"),
+    PROMISE_TIME_RANGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속에 시간범위 정보가 존재하지 않아요"),
 
 
     //그룹 에러

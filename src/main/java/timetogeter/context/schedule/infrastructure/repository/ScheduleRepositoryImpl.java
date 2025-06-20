@@ -2,6 +2,7 @@ package timetogeter.context.schedule.infrastructure.repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import timetogeter.context.auth.domain.repository.custom.UserRepositoryCustom;
 import timetogeter.context.schedule.domain.entity.QSchedule;
@@ -11,13 +12,9 @@ import timetogeter.context.schedule.domain.repository.custom.ScheduleRepositoryC
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
-
-    public ScheduleRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
-
 
     // TODO: 사람 이름이 아닌, 그룹 이름으로 조회
     // TODO: groupName 변경 시 문제! (정규화문제) - HOW?
