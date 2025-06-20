@@ -3,6 +3,7 @@ package timetogeter.context.time.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import timetogeter.context.promise.application.service.PromiseQueryService;
 import timetogeter.context.time.application.dto.UserTimeSlotDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
 import timetogeter.context.time.domain.entity.PromiseDate;
@@ -23,9 +24,6 @@ public class MyTimeService {
 
     @Transactional
     public void updateUserTime(String userId, String promiseId, UserTimeSlotReqDTO reqDTO) {
-        // TODO: PromiseCheck는 없어도 될 것 같음
-        // TODO: 날짜 범위 내 있는지 확인 (예외처리) 고민
-
         for(UserTimeSlotDTO dateTime : reqDTO.dateTime()){ // find or create 로 분리할지 고민
             PromiseDate date = promiseDateRepository
                     .findByPromiseIdAndDate(promiseId, dateTime.date())

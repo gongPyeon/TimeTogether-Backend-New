@@ -17,7 +17,7 @@ import java.util.List;
 public class PromiseQueryService { // promise 테이블에 대한 단순 조회 서비스
 
     private final PromiseRepository promiseRepository;
-    private final PromiseShareKeyRepository promiseShareKeyRepository;
+
     public TimeRange getTimeRange(String promiseId) {
         Promise promise = get(promiseId);
         if(promise.getStartDate() == null || promise.getEndDate() == null)
@@ -26,9 +26,10 @@ public class PromiseQueryService { // promise 테이블에 대한 단순 조회 
         return new TimeRange(promise.getStartDate(), promise.getEndDate());
     }
 
-    // TODO: 어디서 사용할지 확인
-    public List<String> getAllUserByPromiseId(String promiseId) {
-        return promiseShareKeyRepository.findAllUserByPromiseId(promiseId);
+    public String getPurpose(String promiseId) {
+        Promise promise = get(promiseId);
+
+        return promise.getPurpose();
     }
 
     private Promise get(String promiseId){

@@ -7,6 +7,7 @@ import timetogeter.context.place.application.dto.PlaceRatingDTO;
 import timetogeter.context.place.application.dto.request.AIReqDTO;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
+import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
 import timetogeter.context.place.domain.entity.PromisePlace;
 import timetogeter.context.place.domain.repository.PromisePlaceRepository;
 import timetogeter.context.place.exception.InvalidPlaceNumException;
@@ -14,6 +15,8 @@ import timetogeter.context.place.exception.PlaceNotFoundException;
 import timetogeter.context.place.exception.PlaceUserIdNotSame;
 import timetogeter.context.place.infrastructure.external.AIPlaceClient;
 import timetogeter.context.place.domain.repository.PlaceBoardRepository;
+import timetogeter.context.promise.application.service.PromiseQueryService;
+import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -26,6 +29,7 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
     private final PromisePlaceRepository placeRepository;
     private final PlaceBoardRepository placeBoardRepository;
     private final AIPlaceClient aiPlaceClient;
+    private final PromiseQueryService promiseQueryService;
 
     public void deletePlace(String userId, int placeId) {
         PromisePlace place = placeRepository.findByPlaceId(placeId)
@@ -47,9 +51,10 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
         placeRepository.saveAll(places);
     }
 
-    public List<PlaceRegisterDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
+    public List<PlaceRegisterResDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
         List<PlaceRatingDTO> placeRatingDTOList = getByPlaceHistory(userId);
-        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), dto.preferredCategories(), placeRatingDTOList);
+        String purpose = promiseQueryService.getPurpose(promiseId);
+        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), purpose, placeRatingDTOList);
         return aiPlaceClient.requestAIRecommendation(aiReqDTO);
     }
 
