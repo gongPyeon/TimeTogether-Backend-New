@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.promise.application.dto.request.*;
-import timetogeter.context.promise.application.dto.response.*;
+import timetogeter.context.promise.application.dto.request.manage.*;
+import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
