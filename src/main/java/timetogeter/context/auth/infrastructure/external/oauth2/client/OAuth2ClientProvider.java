@@ -3,7 +3,7 @@ package timetogeter.context.auth.infrastructure.external.oauth2.client;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import timetogeter.context.auth.domain.vo.Provider;
-import timetogeter.context.auth.application.exception.InvalidProviderException;
+import timetogeter.context.auth.exception.InvalidProviderException;
 
 @Component
 @RequiredArgsConstructor

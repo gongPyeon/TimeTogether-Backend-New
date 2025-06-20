@@ -3,7 +3,7 @@ package timetogeter.context.auth.infrastructure.external.oauth2.parser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.exception.AuthFailureException;
 
 import java.util.Map;
 

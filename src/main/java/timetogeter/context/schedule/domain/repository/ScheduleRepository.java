@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import timetogeter.context.schedule.domain.entity.Schedule;
+import timetogeter.context.schedule.domain.repository.custom.ScheduleRepositoryCustom;
 
 import java.util.List;
 
@@ -12,4 +13,7 @@ import java.util.List;
 public interface ScheduleRepository  extends JpaRepository<Schedule, String> {
     @Query(value = "SELECT * FROM schedule WHERE schedule_id IN (:scheduleIdList)", nativeQuery = true)
     List<Schedule> findByScheduleIdIn(@Param("scheduleIdList") List<String> scheduleIdList);
+
+    List<Schedule> findAllByGroupIdAndScheduleIdIn(String groupId, List<String> strings);
+
 }

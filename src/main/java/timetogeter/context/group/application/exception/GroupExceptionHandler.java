@@ -40,4 +40,10 @@ public class GroupExceptionHandler {
         log.error("GroupExceptionHandler.handle_GroupInviteCodeExpired <{}> {}", e.getMessage(), e);
         return ErrorResponse.of(e.getStatus());
     }
+
+    @ExceptionHandler(GroupNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handle_GroupNotFoundException(GroupNotFoundException e) {
+        log.error("GroupExceptionHandler.handle_GroupNotFoundException <{}> {}", e.getMessage(), e);
+        return ErrorResponse.of(e.getStatus());
+    }
 }

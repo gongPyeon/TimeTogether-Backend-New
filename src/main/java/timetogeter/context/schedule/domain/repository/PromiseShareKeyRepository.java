@@ -12,5 +12,6 @@ import java.util.List;
 public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey, String> {
     @Query(value = "SELECT schedule_id FROM promise_share_key WHERE enc_promise_key IN (:encPromiseKeyList)", nativeQuery = true)
     List<String> findScheduleIdsByEncPromiseKeyList(@Param("encPromiseKeyList") List<String> encPromiseKeyList);
-}
 
+    List<PromiseShareKey> findByPromiseId(String promiseId);
+}
