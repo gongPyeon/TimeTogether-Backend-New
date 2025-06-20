@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.schedule.application.dto.request.CalendarCreateRequest1;
+import timetogeter.context.schedule.application.dto.request.CalendarRewriteRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest2;
 import timetogeter.context.schedule.application.dto.response.CalendarCreateResponse1;
+import timetogeter.context.schedule.application.dto.response.CalendarRewriteResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
 import timetogeter.context.schedule.application.service.CalendarDetailService;
@@ -97,5 +99,26 @@ public class CalendarManageController {
         CalendarCreateResponse1 response = calendarDetailService.createCalendar1(requests);
         return SuccessResponse.from(response);
     }
+
+//======================
+// 캘린더 - 일정 수정 (Step1)
+//======================
+
+    /*
+    [웹] encPromiseKey와 수정하는 부분 함께 요청
+        /api/v1/calendar/rewrite1
+
+    [서버] scheduleId에 해당하는 것에 수정해서 반환
+     */
+    @PostMapping(value = "/rewirte1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<CalendarRewriteResponse1> rewriteCalendar1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CalendarRewriteRequest1 requests) throws Exception{
+        String userId = userPrincipal.getId();
+        CalendarRewriteResponse1 response = calendarDetailService.rewriteCalendar1(requests);
+        return SuccessResponse.from(response);
+    }
+
+
 
 }

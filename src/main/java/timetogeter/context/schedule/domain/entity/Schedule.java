@@ -39,10 +39,10 @@ public class Schedule {
             String place,
             String placeUrl,
             LocalDateTime startDateTime,
-            LocalDateTime endDateTime
-            //String groupId,
-            //String groupName,
-            //String promiseId
+            LocalDateTime endDateTime,
+            String groupId,
+            String groupName,
+            String promiseId
     ) {
         Schedule schedule = new Schedule();
         schedule.scheduleId = UUID.randomUUID().toString();
@@ -53,9 +53,28 @@ public class Schedule {
         schedule.placeUrl = placeUrl;
         schedule.startDateTime = startDateTime;
         schedule.endDateTime = endDateTime;
-        //schedule.groupId = groupId;
-        //schedule.groupName = groupName;
-        //schedule.promiseId = promiseId;
+        schedule.groupId = groupId;
+        schedule.groupName = groupName;
+        schedule.promiseId = promiseId;
         return schedule;
     }
+
+    public void update(
+            String title,
+            String content,
+            String type,
+            String place,
+            String placeUrl,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime
+    ) {
+        if (title != null) this.title = title;
+        if (content != null) this.content = content;
+        if (type != null) this.type = type;
+        if (place != null) this.place = place;
+        if (placeUrl != null) this.placeUrl = placeUrl;
+        if (startDateTime != null) this.startDateTime = startDateTime;
+        if (endDateTime != null) this.endDateTime = endDateTime;
+    }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import timetogeter.context.schedule.domain.entity.PromiseShareKey;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey, String> {
@@ -17,4 +18,11 @@ public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey
 
     @Query(value = "SELECT * FROM promise_share_key WHERE enc_promise_key IN (:encPromiseKeyList)", nativeQuery = true)
     List<PromiseShareKey> findByEncPromiseKeyIn(@Param("encPromiseKeyList") List<String> encPromiseKeyList);
+
+    @Query(value = "SELECT * FROM promise_share_key WHERE enc_promise_key = :encPromiseKey AND enc_user_id = :encUserId", nativeQuery = true)
+    Optional<PromiseShareKey> findByEncPromiseKeyAndEncUserId(
+            @Param("encPromiseKey") String encPromiseKey,
+            @Param("encUserId") String encUserId
+    );
+
 }
