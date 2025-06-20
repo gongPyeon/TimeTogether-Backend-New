@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.schedule.application.dto.request.CalendarCreateRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest2;
+import timetogeter.context.schedule.application.dto.response.CalendarCreateResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
+import timetogeter.context.schedule.application.service.CalendarDetailService;
 import timetogeter.context.schedule.application.service.CalendarViewService;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
@@ -25,6 +28,7 @@ import java.util.List;
 public class CalendarManageController {
 
     private final CalendarViewService calendarViewService;
+    private final CalendarDetailService calendarDetailService;
 
 
 //======================
@@ -73,7 +77,25 @@ public class CalendarManageController {
 
 
 //======================
-// 캘린더 - 일정등록 (Step1,2)
+// 캘린더 - 일정등록 (Step1)
 //======================
+
+    /*
+    [웹] Schedule 내 저장할
+        title, content, type, place, placeUrl, startDateTime, endDateTime,
+        encPromiseKey(개인키를 개인키로 암호화), encUserId(유저아이디를 개인키로 암호화)
+        내용 담아 요청
+    /api/v1/calendar/create1
+
+    [서버] Schedule 테이블, PromiseShareKey 테이블 내에 저장
+     */
+    @PostMapping(value = "/create1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<CalendarCreateResponse1> createCalendar1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CalendarCreateRequest1 requests) throws Exception{
+        String userId = userPrincipal.getId();
+        CalendarCreateResponse1 response = calendarDetailService.createCalendar1(requests);
+        return SuccessResponse.from(response);
+    }
 
 }
