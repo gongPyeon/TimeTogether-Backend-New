@@ -6,10 +6,10 @@ import timetogeter.context.place.application.dto.PlaceRegisterDTO;
 import timetogeter.context.place.exception.VoteFailException;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.context.promise.domain.entity.Promise;
+import timetogeter.context.promise.domain.entity.PromiseCheck;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.context.time.application.service.TimeConfirmService;
-import timetogeter.context.time.domain.entity.PromiseCheck;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.Optional;

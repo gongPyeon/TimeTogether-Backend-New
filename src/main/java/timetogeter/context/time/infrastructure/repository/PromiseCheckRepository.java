@@ -3,7 +3,7 @@ package timetogeter.context.time.infrastructure.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import timetogeter.context.time.domain.entity.PromiseCheck;
+import timetogeter.context.promise.domain.entity.PromiseCheck;
 
 import java.util.Optional;
 

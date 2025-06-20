@@ -53,7 +53,7 @@ public class ConfirmedScheduleService {
     }
 
     public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
-        List<Schedule> result = scheduleRepository.searchByQueryAndFilters(query, filter);
+        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query, filter);
 
         List<PromiseResDTO> dtoList = result.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getType()))

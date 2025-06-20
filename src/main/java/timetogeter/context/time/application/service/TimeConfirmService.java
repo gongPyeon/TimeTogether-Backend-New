@@ -2,7 +2,7 @@ package timetogeter.context.time.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import timetogeter.context.time.domain.entity.PromiseCheck;
+import timetogeter.context.promise.domain.entity.PromiseCheck;
 import timetogeter.context.time.infrastructure.repository.PromiseCheckRepository;
 
 import java.util.Optional;
