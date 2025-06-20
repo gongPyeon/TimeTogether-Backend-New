@@ -3,7 +3,7 @@ package timetogeter.context.schedule.application.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import timetogeter.context.schedule.application.dto.PromiseDetailDTO;
-import timetogeter.context.schedule.application.dto.PromiseResDTO;
+import timetogeter.context.schedule.application.dto.response.PromiseResDTO;
 import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;

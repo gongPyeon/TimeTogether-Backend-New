@@ -3,9 +3,10 @@ package timetogeter.context.time.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import timetogeter.context.promise.application.service.PromiseQueryService;
+import timetogeter.context.schedule.application.service.ScheduleQueryService;
 import timetogeter.context.time.application.dto.UserTimeSlotDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
+import timetogeter.context.time.application.dto.response.UserScheduleResDTO;
 import timetogeter.context.time.domain.entity.PromiseDate;
 import timetogeter.context.time.domain.entity.PromiseTime;
 import timetogeter.context.time.domain.repository.PromiseDateRepository;
@@ -21,6 +22,7 @@ public class MyTimeService {
 
     private final PromiseDateRepository promiseDateRepository;
     private final PromiseTimeRepository promiseTimeRepository;
+    private final ScheduleQueryService scheduleQueryService;
 
     @Transactional
     public void updateUserTime(String userId, String promiseId, UserTimeSlotReqDTO reqDTO) {
@@ -37,5 +39,11 @@ public class MyTimeService {
             }
 
         }
+    }
+
+    public UserScheduleResDTO loadUserSchedule(String userId, String promiseId) {
+        List<String> scheduleIds = scheduleQueryService.getScheduleIds(userId, promiseId);
+
+        return new UserScheduleResDTO(scheduleIds);
     }
 }

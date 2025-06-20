@@ -8,6 +8,7 @@ import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
 import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
+import timetogeter.context.time.application.dto.response.UserScheduleResDTO;
 import timetogeter.context.time.application.dto.response.UserTimeBoardResDTO;
 import timetogeter.context.time.application.service.MyTimeService;
 import timetogeter.context.time.application.service.TimeBoardService;
@@ -42,5 +43,13 @@ public class TimeController {
         String userId = userPrincipal.getId();
         myTimeService.updateUserTime(userId, promiseId, reqDTO);
         return new BaseResponse<>(BaseCode.TIME_OK);
+    }
+
+    @GetMapping("/my/schedule/{promiseId}")
+    public BaseResponse<Object> loadUserSchedule(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                 @PathVariable("promiseId") String promiseId) {
+        String userId = userPrincipal.getId();
+        UserScheduleResDTO dto = myTimeService.loadUserSchedule(userId, promiseId);
+        return new BaseResponse<>(dto);
     }
 }

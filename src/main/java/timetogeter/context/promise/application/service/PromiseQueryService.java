@@ -8,6 +8,7 @@ import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;
+import timetogeter.context.schedule.application.dto.PromiseRangeDTO;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -36,5 +37,11 @@ public class PromiseQueryService { // promise 테이블에 대한 단순 조회 
         Promise promise = promiseRepository.findById(promiseId)
                 .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND, "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));
         return promise;
+    }
+
+    public PromiseRangeDTO getPromiseRange(String promiseId) {
+        Promise promise = get(promiseId);
+
+        return new PromiseRangeDTO(promise.getStartDate(), promise.getEndDate());
     }
 }

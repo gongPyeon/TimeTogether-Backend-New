@@ -1,4 +1,4 @@
-package timetogeter.context.schedule.application.dto;
+package timetogeter.context.schedule.application.dto.response;
 
 import timetogeter.context.promise.domain.vo.PromiseType;
 

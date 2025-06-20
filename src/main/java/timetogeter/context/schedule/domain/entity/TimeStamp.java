@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -14,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class TimeStamp {
 
     @Id
-    private String timeStampId; // 년 월 일
     private String encTimeStamp; // 년 월 일 시간
+    private LocalDate timeStampInfo; // 년 월 일
     private String userId;
 
 }
