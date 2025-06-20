@@ -30,7 +30,7 @@ public class ConfirmedScheduleService {
 
 
     public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO) {
-        List<Schedule> schedules = scheduleRepository.findAllByScheduleIdIn(reqDTO.scheduleIdList());
+        List<Schedule> schedules = scheduleRepository.findByScheduleIdIn(reqDTO.scheduleIdList());
         List<PromiseResDTO> promiseResDTOList = schedules.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
                 .collect(Collectors.toList());

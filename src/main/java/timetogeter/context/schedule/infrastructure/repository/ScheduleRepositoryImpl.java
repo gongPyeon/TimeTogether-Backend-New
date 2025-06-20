@@ -53,7 +53,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .select(Projections.constructor(PromiseDetailDTO.class,
                         s.scheduleId,
                         s.title,
-                        s.type,
+                        s.purpose,
                         p.placeName,
                         g.groupName
                 ))

@@ -1,4 +1,4 @@
-package timetogeter.context.promise.application.dto.response;
+package timetogeter.context.promise.application.dto.response.manage;
 
 import java.util.List;
 
