@@ -35,7 +35,7 @@ public class PromiseConfirmService {
         PromiseCheck promiseCheck = getPromiseCheck(promiseId);
 
         return new PromiseRegisterDTO(promiseCheck.getDateTime(),
-                promise.getTitle(), promise.getType(),
+                promise.getTitle(), promise.getPurpose(),
                 promiseCheck.getPlaceId());
     }
 
@@ -46,7 +46,7 @@ public class PromiseConfirmService {
         PromiseCheck promiseCheck = getPromiseCheck(promiseId);
 
         return new PromiseRegisterDTO(promiseCheck.getDateTime(),
-                promise.getTitle(), promise.getType(),
+                promise.getTitle(), promise.getPurpose(),
                 promiseCheck.getPlaceId());
     }
 
