@@ -1,0 +1,79 @@
+package timetogeter.context.schedule.presentation.controller;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.schedule.application.dto.request.CalendarViewRequest1;
+import timetogeter.context.schedule.application.dto.request.CalendarViewRequest2;
+import timetogeter.context.schedule.application.dto.response.CalendarViewResponse1;
+import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
+import timetogeter.context.schedule.application.service.CalendarViewService;
+import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/calendar")
+@RequiredArgsConstructor
+@Slf4j
+public class CalendarManageController {
+
+    private final CalendarViewService calendarViewService;
+
+
+//======================
+// 캘린더 - 캘린더 메인, 캘린더 일정 확인 (Step1,2)
+//======================
+
+    /*
+    캘린더 - 캘린더 메인, 일정 확인 - step1
+
+    [웹] 자신이 가진 개인 일정은 PromiseShareKey 테이블 내에서
+        encUserId : 개인키로 암호화된 사용자 아이디
+        encPromiseKey : 개인키로 암호화된 개인키
+        scheduleId : 스케줄 아이디
+        이렇게 저장됨. 따라서 개인키로 개인키를 암호화한 encPromiseKey, 약속키를 개인키로 암호화한 리스트를
+        요청으로 보냄
+        /api/v1/calendar/month1
+
+    [서버] encPromiseKey에 해당하는 scheduleId를 리스트로 반환
+     */
+    @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<CalendarViewResponse1> viewCalendar1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CalendarViewRequest1 requests) throws Exception{
+        String userId = userPrincipal.getId();
+        CalendarViewResponse1 response = calendarViewService.viewCalendar1(requests);
+        return SuccessResponse.from(response);
+    }
+
+    /*
+    캘린더 - 캘린더 메인, 일정 확인 - step2
+
+    [웹] scheduleId를 리스트 형태로 요청
+        /api/v1/calendar/month2
+
+    [서버] scheduleId에 해당하는 Schedule 테이블 내 레코드를 리스트 형태로 반환
+     */
+    @PostMapping(value = "/view2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public SuccessResponse<List<CalendarViewResponse2>> viewCalendar2(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CalendarViewRequest2 requests) throws Exception{
+        String userId = userPrincipal.getId();
+        List<CalendarViewResponse2> response = calendarViewService.viewCalendar2(requests);
+        return SuccessResponse.from(response);
+    }
+
+
+
+//======================
+// 캘린더 - 일정등록 (Step1,2)
+//======================
+
+}
