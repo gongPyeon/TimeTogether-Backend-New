@@ -10,7 +10,6 @@ import timetogeter.context.group.application.exception.GroupProxyUserNotFoundExc
 import timetogeter.context.group.application.exception.GroupShareKeyNotFoundException;
 import timetogeter.context.group.domain.entity.Group;
 import timetogeter.context.group.domain.entity.GroupProxyUser;
-import timetogeter.context.group.domain.entity.GroupShareKey;
 import timetogeter.context.group.domain.repository.GroupProxyUserRepository;
 import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
@@ -20,8 +19,8 @@ import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.context.promise.domain.entity.PromiseProxyUser;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
-import timetogeter.context.schedule.domain.entity.PromiseShareKey;
-import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.promise.domain.entity.PromiseShareKey;
+import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.time.Duration;

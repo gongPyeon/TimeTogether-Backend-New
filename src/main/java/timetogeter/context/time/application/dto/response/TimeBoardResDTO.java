@@ -5,6 +5,6 @@ import timetogeter.context.time.application.dto.TimeRangeDTO;
 
 import java.util.List;
 
-public record TimeBoardDTO(String promiseId,
+public record TimeBoardResDTO(String promiseId,
                            TimeRangeDTO timeRange,
                            List<DailyTimeDTO> availableTimes) {}

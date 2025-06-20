@@ -7,7 +7,7 @@ import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDT
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;
 import timetogeter.context.schedule.domain.entity.Schedule;
-import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.exception.ScheduleNotFoundException;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;

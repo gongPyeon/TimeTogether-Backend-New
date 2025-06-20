@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import timetogeter.context.auth.domain.entity.QUser;
 import timetogeter.context.time.application.dto.DailyTimeDTO;
 import timetogeter.context.time.application.dto.TimeSlotDTO;
 import timetogeter.context.time.domain.entity.QPromiseDate;
@@ -11,6 +12,7 @@ import timetogeter.context.time.domain.entity.QPromiseTime;
 import timetogeter.context.time.domain.repository.custom.PromiseTimeRepositoryCustom;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -50,5 +52,26 @@ public class PromiseTimeRepositoryImpl implements PromiseTimeRepositoryCustom {
                 .map(entry -> new DailyTimeDTO(entry.getKey(), entry.getValue()))
                 .sorted(Comparator.comparing(DailyTimeDTO::date))
                 .toList();
+    }
+
+    @Override
+    public List<String> findUsersAtTime(String promiseId, LocalDate date, LocalTime time) {
+        QUser u = QUser.user;
+        QPromiseDate d = QPromiseDate.promiseDate;
+        QPromiseTime t = QPromiseTime.promiseTime;
+
+        List<String> names = queryFactory
+                .select(u.nickname)
+                .from(d)
+                .join(t).on(d.dateId.eq(t.dateId))
+                .join(u).on(t.userId.eq(u.userId))
+                .where(
+                        d.promiseId.eq(promiseId),
+                        d.day.eq(date),
+                        t.time.eq(time)
+                )
+                .fetch();
+
+        return names;
     }
 }

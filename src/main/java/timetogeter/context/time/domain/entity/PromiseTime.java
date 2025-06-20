@@ -24,4 +24,5 @@ public class PromiseTime {
     private int dateId;
 
     private LocalTime time;
+    private String userId;
 }
