@@ -15,4 +15,8 @@ public interface ScheduleRepository  extends JpaRepository<Schedule, String>, Sc
     List<Schedule> findByScheduleIdIn(@Param("scheduleIdList") List<String> scheduleIdList);
 
     List<Schedule> findAllByGroupIdAndScheduleIdIn(String groupId, List<String> strings);
+
+    @Query(value = "SELECT * FROM schedule WHERE schedule_id IN (:scheduleIdList)", nativeQuery = true)
+    List<Schedule> findByIdIn(@Param("scheduleIdList") List<String> scheduleIdList);
+
 }

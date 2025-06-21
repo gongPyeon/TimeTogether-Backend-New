@@ -59,7 +59,7 @@ public class ConfirmedScheduleService {
     }
 
     public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
-        List<Schedule> result = scheduleRepository.searchByQueryAndFilters(query, filter);
+        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query, filter);
 
         List<PromiseResDTO> dtoList = result.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
@@ -70,7 +70,7 @@ public class ConfirmedScheduleService {
 
     @Transactional
     public void confirmSchedule(String groupId, ScheduleConfirmReqDTO reqDTO) {
-        Schedule schedule = new Schedule(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
+        Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
         scheduleRepository.save(schedule);
 
         PromiseShareKey promiseShareKey = promiseShareKeyRepository.findByEncPromiseKey(reqDTO.encPromiseKey())

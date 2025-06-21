@@ -23,7 +23,7 @@ public class PromiseConfirmService {
     public boolean confirmedPromiseManager(String userId, String promiseId){
         String managerId = promiseRepository.findMangerById(promiseId)
                 .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND,
-                "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));
+                        "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));
 
         return managerId.equals(userId);
     }
