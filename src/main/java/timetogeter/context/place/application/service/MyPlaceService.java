@@ -52,15 +52,15 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
     }
 
     public List<PlaceRegisterResDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
-        List<PlaceRatingDTO> placeRatingDTOList = getByPlaceHistory(userId);
+        List<PlaceRatingDTO> history = getByPlaceHistory(userId);
         String purpose = promiseQueryService.getPurpose(promiseId);
-        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), purpose, placeRatingDTOList);
+        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), purpose, history);
         return aiPlaceClient.requestAIRecommendation(aiReqDTO);
     }
 
     private List<PlaceRatingDTO> getByPlaceHistory(String userId) {
-        List<PlaceRatingDTO> placeRatingDTOList = placeBoardRepository.findAllRatingsByUserId(userId);
+        List<PlaceRatingDTO> history = placeBoardRepository.findAllRatingsByUserId(userId);
 
-        return placeRatingDTOList;
+        return history;
     }
 }
