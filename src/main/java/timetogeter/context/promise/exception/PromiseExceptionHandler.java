@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import timetogeter.context.group.application.exception.GroupIdNotFoundException;
-import timetogeter.context.place.exception.VoteNotFoundException;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 
 @RestControllerAdvice

@@ -6,14 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import timetogeter.context.promise.domain.vo.PromiseType;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class PromiseRegisterDTO {
     private String dateTime;
     private String title;
-    private PromiseType type;
-    private String place;
-    private String placeUrl;
+    private String purpose;
+    private int placeId;
 }
 

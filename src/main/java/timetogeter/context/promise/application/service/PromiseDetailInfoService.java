@@ -12,15 +12,13 @@ import timetogeter.context.promise.application.dto.response.detail.OverallPromis
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse3;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse4;
 import timetogeter.context.promise.domain.entity.Promise;
-import timetogeter.context.promise.domain.entity.PromiseCheck;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
+import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.domain.entity.Schedule;
-import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,9 +88,9 @@ public class PromiseDetailInfoService {
                         schedule.getScheduleId(),
                         schedule.getScheduleId(),
                         schedule.getTitle(),
-                        schedule.getType(),
-                        schedule.getPlace(),
-                        schedule.getPlaceUrl()
+                        schedule.getPurpose(),
+                        schedule.getPlaceId(),
+                        schedule.getGroupId()
                 ))
                 .collect(Collectors.toList());
     }

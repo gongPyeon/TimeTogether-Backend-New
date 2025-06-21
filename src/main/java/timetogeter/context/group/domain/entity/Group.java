@@ -21,13 +21,13 @@ public class Group {
 
     private String groupName;
     private String groupImg;
-    private String description;
+    private String groupInfo;
     private String managerId; // userId
 
     private Group(String groupName, String groupImg, String description, String managerId) {
         this.groupId = UUID.randomUUID().toString();
         this.groupName = groupName;
-        this.description = description;
+        this.groupInfo = description;
         this.groupImg = groupImg;
         this.managerId = managerId;
     }
@@ -49,9 +49,9 @@ public class Group {
             this.groupName = name;
     }
 
-    public void updateExplain(String description){
-        if (description != null)
-            this.description = description;
+    public void updateExplain(String groupInfo){
+        if (groupInfo != null)
+            this.groupInfo = groupInfo;
     }
 
     public void updateImg(String img) {

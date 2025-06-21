@@ -8,6 +8,7 @@ import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
+import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
 import timetogeter.context.place.application.service.MyPlaceService;
 import timetogeter.context.place.application.service.PlaceBoardService;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
@@ -80,7 +81,7 @@ public class PlaceController {
                                              @RequestBody UserAIInfoReqDTO reqDTO,
                                              @PathVariable("promiseId") String promiseId) {
         String userId = userPrincipal.getId(); // 이미 다 암호화되어있음
-        List<PlaceRegisterDTO> dto = myPlaceService.recommendPlace(userId, promiseId, reqDTO);
+        List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(userId, promiseId, reqDTO);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_REGISTER_PLACE);
     }
 
@@ -93,16 +94,6 @@ public class PlaceController {
                                               @PathVariable("placeId") int placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
-        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
-    }
-
-    // 방장일 시 장소 수정
-    @PostMapping("/confirm/re/{promiseId}/{placeId}")
-    public BaseResponse<Object> reConfirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                                 @PathVariable("promiseId") String promiseId,
-                                                 @PathVariable("placeId") int placeId) {
-        String userId = userPrincipal.getId();
-        PromiseRegisterDTO dto = placeBoardService.reConfirmedPlace(userId, promiseId, placeId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 

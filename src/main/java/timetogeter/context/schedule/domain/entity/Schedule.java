@@ -6,7 +6,7 @@ import timetogeter.context.promise.domain.vo.PromiseType;
 
 @Entity
 @Getter
-@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder(access = AccessLevel.PACKAGE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Schedule {
@@ -17,11 +17,9 @@ public class Schedule {
 
     private String title;
     private String content;
+    private String purpose;
 
-    private String type; // promiseType을 써도 괜찮을지
-    private String place;
-    private String placeUrl;
-    private String groupId; // TODO: 추가함
-    private String groupName; // TODO: 추가함
-    private String promiseId; // TODO: 추가함
+    private int placeId;
+    private String groupId;
+
 }

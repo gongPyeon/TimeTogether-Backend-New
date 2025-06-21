@@ -3,18 +3,20 @@ package timetogeter.context.place.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import timetogeter.context.place.application.dto.PlaceDTO;
 import timetogeter.context.place.application.dto.PlaceRatingDTO;
 import timetogeter.context.place.application.dto.request.AIReqDTO;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
-import timetogeter.context.place.domain.entity.Place;
-import timetogeter.context.place.domain.repository.PlaceRepository;
+import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
+import timetogeter.context.place.domain.entity.PromisePlace;
+import timetogeter.context.place.domain.repository.PromisePlaceRepository;
 import timetogeter.context.place.exception.InvalidPlaceNumException;
 import timetogeter.context.place.exception.PlaceNotFoundException;
 import timetogeter.context.place.exception.PlaceUserIdNotSame;
 import timetogeter.context.place.infrastructure.external.AIPlaceClient;
-import timetogeter.context.place.infrastructure.repository.PlaceBoardRepository;
+import timetogeter.context.place.domain.repository.PlaceBoardRepository;
+import timetogeter.context.promise.application.service.PromiseQueryService;
+import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -24,12 +26,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
-    private final PlaceRepository placeRepository;
+    private final PromisePlaceRepository placeRepository;
     private final PlaceBoardRepository placeBoardRepository;
     private final AIPlaceClient aiPlaceClient;
+    private final PromiseQueryService promiseQueryService;
 
     public void deletePlace(String userId, int placeId) {
-        Place place = placeRepository.findByPlaceId(placeId)
+        PromisePlace place = placeRepository.findByPlaceId(placeId)
                 .orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 아이디에 해당하는 장소를 찾을 수 없습니다."));
 
         if(!place.hasVotedBy(userId))
@@ -41,23 +44,22 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
     @Transactional
     public void registerPlace(String userId, String promiseId, List<PlaceRegisterDTO> dto) {
         if(dto.size() > 10) throw new InvalidPlaceNumException(BaseErrorCode.INVALID_PLACE_NUM, "[ERROR] 장소 등록 DTO의 사이즈가 10개를 넘습니다. 현재 "+dto.size()+"개 입니다.");
-        List<Place> places = dto.stream()
-                .map(p -> new Place(promiseId, p.placeName(), p.placeAddress(), p.placeUrl(), p.placeInfo(), userId))
+        List<PromisePlace> places = dto.stream()
+                .map(p -> new PromisePlace(promiseId, p.placeName(), p.placeAddress(), p.placeInfo(), userId, p.aiPlace()))
                 .collect(Collectors.toList());
 
         placeRepository.saveAll(places);
     }
 
-    public List<PlaceRegisterDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
+    public List<PlaceRegisterResDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
         List<PlaceRatingDTO> placeRatingDTOList = getByPlaceHistory(userId);
-        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), dto.preferredCategories(), placeRatingDTOList);
+        String purpose = promiseQueryService.getPurpose(promiseId);
+        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), purpose, placeRatingDTOList);
         return aiPlaceClient.requestAIRecommendation(aiReqDTO);
     }
 
     private List<PlaceRatingDTO> getByPlaceHistory(String userId) {
-        List<PlaceRatingDTO> placeRatingDTOList = placeBoardRepository.findByUserId(userId).stream()
-                .map(p -> new PlaceRatingDTO(p.getPlaceName(), p.getPlaceRating()))
-                .collect(Collectors.toList());
+        List<PlaceRatingDTO> placeRatingDTOList = placeBoardRepository.findAllRatingsByUserId(userId);
 
         return placeRatingDTOList;
     }
