@@ -25,15 +25,16 @@ public enum BaseErrorCode implements StatusCode {
     INVALID_ID_LENGTH(400, HttpStatus.BAD_REQUEST, "아이디는 1자 이상 20자 이하로 입력해주세요"),
     INVALID_ID_FORMAT(400, HttpStatus.BAD_REQUEST, "아이디 형식을 다시 확인해주세요"),
     INVALID_ID_DUP(400, HttpStatus.BAD_REQUEST, "다른 아이디를 사용해주세요"),
-    INVALID_NICKNAME_LENGTH(400, HttpStatus.BAD_REQUEST, "아이디는 1자 이상 20자 이하로 입력해주세요"),
+    INVALID_NICKNAME_LENGTH(400, HttpStatus.BAD_REQUEST, "닉네임은 1자 이상 20자 이하로 입력해주세요"),
     INVALID_NICKNAME_FORMAT(400, HttpStatus.BAD_REQUEST, "닉네임 형식을 다시 확인해주세요"),
     INVALID_EMAIL_FORMAT(400, HttpStatus.BAD_REQUEST, "이메일 형식을 다시 확인해주세요"),
     INVALID_PHONE_FORMAT(400, HttpStatus.BAD_REQUEST, "전화번호 형식을 다시 확인해주세요"),
+
     INVALID_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰이 존재하지 않아요"),
     MISMATCH_TOKEN_REDIS(400, HttpStatus.BAD_REQUEST, "아이디에 해당하는 리프레시 토큰과 일치하지 않아요"),
     FAIL_LOGIN(401, HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호를 확인해주세요"),
     ACCOUNT_LOCKED(401, HttpStatus.UNAUTHORIZED, "계정이 잠겨 있습니다. 나중에 다시 시도하세요."),
-    REDIS_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "세션 저장에 실패했어요"),
+    REDIS_ERROR(500, HttpStatus.INTERNAL_SERVER_ERROR, "세션 처리에 실패했어요"),
 
     SCHEDULE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "일정이 존재하지 않아요"),
     GROUP_NOT_FOUND(404, HttpStatus.NOT_FOUND, "그룹이 존재하지 않아요"),
@@ -47,7 +48,9 @@ public enum BaseErrorCode implements StatusCode {
     PLACE_NULL(400, HttpStatus.BAD_REQUEST, "장소등록에 필수정보가 누락됐어요"),
     INVALID_PLACE_NAME(400, HttpStatus.BAD_REQUEST, "장소등록은 1자 이상 30자 이내여야해요"),
     INVALID_PLACE_INFO(400, HttpStatus.BAD_REQUEST, "장소정보는 200자 이내여야해요"),
-
+    PROMISE_TIME_RANGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속에 시간범위 정보가 존재하지 않아요"),
+    PROMISE_CHECK_NOT_FOUND(404, HttpStatus.NOT_FOUND, "임시 약속 테이블을 찾을 수 없어요"),
+    PROMISE_KEY_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속 공유키 테이블을 찾을 수 없어요"),
 
     //그룹 에러
     GROUP_ID_NOTFOUND(400, HttpStatus.NOT_FOUND, "존재하지 않는 그룹 아이디 입니다."),

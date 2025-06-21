@@ -14,42 +14,35 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/promise")
 public class ScheduleQueryController {
 
     private final ConfirmedScheduleService confirmedScheduleService;
 
-    // TODO: 페이징 처리는 batch 요청을 하는 프론트에서 제어, 날짜도 프론트에서 제어
-    // 스케줄 아이디를 만들 수 있다고 가정
-    @PostMapping("/promise/get")
+    @PostMapping("/get")
     public BaseResponse<Object> getPromiseView(@RequestBody GetPromiseBatchReqDTO reqDTO){
         PromiseListResDTO dto = confirmedScheduleService.getPromiseView(reqDTO);
         return new BaseResponse<>(dto);
     }
 
-    // TODO: 스케줄 아이디에 groupId 정보를 넣는다 vs entity에 넣는다
-    // TODO: 추가해도 해당 그룹에 속한 사람이 누군지 확인할 수 없으므로 괜찮다고 판단
-    // 스케줄 아이디를 만들 수 있다고 가정
-    @PostMapping("/promise/get/{groupId}")
+    @PostMapping("/get/{groupId}")
     public BaseResponse<Object> getPromiseView(
-            @PathVariable String groupId,
+            @PathVariable("groupId") String groupId,
             @RequestBody GetPromiseBatchReqDTO reqDTO){
         PromiseListResDTO dto = confirmedScheduleService.getPromiseViewByGroup(groupId, reqDTO);
         return new BaseResponse<>(dto);
     }
 
-    // 약속 공유키가 존재한다고 가정
-    @GetMapping("/promise/get/{scheduleId}/detail")
+    @GetMapping("/get/{scheduleId}/detail")
     public BaseResponse<Object> getPromiseDetailView(
-            @PathVariable String scheduleId){
+            @PathVariable("scheduleId") String scheduleId){
         PromiseDetailResDTO dto = confirmedScheduleService.getPromiseDetailView(scheduleId);
         return new BaseResponse<>(dto);
     }
 
-    // 약속 공유키가 존재한다고 가정
-    @GetMapping("/promise/get")
+    @GetMapping("/search")
     public BaseResponse<Object> searchPromiseView(
-            @RequestParam String query, @RequestParam(required = false) List<String> filter){
+            @RequestParam("query") String query, @RequestParam(required = false, value = "filter") List<String> filter){
         PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query, filter);
         return new BaseResponse<>(dto);
     }

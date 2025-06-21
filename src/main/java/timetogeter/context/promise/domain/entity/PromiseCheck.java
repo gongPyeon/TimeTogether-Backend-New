@@ -1,15 +1,14 @@
 package timetogeter.context.promise.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import timetogeter.context.promise.domain.vo.PromiseType;
 
-import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -17,20 +16,18 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PromiseCheck {
     @Id
-    private Long promiseCheckId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int promiseCheckId;
 
-    private Long dateId;
     private String promiseId;
-    private boolean isConfirmed;
+    private String dateTime;
+    private int placeId;
 
-    private PromiseCheck(Long dateId, String promiseId, boolean isConfirmed) {
-        this.dateId = dateId;
-        this.promiseId = promiseId;
-        this.isConfirmed = isConfirmed;
+    public PromiseCheck(String dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public static PromiseCheck of(Long dateId, String promiseId, boolean isConfirmed) {
-        return new PromiseCheck(dateId, promiseId,isConfirmed);
+    public PromiseCheck(int placeId) {
+        this.placeId = placeId;
     }
-
 }

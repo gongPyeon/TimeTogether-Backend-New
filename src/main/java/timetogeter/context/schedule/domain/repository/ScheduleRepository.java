@@ -10,11 +10,9 @@ import timetogeter.context.schedule.domain.repository.custom.ScheduleRepositoryC
 import java.util.List;
 
 @Repository
-public interface ScheduleRepository  extends JpaRepository<Schedule, String> , ScheduleRepositoryCustom{
+public interface ScheduleRepository  extends JpaRepository<Schedule, String>, ScheduleRepositoryCustom {
     @Query(value = "SELECT * FROM schedule WHERE schedule_id IN (:scheduleIdList)", nativeQuery = true)
     List<Schedule> findByScheduleIdIn(@Param("scheduleIdList") List<String> scheduleIdList);
-
-    List<Schedule> findAllByScheduleIdIn(List<String> scheduleIds);
 
     List<Schedule> findAllByGroupIdAndScheduleIdIn(String groupId, List<String> strings);
 

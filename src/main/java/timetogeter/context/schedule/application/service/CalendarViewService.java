@@ -8,9 +8,9 @@ import timetogeter.context.schedule.application.dto.request.CalendarViewRequest1
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest2;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
-import timetogeter.context.schedule.domain.entity.PromiseShareKey;
+import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.schedule.domain.entity.Schedule;
-import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
 import java.util.*;
@@ -56,10 +56,7 @@ public class CalendarViewService {
         return schedules.stream()
                 .map(schedule -> new CalendarViewResponse2(
                         schedule.getTitle(),
-                        schedule.getContent(),
-                        schedule.getType(),
-                        schedule.getPlace(),
-                        schedule.getPlaceUrl()
+                        schedule.getContent()
                 ))
                 .collect(Collectors.toList());
     }

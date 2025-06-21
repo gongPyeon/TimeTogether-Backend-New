@@ -7,8 +7,8 @@ public record OverallPromiseViewResponse4(
         String scheduleId, //일정 id
         String title , //일정 제목
         String content, //일정 내용
-        String type, //일정 유형
-        String place, //일정 장소
-        String placeUrl //일정 url
+        String purpose, //일정 유형
+        int placeId, //일정 장소 아이디
+        String groupId //그룹 아이디
 ) {
 }

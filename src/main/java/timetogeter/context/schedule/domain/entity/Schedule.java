@@ -7,6 +7,7 @@ import timetogeter.context.promise.domain.vo.PromiseType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -20,61 +21,47 @@ public class Schedule {
 
     private String title;
     private String content;
+    private String purpose;
 
-    private String type; // promiseType을 써도 괜찮을지
-    private String place;
-    private String placeUrl;
+    //private String type; // promiseType을 써도 괜찮을지
+    private int placeId;
+    private String groupId;
 
-    private LocalDateTime startDateTime; //추가함 (확정된 일정에 대해 시작시각, 종료시각 필드가 없어서)
-    private LocalDateTime endDateTime; //추가함
-
-    private String groupId; // TODO: 추가함
-    private String groupName; // TODO: 추가함
-    private String promiseId; // TODO: 추가함
+    //아래 localdate 삭제해서 scheduleId 다시 만들 예정
+    //private LocalDateTime startDateTime; //추가함 (확정된 일정에 대해 시작시각, 종료시각 필드가 없어서)
+    //private LocalDateTime endDateTime; //추가함
 
     public static Schedule of(
             String title,
             String content,
-            String type,
-            String place,
-            String placeUrl,
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime,
-            String groupId,
-            String groupName,
-            String promiseId
+            String purpose,
+            int placeId,
+            String groupId
     ) {
-        Schedule schedule = new Schedule();
-        schedule.scheduleId = UUID.randomUUID().toString();
-        schedule.title = title;
-        schedule.content = content;
-        schedule.type = type;
-        schedule.place = place;
-        schedule.placeUrl = placeUrl;
-        schedule.startDateTime = startDateTime;
-        schedule.endDateTime = endDateTime;
-        schedule.groupId = groupId;
-        schedule.groupName = groupName;
-        schedule.promiseId = promiseId;
-        return schedule;
+        return Schedule.builder()
+                .scheduleId(UUID.randomUUID().toString())
+                .title(title)
+                .content(content)
+                .purpose(purpose)
+                .placeId(placeId)
+                .groupId(groupId)
+                .build();
     }
 
     public void update(
             String title,
             String content,
-            String type,
-            String place,
-            String placeUrl,
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime
+            String purpose,
+            Integer placeId,
+            String groupId
     ) {
         if (title != null) this.title = title;
         if (content != null) this.content = content;
-        if (type != null) this.type = type;
-        if (place != null) this.place = place;
-        if (placeUrl != null) this.placeUrl = placeUrl;
-        if (startDateTime != null) this.startDateTime = startDateTime;
-        if (endDateTime != null) this.endDateTime = endDateTime;
+        if (purpose != null) this.purpose = purpose;
+        if (placeId != null) this.placeId = placeId;
+        if (groupId != null) this.groupId = groupId;
     }
+
+
 
 }
