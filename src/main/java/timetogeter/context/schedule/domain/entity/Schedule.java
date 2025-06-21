@@ -27,11 +27,8 @@ public class Schedule {
     private int placeId;
     private String groupId;
 
-    //아래 localdate 삭제해서 scheduleId 다시 만들 예정
-    //private LocalDateTime startDateTime; //추가함 (확정된 일정에 대해 시작시각, 종료시각 필드가 없어서)
-    //private LocalDateTime endDateTime; //추가함
-
     public static Schedule of(
+            String encStartTimeEndTime,
             String title,
             String content,
             String purpose,
@@ -39,7 +36,7 @@ public class Schedule {
             String groupId
     ) {
         return Schedule.builder()
-                .scheduleId(UUID.randomUUID().toString())
+                .scheduleId(encStartTimeEndTime)
                 .title(title)
                 .content(content)
                 .purpose(purpose)

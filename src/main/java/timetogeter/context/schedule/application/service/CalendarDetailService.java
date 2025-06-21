@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import timetogeter.context.place.domain.entity.PlaceBoard;
+import timetogeter.context.place.domain.repository.PlaceBoardRepository;
 import timetogeter.context.schedule.application.dto.request.CalendarCreateRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarRewriteRequest1;
 import timetogeter.context.schedule.application.dto.response.CalendarCreateResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarRewriteResponse1;
-import timetogeter.context.schedule.domain.entity.PromiseShareKey;
+import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.schedule.domain.entity.Schedule;
-import timetogeter.context.schedule.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
 import java.time.LocalDateTime;
@@ -24,6 +26,7 @@ public class CalendarDetailService {
 
     private final PromiseShareKeyRepository promiseShareKeyRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PlaceBoardRepository placeBoardRepository;
 
 //======================
 // 캘린더 - 일정등록 (Step1)
@@ -32,22 +35,19 @@ public class CalendarDetailService {
     //캘린더 - 일정등록 - Step1 - 메인 서비스 메소드
     @Transactional
     public CalendarCreateResponse1 createCalendar1(CalendarCreateRequest1 request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        LocalDateTime start = LocalDateTime.parse(request.startDateTime(), formatter);
-        LocalDateTime end = LocalDateTime.parse(request.endDateTime(), formatter);
+        // Place 생성 및 저장
+        PlaceBoard place = PlaceBoard.of(request.placeName(), request.placeAddr(), true);
+        placeBoardRepository.save(place);
 
         // Schedule 생성 및 저장 (of 메서드 사용)
         Schedule schedule = Schedule.of(
+                request.encStartTimeAndEndTime(),
                 request.title(),
                 request.content(),
-                request.type(),
-                request.place(),
-                request.placeUrl(),
-                start,
-                end,
-                null, // groupId (현재 null 처리)
-                null, // groupName (현재 null 처리)
-                null  // promiseId (현재 null 처리)
+                request.purpose(),
+                place.getPlaceBoardId(),
+                null// groupId (현재 null 처리)
+
         );
         scheduleRepository.save(schedule);
 
@@ -62,10 +62,10 @@ public class CalendarDetailService {
 
         // 응답 반환
         return new CalendarCreateResponse1(
+                schedule.getScheduleId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getStartDateTime().format(formatter),
-                schedule.getEndDateTime().format(formatter)
+                schedule.getPurpose()
         );
     }
 
@@ -87,31 +87,29 @@ public class CalendarDetailService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 일정이 존재하지 않습니다."));
 
-        // 3. 날짜 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-        LocalDateTime start = LocalDateTime.parse(request.startDateTime(), formatter);
-        LocalDateTime end = LocalDateTime.parse(request.endDateTime(), formatter);
+        // 3. 장소 저장
+        // Place 생성 및 저장
+        PlaceBoard place = PlaceBoard.of(request.placeName(), request.placeAddr(), true);
+        placeBoardRepository.save(place);
 
-        // 4. Schedule 값 수정
+        // 3. Schedule 값 수정
         schedule.update(
                 request.title(),
                 request.content(),
-                request.type(),
-                request.place(),
-                request.placeUrl(),
-                start,
-                end
+                request.purpose(),
+                place.getPlaceBoardId(),
+                null
         );
 
         // 5. 응답 반환
         return new CalendarRewriteResponse1(
+                schedule.getScheduleId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getType(),
-                schedule.getPlace(),
-                schedule.getPlaceUrl(),
-                schedule.getStartDateTime().format(formatter),
-                schedule.getEndDateTime().format(formatter)
+                schedule.getPurpose(),
+                place.getPlaceName(),
+                place.getPlaceAddr()
+
         );
 
     }

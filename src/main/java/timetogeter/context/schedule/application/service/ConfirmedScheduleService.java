@@ -70,7 +70,7 @@ public class ConfirmedScheduleService {
 
     @Transactional
     public void confirmSchedule(String groupId, ScheduleConfirmReqDTO reqDTO) {
-        Schedule schedule = new Schedule(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
+        Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
         scheduleRepository.save(schedule);
 
         PromiseShareKey promiseShareKey = promiseShareKeyRepository.findByEncPromiseKey(reqDTO.encPromiseKey())

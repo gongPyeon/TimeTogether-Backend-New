@@ -21,4 +21,13 @@ public class PlaceBoard {
     private String placeAddr;
 
     private Boolean aiPlace;
+
+    public static PlaceBoard of(String placeName, String placeAddr, Boolean aiPlace) {
+        PlaceBoard placeBoard = new PlaceBoard();
+        placeBoard.placeName = placeName;
+        placeBoard.placeAddr = placeAddr;
+        placeBoard.aiPlace = aiPlace;
+        return placeBoard;
+    }
+
 }
