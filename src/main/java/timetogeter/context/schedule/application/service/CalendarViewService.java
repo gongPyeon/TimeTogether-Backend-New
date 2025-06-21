@@ -56,7 +56,8 @@ public class CalendarViewService {
         return schedules.stream()
                 .map(schedule -> new CalendarViewResponse2(
                         schedule.getTitle(),
-                        schedule.getContent()
+                        schedule.getContent(),
+                        schedule.getScheduleId()
                 ))
                 .collect(Collectors.toList());
     }

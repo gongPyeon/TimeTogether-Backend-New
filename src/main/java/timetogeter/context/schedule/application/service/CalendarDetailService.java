@@ -17,6 +17,7 @@ import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -53,9 +54,9 @@ public class CalendarDetailService {
 
         // PromiseShareKey 저장
         PromiseShareKey key = PromiseShareKey.of(
-                request.encPromiseKey(),
+                UUID.randomUUID().toString(),
                 request.encUserId(),
-                schedule.getScheduleId(),
+                request.encPromiseKey(),
                 schedule.getScheduleId()
         );
         promiseShareKeyRepository.save(key);

@@ -110,7 +110,7 @@ public class CalendarManageController {
 
     [서버] scheduleId에 해당하는 것에 수정해서 반환
      */
-    @PostMapping(value = "/rewirte1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/rewrite1", produces = MediaType.APPLICATION_JSON_VALUE)
     public SuccessResponse<CalendarRewriteResponse1> rewriteCalendar1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarRewriteRequest1 requests) throws Exception{
