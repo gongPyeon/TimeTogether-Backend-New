@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PlaceBoardRepositoryCustom {
     List<PlaceRatingDTO> findAllRatingsByUserId(String userId);
+
+    List<PlaceRatingDTO> findAllRatings();
 }
