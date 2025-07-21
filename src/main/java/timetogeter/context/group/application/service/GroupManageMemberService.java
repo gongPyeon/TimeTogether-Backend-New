@@ -7,14 +7,14 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import timetogeter.context.group.application.dto.request.InviteGroup1Request;
-import timetogeter.context.group.application.dto.request.InviteGroup2Request;
-import timetogeter.context.group.application.dto.request.InviteGroup3Request;
-import timetogeter.context.group.application.dto.request.JoinGroup1Request;
+import org.springframework.web.client.RestTemplate;
+import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.InviteGroup1Response;
 import timetogeter.context.group.application.dto.response.InviteGroup2Response;
+import timetogeter.context.group.application.dto.response.JoinGroup0Response;
 import timetogeter.context.group.application.dto.response.JoinGroup1Response;
 import timetogeter.context.group.exception.GroupIdNotFoundException;
 import timetogeter.context.group.exception.GroupInviteCodeExpired;
@@ -32,6 +32,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,11 +44,14 @@ public class GroupManageMemberService {
     @Autowired
     private AmazonS3 amazonS3;
 
-    @Value("${s3.bucket}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    @Value("${s3.key}")
+    @Value("${cloud.aws.s3.key}")
     private String s3Key;
+
+    @Value("${lambda.verify.url}")
+    private String lambdaVerifyUrl;
 
     private final GroupRepository groupRepository;
     private final GroupProxyUserRepository groupProxyUserRepository;
@@ -55,6 +60,7 @@ public class GroupManageMemberService {
     private final GroupManageDisplayService groupManageDisplayService;
 
     private final StringRedisTemplate redisTemplate;
+    private final RestTemplate restTemplate;
 
 //======================
 // 그룹 상세 - 그룹 초대하기 (Step1,2,3)
@@ -135,6 +141,39 @@ public class GroupManageMemberService {
 //======================
 // 그룹 관리 - 그룹 초대받기 (Step1)
 //======================
+
+    //그룹 관리 - 그룹 초대받기 - step0 - 메인 서비스 메소드
+    @Transactional
+    public JoinGroup0Response joinGroup0(JoinGroup0Request request, String userId) {
+        String objectKey = request.randomKeyForRedis();
+
+        if (!amazonS3.doesObjectExist(bucketName, objectKey)) {
+            return new JoinGroup0Response("false");
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, String> payload = new HashMap<>();
+        payload.put("randomKey", objectKey);
+        payload.put("userId", userId);
+
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(payload, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    lambdaVerifyUrl,
+                    HttpMethod.POST,
+                    httpEntity,
+                    String.class
+            );
+
+            String decryptedS3reserve = response.getBody();
+            return new JoinGroup0Response(decryptedS3reserve);
+
+        } catch (Exception e) {
+            return new JoinGroup0Response("false");
+        }
+    }
 
     //그룹 관리 - 그룹 초대받기 - step1 - 메인 서비스 메소드
     @Transactional
