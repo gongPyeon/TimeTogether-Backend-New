@@ -20,8 +20,9 @@ public class Promise {
     private String groupId;
     private String title;
 
-    @Enumerated(EnumType.STRING)
-    private PromiseType type;
+    //@Enumerated(EnumType.STRING)
+    //private PromiseType type;
+    private String type;
     private String promiseImg;
     private String purpose;
     private String managerId;
@@ -34,7 +35,7 @@ public class Promise {
     private Boolean placeCheck = false;
     private Boolean promiseCheck = false;
 
-    private Promise(String groupId, String title, PromiseType promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
+    private Promise(String groupId, String title, String promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
         this.promiseId = UUID.randomUUID().toString();
         this.groupId = groupId;
         this.title = title;
@@ -44,7 +45,7 @@ public class Promise {
         this.endDate = endDate;
     }
 
-    public static Promise of(String groupId, String title, PromiseType promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
+    public static Promise of(String groupId, String title, String promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
         return new Promise(groupId, title, promiseType, promiseImg,managerId,startDate,endDate);
     }
 
