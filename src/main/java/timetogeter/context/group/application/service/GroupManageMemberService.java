@@ -1,9 +1,10 @@
 package timetogeter.context.group.application.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -27,7 +28,6 @@ import timetogeter.context.group.domain.repository.GroupProxyUserRepository;
 import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
-import com.amazonaws.services.s3.AmazonS3;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -50,8 +50,8 @@ public class GroupManageMemberService {
     @Value("${cloud.aws.s3.key}")
     private String s3Key;
 
-    @Value("${lambda.verify.url}")
-    private String lambdaVerifyUrl;
+    //@Value("${lambda.verify.url}")
+    //private String lambdaVerifyUrl;
 
     private final GroupRepository groupRepository;
     private final GroupProxyUserRepository groupProxyUserRepository;
@@ -161,7 +161,8 @@ public class GroupManageMemberService {
 
         try {
             ResponseEntity<String> response = restTemplate.exchange(
-                    lambdaVerifyUrl,
+
+                    "will update",//lambdaVerifyUrl,
                     HttpMethod.POST,
                     httpEntity,
                     String.class
