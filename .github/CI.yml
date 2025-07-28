@@ -1,19 +1,17 @@
-name: CI - Build and Push Docker Image
+name: CI
 
 on:
   push:
-    branches:
-      - feature/#50
-
-env:
-  IMAGE_NAME: your-dockerhub-username/meetnow-server
+    branches: [feature/#50]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up JDK 17
@@ -22,13 +20,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Docker login
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test --no-daemon
+
+      - name: Build Docker image
+        run: docker build -f Dockerfile.deploy -t your-dockerhub-id/meetnow-server:latest .
+
+      - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t $IMAGE_NAME .
-          docker push $IMAGE_NAME
+      - name: Push Docker image
+        run: docker push your-dockerhub-id/meetnow-server:latest
