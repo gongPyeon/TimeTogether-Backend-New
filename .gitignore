@@ -1,5 +1,8 @@
 docker-compose.v1.yml
+docker-compose.v2.yml
+
 .env
+.env.prod
 
 src/main/resources/application-local.yml
 src/main/resources/application-test.yml
