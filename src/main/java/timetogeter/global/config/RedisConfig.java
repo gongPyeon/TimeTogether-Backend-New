@@ -13,9 +13,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableCaching
 public class RedisConfig {
-    @Value("${spring.redis.connection.host}")
+    @Value("${spring.redis.connection.host=meetnow-redis}")
     private String host;
-    @Value("${spring.redis.connection.port}")
+    @Value("${spring.redis.connection.port=6379}")
     private int port;
 
     @Bean
