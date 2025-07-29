@@ -84,6 +84,10 @@ dependencies {
 	//테스트 코드 내 h2 설정
 	runtimeOnly 'com.h2database:h2'
 
+	//헬스체크
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
 }
 
 ext {
