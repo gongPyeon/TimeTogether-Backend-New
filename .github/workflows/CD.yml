@@ -1,0 +1,73 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'feature/#50'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH to Server and Deploy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/ubuntu/meetnow
+
+            # 현재 실행 중인 컨테이너 포트 확인 (8081 or 8082)
+            CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
+
+            if [ "$CURRENT_PORT" == "8081" ]; then
+              NEW_PORT=8082
+            else
+              NEW_PORT=8081
+            fi
+
+            echo "▶️ 현재 실행 포트: $CURRENT_PORT"
+            echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
+
+            # .env.prod에 새 포트 지정
+            sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.prod
+
+            # docker-compose 파일 업데이트 및 새 포트로 배포
+            docker-compose -f docker-compose.v2.yml pull
+            docker-compose -f docker-compose.v2.yml up -d --build meetnow-server
+
+            echo "🩺 헬스체크 수행 중..."
+            for i in {1..10}; do
+              sleep 3
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:$NEW_PORT/actuator/health || echo 000)
+              if [ "$STATUS" == "200" ]; then
+                echo "✅ 새 서버가 정상입니다."
+                break
+              elif [ "$i" -eq 10 ]; then
+                echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
+                exit 1
+              fi
+            done
+
+            # nginx 프록시 포트 전환
+            echo "🔁 nginx 프록시 포트 전환 중..."
+            sudo sed -i "s/set \$service_url http:\/\/.*:/set \$service_url http:\/\/localhost:$NEW_PORT:/" /etc/nginx/conf.d/nginx.conf
+            sudo nginx -s reload
+
+            echo "🧹 이전 포트 컨테이너 정리 중..."
+            if [ "$CURRENT_PORT" != "none" ]; then
+              docker ps --filter "name=meetnow-server" --filter "publish=$CURRENT_PORT" -q | xargs -r docker stop
+              docker ps -a --filter "name=meetnow-server" --filter "publish=$CURRENT_PORT" -q | xargs -r docker rm
+            fi
+
+            echo "✅ 배포 완료 (포트: $NEW_PORT)"

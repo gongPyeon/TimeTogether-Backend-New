@@ -1,5 +1,13 @@
+docker-compose.v1.yml
+docker-compose.v2.yml
+
+.env
+.env.prod
+docker-compose.v2.yml
+
 src/main/resources/application-local.yml
 src/main/resources/application-test.yml
+src/main/resources/application-prod.yml
 
 caches/
 daemon/

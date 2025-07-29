@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.context.auth.application.dto.TokenCommand;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.auth.application.exception.InvalidJwtException;
+import timetogeter.context.auth.exception.InvalidJwtException;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -36,6 +37,7 @@ public class JwtTokenProvider implements TokenProvider {
 
     private final Key key;
     public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey){
+        log.info("//// Injected JWT secretKey: [{}]", secretKey);
         this.key = Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(secretKey));
     }
@@ -90,11 +92,19 @@ public class JwtTokenProvider implements TokenProvider {
 
     @Override
     public String validateToken(String token) {
+        //
+        System.out.println("=== 토큰 검증 시작 ===");
+        System.out.println("검증 토큰 (길이:" + token.length() + "): " + token);
+        System.out.println("사용 중인 비밀키 (Base64 인코딩): " + Base64.getEncoder().encodeToString(key.getEncoded()));
+        //
         String error = "";
         System.out.println("토큰 : " + token);
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
+            //
+            System.out.println("서명 검증 성공. subject: " + claims.getSubject());
+            //
             return claims.getSubject();
         }catch (SecurityException | MalformedJwtException e){
             error = "[ERROR] 토큰의 서명이 유효하지 않습니다.";
@@ -108,6 +118,7 @@ public class JwtTokenProvider implements TokenProvider {
             log.info(e.getMessage());
             error = "[ERROR] 유효하지 않은 토큰입니다.";
         }
+
 
         throw new InvalidJwtException(BaseErrorCode.INVALID_TOKEN, error);
     }

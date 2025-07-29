@@ -13,7 +13,7 @@ import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.application.dto.RegisterResponse;
 import timetogeter.context.auth.application.dto.RegisterUserCommand;
-import timetogeter.context.auth.application.exception.UserNotFoundException;
+import timetogeter.context.auth.exception.UserNotFoundException;
 import timetogeter.global.support.UserFixture;
 
 import java.util.Optional;

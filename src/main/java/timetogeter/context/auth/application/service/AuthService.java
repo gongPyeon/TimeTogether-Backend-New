@@ -23,7 +23,7 @@ import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.context.auth.application.dto.RegisterResponse;
 import timetogeter.context.auth.application.dto.TokenCommand;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.auth.application.exception.AuthFailureException;
+import timetogeter.context.auth.exception.AuthFailureException;
 import timetogeter.context.auth.infrastructure.external.oauth2.client.OAuth2Client;
 import timetogeter.context.auth.infrastructure.external.oauth2.client.OAuth2ClientProvider;
 import timetogeter.global.security.util.jwt.JwtTokenProvider;

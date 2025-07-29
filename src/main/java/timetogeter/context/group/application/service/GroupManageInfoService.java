@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.*;
-import timetogeter.context.group.application.exception.GroupIdNotFoundException;
-import timetogeter.context.group.application.exception.GroupManagerMissException;
-import timetogeter.context.group.application.exception.GroupProxyUserNotFoundException;
-import timetogeter.context.group.application.exception.GroupShareKeyNotFoundException;
+import timetogeter.context.group.exception.GroupIdNotFoundException;
+import timetogeter.context.group.exception.GroupManagerMissException;
+import timetogeter.context.group.exception.GroupProxyUserNotFoundException;
+import timetogeter.context.group.exception.GroupShareKeyNotFoundException;
 import timetogeter.context.group.domain.entity.Group;
 import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.entity.GroupShareKey;
@@ -18,9 +18,7 @@ import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -71,7 +69,7 @@ public class GroupManageInfoService {
         return new CreateGroup2Response(
                 groupFound.getGroupId(),
                 groupFound.getGroupName(),
-                groupFound.getDescription(),
+                groupFound.getGroupInfo(),
                 groupFound.getGroupImg(),
                 groupFound.getManagerId()
         );
@@ -146,7 +144,7 @@ public class GroupManageInfoService {
 
         return new EditGroup3Response(
                 group.getGroupName(),
-                group.getDescription(),
+                group.getGroupInfo(),
                 group.getGroupImg(),
                 encUserIdList
         );

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.RegisterResponse;
 import timetogeter.context.auth.application.service.UserRegisterService;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
-import timetogeter.context.auth.application.exception.UserNotFoundException;
+import timetogeter.context.auth.exception.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,3 +20,4 @@ public class CustomUserDetailService implements UserDetailsService {
         return new UserPrincipal(response);
     }
 }
+
