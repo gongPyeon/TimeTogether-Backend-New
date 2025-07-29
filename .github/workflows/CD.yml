@@ -27,7 +27,6 @@ jobs:
             set -e
             cd /home/ubuntu/meetnow
 
-            # 현재 실행 중인 컨테이너 포트 확인 (8081 or 8082)
             CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
 
             if [ "$CURRENT_PORT" == "8081" ]; then
@@ -39,12 +38,15 @@ jobs:
             echo "▶️ 현재 실행 포트: $CURRENT_PORT"
             echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
 
-            # .env.prod에 새 포트 지정
-            sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.prod
+            # ✅ 새 env 파일 생성
+            cp .env.prod .env.deploy
+            sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
 
-            # docker-compose 파일 업데이트 및 새 포트로 배포
-            docker-compose -f docker-compose.v2.yml pull
-            docker-compose -f docker-compose.v2.yml up -d --build meetnow-server
+            # ✅ 컨테이너 네이밍: meetnow-server-$NEW_PORT
+            CONTAINER_NAME="meetnow-server-$NEW_PORT"
+
+            docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
+            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --no-deps --remove-orphans --force-recreate --name $CONTAINER_NAME meetnow-server
 
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
@@ -55,19 +57,20 @@ jobs:
                 break
               elif [ "$i" -eq 10 ]; then
                 echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
+                docker rm -f $CONTAINER_NAME || true
                 exit 1
               fi
             done
 
-            # nginx 프록시 포트 전환
             echo "🔁 nginx 프록시 포트 전환 중..."
             sudo sed -i "s/set \$service_url http:\/\/.*:/set \$service_url http:\/\/localhost:$NEW_PORT:/" /etc/nginx/conf.d/nginx.conf
             sudo nginx -s reload
 
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
-              docker ps --filter "name=meetnow-server" --filter "publish=$CURRENT_PORT" -q | xargs -r docker stop
-              docker ps -a --filter "name=meetnow-server" --filter "publish=$CURRENT_PORT" -q | xargs -r docker rm
+              OLD_CONTAINER="meetnow-server-$CURRENT_PORT"
+              docker stop $OLD_CONTAINER || true
+              docker rm $OLD_CONTAINER || true
             fi
 
             echo "✅ 배포 완료 (포트: $NEW_PORT)"
