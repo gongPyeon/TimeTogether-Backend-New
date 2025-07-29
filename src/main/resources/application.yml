@@ -1,0 +1,13 @@
+spring:
+  profiles:
+    active: prod
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   # 필요 시 "health", "info" 등으로 제한 가능
+  endpoint:
+    health:
+      show-details: always  # /actuator/health에서 세부정보 표시
+
