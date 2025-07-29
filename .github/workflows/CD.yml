@@ -17,6 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Docker Hub Login
+        run: |
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
       - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -44,6 +48,8 @@ jobs:
 
             # ✅ 컨테이너 네이밍: meetnow-server-$NEW_PORT
             CONTAINER_NAME="meetnow-server-$NEW_PORT"
+
+            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
 
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --no-deps --remove-orphans --force-recreate --name $CONTAINER_NAME meetnow-server
