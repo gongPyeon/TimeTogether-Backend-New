@@ -72,8 +72,8 @@ jobs:
             done
 
             echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i "s|proxy_pass http://[^;]*|proxy_pass http://localhost:$NEW_PORT|" /etc/nginx/nginx.conf
-            sudo nginx -s reload
+            sudo sed -i "s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://localhost:$NEW_PORT;|" /etc/nginx/nginx.conf
+            sudo nginx -t && sudo systemctl reload nginx
 
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
