@@ -72,7 +72,7 @@ jobs:
             done
 
             echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i "s/set \$service_url http:\/\/.*:/set \$service_url http:\/\/localhost:$NEW_PORT:/" /etc/nginx/conf.d/nginx.conf
+            sudo sed -i "s/set \$service_url http:\/\/.*:/set \$service_url http:\/\/localhost:$NEW_PORT:/" /etc/nginx/nginx.conf
             sudo nginx -s reload
 
             echo "🧹 이전 포트 컨테이너 정리 중..."
