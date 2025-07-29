@@ -40,6 +40,18 @@
 
 👉🏻 [API 바로보기](/backend/APIs.md)
 
+### 🗂️ 개발 파일 중 .gitignore에 추가한 것들 (메모용-추후 지울 예정)
+
+
+<pre lang="md"> ## 📁 환경 설정 파일 구조 <code> 
+├── docker-compose.v2.yml # Docker Compose 설정 (배포용) 
+├── application.yml # Spring Boot 기본 설정 
+├── application-local.yml # 로컬 환경 설정 
+├── application-prod.yml # 배포 환경 설정 
+├── .env # 로컬 환경 변수 파일 
+├── .env.prod # 배포 환경 변수 파일 </code> > 
+
+⚠️ 위 파일들은 보안 및 환경 분리 목적상 `.gitignore`에 포함되어 Git에 커밋되지 않습니다. </pre>
 
 <br />
 
