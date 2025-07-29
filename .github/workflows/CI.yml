@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - feature/#50
-
-  pull_request:
-    branches: [main]
+      - main
+# 추후 pull request 조건으로 바꿀 예정
 
 jobs:
   build:
