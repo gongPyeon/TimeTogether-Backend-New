@@ -64,7 +64,8 @@ public class SecurityConfig {
                 antMatcher(GET, "/docs/**"),
                 antMatcher(POST, "/static/docs/**"), // API 문서
                 antMatcher(POST, "/auth/**"), // 회원가입 & 로그인
-                antMatcher(GET, "/test/**")); // 테스트 시 (선택)
+                antMatcher(GET, "/test/**"),
+                antMatcher(GET, "/actuator/health")); //배포 정상 확인 엔드포인트
 
 
 
