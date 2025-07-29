@@ -65,7 +65,8 @@ jobs:
                 break
               elif [ "$i" -eq 10 ]; then
                 echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
-                docker rm -f meetnow-server-$NEW_PORT || true
+                    echo "🛑 컨테이너를 삭제하지 않고 유지합니다. SSH로 접속해서 로그를 확인하세요."
+                    # docker rm -f meetnow-server-$NEW_PORT || true 
                 exit 1
               fi
             done
