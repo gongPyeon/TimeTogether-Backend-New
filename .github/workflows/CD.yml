@@ -59,7 +59,7 @@ jobs:
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
               sleep 3
-              STATUS=$(curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || echo 000)
+              sudo sed -i "71s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
               if [ "$STATUS" == "200" ]; then
                 echo "✅ 새 서버가 정상입니다."
                 break
