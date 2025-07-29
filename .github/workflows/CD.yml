@@ -54,7 +54,7 @@ jobs:
             sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
 
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --no-deps --remove-orphans --force-recreate meetnow-server
+            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
 
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
