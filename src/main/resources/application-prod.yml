@@ -94,4 +94,4 @@ cloud:
       key: ${AWS_S3_KEY}
 
 server:
-  port: ${PORT:8080}
+  port: 8080
