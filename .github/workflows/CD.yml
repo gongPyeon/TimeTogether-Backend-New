@@ -64,25 +64,27 @@ jobs:
             sudo sed -i '71s|.*|            proxy_pass http://127.0.0.1:'"$NEW_PORT"';|' /etc/nginx/nginx.conf
             sudo nginx -t && sudo systemctl reload nginx
             
-            echo "🩺 헬스체크 수행 중..."
+            echo "🩺 포트 응답 여부 확인 중..."
             for i in {1..10}; do
-            sleep 3
-            echo "➡️  NEW_PORT is $NEW_PORT"
-            STATUS=$(sudo curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health)
-            if [ -z "$STATUS" ]; then
-            STATUS="000"
-            fi
-            echo "➡️  STATUS = $STATUS"
+              sleep 3
+              if nc -z 127.0.0.1 $NEW_PORT; then
+                echo "✅ 포트 $NEW_PORT 응답 확인됨. curl 헬스체크 시도 중..."
+                STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || echo "000")
+                echo "➡️  STATUS = $STATUS"
+                if [ "$STATUS" == "200" ]; then
+                  echo "✅ 새 서버가 정상입니다!"
+                  break
+                fi
+              else
+                echo "❌ 포트 $NEW_PORT 연결 실패"
+              fi
           
-            if [ "$STATUS" == "200" ]; then
-            echo "✅ 새 서버가 정상입니다!"
-            break
-            elif [ "$i" -eq 10 ]; then
-            echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
-            echo "🛑 컨테이너를 삭제하지 않고 유지합니다. SSH로 접속해서 로그를 확인하세요."
-            exit 1
-            fi
+              if [ "$i" -eq 10 ]; then
+                echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
+                exit 1
+              fi
             done
+  
   
 
             echo "🧹 이전 포트 컨테이너 정리 중..."
