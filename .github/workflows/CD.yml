@@ -68,7 +68,10 @@ jobs:
             for i in {1..10}; do
             sleep 3
             echo "➡️  NEW_PORT is $NEW_PORT"
-            STATUS=$(sudo bash -c "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$NEW_PORT/actuator/health" || echo "000")
+            STATUS=$(sudo curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health)
+            if [ -z "$STATUS" ]; then
+            STATUS="000"
+            fi
             echo "➡️  STATUS = $STATUS"
           
             if [ "$STATUS" == "200" ]; then
