@@ -112,7 +112,7 @@
 <br />
 
 ## 💁‍♂️ 프로젝트 팀원
-|                    Backend                    |                   Frontend                    |
+|                    Backend                    |                   Backend                    |
 |:---------------------------------------------:|:---------------------------------------------:|
 | <img src="https://github.com/gongPyeon.png" width="80"/> | <img src="https://github.com/Hyeri1ee.png" width="80"/> |
 |      [편강](https://github.com/gongPyeon)       |      [이혜리](https://github.com/Hyeri1ee)       |

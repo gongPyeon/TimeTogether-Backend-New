@@ -71,7 +71,7 @@ jobs:
             STATUS="000"
   
             until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health)
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || true)
               echo "⏳ Waiting for health check... (status=$STATUS)"
               sleep $RETRY_DELAY
               COUNT=$((COUNT+1))
