@@ -67,7 +67,10 @@ jobs:
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
             sleep 3
-            STATUS=$(sudo curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || echo "000")
+            echo "➡️  NEW_PORT is $NEW_PORT"
+            STATUS=$(sudo bash -c "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:$NEW_PORT/actuator/health" || echo "000")
+            echo "➡️  STATUS = $STATUS"
+          
             if [ "$STATUS" == "200" ]; then
             echo "✅ 새 서버가 정상입니다!"
             break
@@ -78,7 +81,7 @@ jobs:
             fi
             done
   
-  
+
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
               OLD_CONTAINER="meetnow-server-$CURRENT_PORT"
