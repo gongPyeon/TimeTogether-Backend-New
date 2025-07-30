@@ -61,13 +61,13 @@ jobs:
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
             
             echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i "s|proxy_pass http://\(localhost\|127\.0\.0\.1\):[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
+            sudo sed -i "s|proxy_pass[[:space:]]\+http://\(localhost\|127\.0\.0\.1\):[0-9]*;|proxy_pass  http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
             sudo nginx -t && sudo systemctl reload nginx
             
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
             sleep 3
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/health || echo "000")
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || echo "000")
             if [ "$STATUS" == "200" ]; then
             echo "✅ 새 서버가 정상입니다!"
             break
