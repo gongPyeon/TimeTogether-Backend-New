@@ -46,6 +46,10 @@ jobs:
             else
               NEW_PORT=8081
             fi
+            
+            echo "🧹 기존 컨테이너 정리 중..."
+            docker-compose -f docker-compose.v2.yml down || true
+            docker system prune -f
 
             echo "▶️ 현재 실행 포트: $CURRENT_PORT"
             echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
@@ -59,7 +63,7 @@ jobs:
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
               sleep 3
-              sudo sed -i "71s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
+              sudo sed -i "s|proxy_pass http://\(localhost\|127\.0\.0\.1\):[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
               if [ "$STATUS" == "200" ]; then
                 echo "✅ 새 서버가 정상입니다."
                 break
