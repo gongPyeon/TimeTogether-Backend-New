@@ -65,28 +65,28 @@ jobs:
             sudo nginx -t && sudo systemctl reload nginx
             
             echo "🩺 포트 응답 여부 확인 중..."
-            for i in {1..10}; do
-              sleep 3
-              if nc -z 127.0.0.1 $NEW_PORT; then
-                echo "✅ 포트 $NEW_PORT 응답 확인됨. curl 헬스체크 시도 중..."
-                STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || echo "000")
-                echo "➡️  STATUS = $STATUS"
-                if [ "$STATUS" == "200" ]; then
-                  echo "✅ 새 서버가 정상입니다!"
-                  break
-                fi
-              else
-                echo "❌ 포트 $NEW_PORT 연결 실패"
-              fi
-          
-              if [ "$i" -eq 10 ]; then
-                echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
-                exit 1
-              fi
+            MAX_RETRIES=10
+            RETRY_DELAY=2
+            COUNT=0
+            STATUS="000"
+  
+            until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health)
+              echo "⏳ Waiting for health check... (status=$STATUS)"
+              sleep $RETRY_DELAY
+              COUNT=$((COUNT+1))
             done
-  
-  
 
+            if [ "$STATUS" != "200" ]; then
+              echo "❌ Health check failed after $MAX_RETRIES attempts"
+              exit 1
+            fi
+  
+            echo "✅ Health check succeeded"
+  
+  
+  
+  
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
               OLD_CONTAINER="meetnow-server-$CURRENT_PORT"
