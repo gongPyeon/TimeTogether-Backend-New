@@ -54,7 +54,7 @@ public class PromiseDetailInfoService {
                         false,
                         promise.getPromiseId(),
                         promise.getTitle(),
-                        promise.getType().name(),
+                        promise.getType(),
                         promise.getStartDate().toString(),
                         promise.getEndDate().toString(),
                         promise.getManagerId(),
