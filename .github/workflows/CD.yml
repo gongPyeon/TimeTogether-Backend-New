@@ -65,7 +65,7 @@ jobs:
             sudo nginx -t && sudo systemctl reload nginx
             
             echo "🩺 포트 응답 여부 확인 중..."
-            MAX_RETRIES=10
+            MAX_RETRIES=30
             RETRY_DELAY=2
             COUNT=0
             STATUS="000"
@@ -83,8 +83,6 @@ jobs:
             fi
   
             echo "✅ Health check succeeded"
-  
-  
   
   
             echo "🧹 이전 포트 컨테이너 정리 중..."
