@@ -53,32 +53,32 @@ jobs:
 
             echo "▶️ 현재 실행 포트: $CURRENT_PORT"
             echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
-
+            
             cp .env.prod .env.deploy
             sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
-
+            
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
-
+            
+            echo "🔁 nginx 프록시 포트 전환 중..."
+            sudo sed -i "s|proxy_pass http://\(localhost\|127\.0\.0\.1\):[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
+            sudo nginx -t && sudo systemctl reload nginx
+            
             echo "🩺 헬스체크 수행 중..."
             for i in {1..10}; do
-              sleep 3
-              sudo sed -i "s|proxy_pass http://\(localhost\|127\.0\.0\.1\):[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
-              if [ "$STATUS" == "200" ]; then
-                echo "✅ 새 서버가 정상입니다!"
-                break
-              elif [ "$i" -eq 10 ]; then
-                echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
-                    echo "🛑 컨테이너를 삭제하지 않고 유지합니다. SSH로 접속해서 로그를 확인하세요."
-                    # docker rm -f meetnow-server-$NEW_PORT || true 
-                exit 1
-              fi
+            sleep 3
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/health || echo "000")
+            if [ "$STATUS" == "200" ]; then
+            echo "✅ 새 서버가 정상입니다!"
+            break
+            elif [ "$i" -eq 10 ]; then
+            echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
+            echo "🛑 컨테이너를 삭제하지 않고 유지합니다. SSH로 접속해서 로그를 확인하세요."
+            exit 1
+            fi
             done
-
-            echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i "s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://localhost:$NEW_PORT;|" /etc/nginx/nginx.conf
-            sudo nginx -t && sudo systemctl reload nginx
-
+  
+  
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
               OLD_CONTAINER="meetnow-server-$CURRENT_PORT"
