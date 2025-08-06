@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import timetogeter.context.group.application.dto.request.*;
-import timetogeter.context.group.application.dto.response.InviteGroup1Response;
-import timetogeter.context.group.application.dto.response.InviteGroup2Response;
-import timetogeter.context.group.application.dto.response.JoinGroup0Response;
-import timetogeter.context.group.application.dto.response.JoinGroup1Response;
+import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.exception.GroupIdNotFoundException;
 import timetogeter.context.group.exception.GroupInviteCodeExpired;
 import timetogeter.context.group.exception.GroupProxyUserNotFoundException;
@@ -97,54 +94,19 @@ public class GroupManageMemberService {
 
     //그룹 상세 - 그룹 초대하기 - step3 - 메인 서비스 메소드
     @Transactional
-    public String inviteGroup3(InviteGroup3Request request) {
+    public InviteGroup3Response inviteGroup3(InviteGroup3Request request) {
         String randomUUID = request.randomUUID();
         String encByRandomUUID = request.encByRandomUUID();
 
         //randomkeyforredis redis에 TTL 설정해서 저장
-        redisTemplate.opsForValue().set("INVITE_KEY:" + encByRandomUUID, randomUUID, Duration.ofMinutes(120)); // 120분 유효
+        redisTemplate.opsForValue().set("INVITE_KEY:" +  randomUUID,encByRandomUUID, Duration.ofMinutes(120)); // 120분 유효
 
-
-        return "발급하신 초대코드가 redis에 저장되었습니다. (유효기한 : 120분) ";
+        return new InviteGroup3Response(randomUUID, "발급하신 초대코드가 redis에 저장되었습니다. (유효기한 : 120분)");
     }
 
 //======================
-// 그룹 관리 - 그룹 초대받기 (Step1)
+// 그룹 관리 - 그룹 초대받기 (Step1,2)
 //======================
-
-    //그룹 관리 - 그룹 초대받기 - step0 - 메인 서비스 메소드
-    @Transactional
-    public JoinGroup0Response joinGroup0(JoinGroup0Request request, String userId) {
-        String objectKey = request.randomKeyForRedis();
-
-        if (!amazonS3.doesObjectExist(bucketName, objectKey)) {
-            return new JoinGroup0Response("false");
-        }
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, String> payload = new HashMap<>();
-        payload.put("randomKey", objectKey);
-        payload.put("userId", userId);
-
-        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(payload, headers);
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(
-
-                    "will update",//lambdaVerifyUrl,
-                    HttpMethod.POST,
-                    httpEntity,
-                    String.class
-            );
-
-            String decryptedS3reserve = response.getBody();
-            return new JoinGroup0Response(decryptedS3reserve);
-
-        } catch (Exception e) {
-            return new JoinGroup0Response("false");
-        }
-    }
 
     //그룹 관리 - 그룹 초대받기 - step1 - 메인 서비스 메소드
     @Transactional
@@ -152,13 +114,22 @@ public class GroupManageMemberService {
         String randomUUID = request.randomUUID();
         String storedUUID = redisTemplate.opsForValue().get("INVITE_KEY:" + randomUUID);
         if (storedUUID == null){
-            throw new GroupInviteCodeExpired(BaseErrorCode.GROUP_INVITECODE_EXPIRED, "[ERROR]: 초대코드가 만료되었습니다.");
+            throw new GroupInviteCodeExpired(BaseErrorCode.GROUP_INVITECODE_EXPIRED, "[ERROR]: 초대코드가 만료되거나 유효하지 않습니다.");
         }
-        String groupId = request.groupId();
-        String encGroupKey = request.encGroupKey();
-        String encUserId = request.encUserId();
-        String encGroupId = request.encGroupId();
-        String encencGroupMemberId = request.encencGroupMemberId();
+
+        return new JoinGroup1Response(storedUUID);
+    }
+
+
+    //그룹 관리 - 그룹 초대받기 - step2 - 메인 서비스 메소드
+    public JoinGroup2Response joinGroup2(JoinGroup2Request request, String userId) {
+
+        //값 꺼내기
+        String groupId = request.groupId(); //그룹 아이디
+        String encGroupKey = request.encGroupKey(); //개인키로 암호화한 그룹키
+        String encUserId = request.encUserId(); //그룹키로 암호화한 사용자 고유 아이디
+        String encGroupId = request.encGroupId(); //개인키로 암호화한 그룹 아이디
+        String encencGroupMemberId = request.encencGroupMemberId(); //개인키로 암호화한 encUserId
 
         //GroupProxyUser에 저장
         groupProxyUserRepository.save(GroupProxyUser.of(userId,encGroupId,encencGroupMemberId,System.currentTimeMillis()));
@@ -169,8 +140,6 @@ public class GroupManageMemberService {
         //그룹 이름
         Group joinedGroupName = groupRepository.findByGroupId(groupId)
                 .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: " + groupId));
-        return new JoinGroup1Response(joinedGroupName.getGroupName() + "에 참여했어요.");
+        return new JoinGroup2Response(joinedGroupName.getGroupName() + "그룹에 참여 완료했어요.");
     }
-
-
 }

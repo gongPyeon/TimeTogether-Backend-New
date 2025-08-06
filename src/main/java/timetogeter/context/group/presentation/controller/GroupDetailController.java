@@ -127,10 +127,10 @@ public class GroupDetailController {
     [서버] 받은 enc ( ... ) by 랜덤 UUID, 랜덤 UUID redis에 INVITE_KEY:enc:[ ]:UUID:[ ]로 저장
     */
     @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<String> inviteGroup3(
+    public SuccessResponse<InviteGroup3Response> inviteGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroup3Request request) throws Exception{
-        String response = groupManageMemberService.inviteGroup3(request);
+        InviteGroup3Response response = groupManageMemberService.inviteGroup3(request);
         return SuccessResponse.from(response);
     }
 }
