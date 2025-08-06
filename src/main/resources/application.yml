@@ -1,11 +1,11 @@
 spring:
   profiles:
-    active: prod
+    active: local
 
 logging:
   level:
-    root: DEBUG
-    org.springframework: DEBUG
+    root: INFO
+    org.springframework: INFO
 
 management:
   endpoints:

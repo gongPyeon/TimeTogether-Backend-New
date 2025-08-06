@@ -98,44 +98,14 @@ public class GroupManageMemberService {
     //그룹 상세 - 그룹 초대하기 - step3 - 메인 서비스 메소드
     @Transactional
     public String inviteGroup3(InviteGroup3Request request) {
-        String validInviteCodeCheck = request.randomKeyForRedis();
-        String s3reserve = request.s3reserve();
-
+        String randomUUID = request.randomUUID();
+        String encByRandomUUID = request.encByRandomUUID();
 
         //randomkeyforredis redis에 TTL 설정해서 저장
-        redisTemplate.opsForValue().set("INVITE_KEY:" + validInviteCodeCheck, validInviteCodeCheck, Duration.ofMinutes(60)); // 60분 유효
+        redisTemplate.opsForValue().set("INVITE_KEY:" + encByRandomUUID, randomUUID, Duration.ofMinutes(120)); // 120분 유효
 
-        //s3reserve를 s3 버킷에 randomkeyforredis와 함께 저장
-        StringBuilder sb = new StringBuilder();
-        try {
-            if (amazonS3.doesObjectExist(bucketName, s3Key)) {
-                S3Object s3Object = amazonS3.getObject(bucketName, s3Key);
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(s3Object.getObjectContent()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line).append("\n");
-                    }
-                }
-            }
-            //새로운 매핑 추가
-            sb.append(validInviteCodeCheck).append(" : ").append(s3reserve).append("\n");
 
-            //S3에 다시 업로드
-            File tempFile = File.createTempFile("invite_map", ".txt");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, StandardCharsets.UTF_8))) {
-                writer.write(sb.toString());
-            }
-
-            amazonS3.putObject(new PutObjectRequest(bucketName, s3Key, tempFile));
-            tempFile.deleteOnExit();
-
-        } catch (IOException e) {
-            throw new RuntimeException("S3 처리 중 오류 발생", e);
-        }
-
-        //(방향성 설명) 초대 수락시 redis에서 유효한 TTL 값인지 확인후, randomkeyforredis로 s3reserve를 반환할 예정
-
-        return "발급하신 초대코드의 유효기한 : 60분";
+        return "발급하신 초대코드가 redis에 저장되었습니다. (유효기한 : 120분) ";
     }
 
 //======================
