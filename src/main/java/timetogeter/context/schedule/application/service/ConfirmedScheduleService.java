@@ -73,10 +73,14 @@ public class ConfirmedScheduleService {
         Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
         scheduleRepository.save(schedule);
 
-        PromiseShareKey promiseShareKey = promiseShareKeyRepository.findByEncPromiseKey(reqDTO.encPromiseKey())
-                .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_KEY_NOT_FOUND, "[ERROR] 약속 공유키 테이블을 찾을 수 없습니다."));
+        List<PromiseShareKey> shareKeys = promiseShareKeyRepository.findByPromiseId(reqDTO.promiseId());
+        if (shareKeys.isEmpty()) {
+            throw new PromiseNotFoundException(BaseErrorCode.PROMISE_KEY_NOT_FOUND, "[ERROR] 약속 공유키 테이블을 찾을 수 없습니다.");
+        }
 
-        promiseShareKey.updateScheduleId(reqDTO.scheduleId());
-        promiseShareKeyRepository.save(promiseShareKey);
+        for (PromiseShareKey key : shareKeys) {
+            key.updateScheduleId(reqDTO.scheduleId());
+        }
+        promiseShareKeyRepository.saveAll(shareKeys);
     }
 }

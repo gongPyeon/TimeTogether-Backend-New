@@ -25,8 +25,8 @@ import static timetogeter.global.common.util.PageUtil.PLACE_PAGE;
 public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PromisePlaceRepository placeRepository;
-    private final VotingService votingService; // place <= vote 의존
-    private final PromiseConfirmService promiseConfirmService; // promise <= place 의존
+    private final VotingService votingService;
+    private final PromiseConfirmService promiseConfirmService;
 
     public PlaceBoardDTO getPlaceBoard(String userId, String promiseId, int page) {
         PageRequest pageRequest = PageRequest.of(page - 1, PLACE_PAGE);

@@ -30,4 +30,18 @@ public class PlaceBoardRepositoryImpl implements PlaceBoardRepositoryCustom {
                 .where(u.userId.eq(userId))
                 .fetch();
     }
+
+    @Override
+    public List<PlaceRatingDTO> findAllRatings() {
+        QUserBoard u = QUserBoard.userBoard;
+
+        return queryFactory
+                .select(Projections.constructor(PlaceRatingDTO.class,
+                        u.placeBoardId,
+                        u.userId,
+                        u.rating
+                ))
+                .from(u)
+                .fetch();
+    }
 }
