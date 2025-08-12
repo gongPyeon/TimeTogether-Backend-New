@@ -118,21 +118,27 @@ public class GroupManageController {
     }
 
 //======================
-// 그룹 관리 - 초대받기 (Step1,2)
+// 그룹 관리 - 초대받기 (Step1)
 //======================
 
     /*
-    그룹 상세 - 그룹 초대받기 - step1
+    그룹 관리 - 초대 받기 - step1
 
-    [웹]
-    랜덤 UUID
 
-    값 보냄
-    /api/v1/group/join1->
+    [웹] "http://localhost:8080/group/join?token=그룹키&그룹아이디&랜덤UUID"
+			해당 url에서 랜덤UUID만 추출후
+			랜덤 UUID,
+			개인키로 암호화한 그룹키 encGroupKey,
+			그룹키로 암호화한 사용자 고유 아이디 encUserId,
+			개인키로 암호화한 그룹 아이디 encGroupId,
+			개인키로 암호화한 encUserId - encencGroupMemberId
+			보냄
+		 /api/v1/group/join1
+		 ->
+    [서버] 랜덤 UUID 존재여부 확인후,
+			GroupProxyUser, GroupShareKey테이블 내 정보 저장
+			참여완료 메시지 보냄
 
-    [서버]
-    받은 랜덤 UUID 값 유효성 검증후,
-    통과시, redis에서 enc( ... ) by 랜덤 UUID 값 반환
      */
     @PostMapping(value = "/join1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<JoinGroup1Response> joinGroup1(
@@ -141,34 +147,6 @@ public class GroupManageController {
         String userId = userPrincipal.getId();
         JoinGroup1Response response = groupManageMemberService.joinGroup1(request,userId);
         return new BaseResponse(response);
-    }
-
-    /*
-    그룹 상세 - 그룹 초대받기 - step2
-
-    [웹]
-    랜덤 UUID 값으로 enc( ... ) 값 복호화후
-    그룹키, 그룹아이디 꺼내
-
-                    개인키로 암호화한 그룹키 encGroupKey,
-            그룹키로 암호화한 사용자 고유 아이디 encUserId,
-            개인키로 암호화한 그룹 아이디 encGroupId,
-            개인키로 암호화한 encUserId - encencGroupMemberId
-
-    값 보냄
-    /api/v1/group/join2->
-
-    [서버]
-    GroupProxyUser, GroupShareKey테이블 내 정보 저장후
-    참여 완료 메시지 보냄
-     */
-    @PostMapping(value = "/join2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<JoinGroup2Response> joinGroup2(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody JoinGroup2Request request) throws Exception{
-        String userId = userPrincipal.getId();
-        JoinGroup2Response response = groupManageMemberService.joinGroup2(request,userId);
-        return SuccessResponse.from(response);
     }
 
 //======================
