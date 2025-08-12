@@ -79,8 +79,8 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
 	//aws, S3 설정
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-
+	// implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter:4.1.1'
 	//테스트 코드 내 h2 설정
 	runtimeOnly 'com.h2database:h2'
 
