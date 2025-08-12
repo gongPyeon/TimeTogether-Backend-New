@@ -24,7 +24,6 @@ services:
   #      meetnow-redis:
   #        condition: service_healthy
 
-
   meetnow-db:
     image: mysql:latest
     environment:
