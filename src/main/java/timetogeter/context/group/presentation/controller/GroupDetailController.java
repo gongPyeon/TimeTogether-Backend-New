@@ -14,6 +14,7 @@ import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
+import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 @RestController
@@ -40,12 +41,12 @@ public class GroupDetailController {
 			encencGroupMemberId반환
     */
     @PostMapping(value = "/edit1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<EditGroup1Response> editGroup1(
+    public BaseResponse<EditGroup1Response> editGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody EditGroup1Request request) throws Exception{
         String managerId = userPrincipal.getId();
         EditGroup1Response response = groupManageInfoService.editGroup1(request, managerId);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -57,11 +58,11 @@ public class GroupDetailController {
 			레코드의 encGroupKey를 반환
     */
     @PostMapping(value = "/edit2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<EditGroup2Response> editGroup2(
+    public BaseResponse<EditGroup2Response> editGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody EditGroup2Request request) throws Exception{
         EditGroup2Response response = groupManageInfoService.editGroup2(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -73,11 +74,11 @@ public class GroupDetailController {
 			encUserId 리스트, 그룹 아이디에 따른 그룹 정보 반환
     */
     @PostMapping(value = "/edit3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<EditGroup3Response> editGroup3(
+    public BaseResponse<EditGroup3Response> editGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody EditGroup3Request request) throws Exception{
         EditGroup3Response response = groupManageInfoService.editGroup3(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 
@@ -92,12 +93,12 @@ public class GroupDetailController {
     [서버] GroupProxyUser테이블 내 encencGroupMemberId 반환 ->
      */
     @PostMapping(value = "/invite1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<InviteGroup1Response> inviteGroup1(
+    public BaseResponse<InviteGroup1Response> inviteGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroup1Request request) throws Exception{
         String userId = userPrincipal.getId();
         InviteGroup1Response response = groupManageMemberService.inviteGroup1(request,userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -108,11 +109,11 @@ public class GroupDetailController {
     [서버] GroupShareKey테이블 내 encGroupKey 반환->
     */
     @PostMapping(value = "/invite2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<InviteGroup2Response> inviteGroup2(
+    public BaseResponse<InviteGroup2Response> inviteGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroup2Request request) throws Exception{
         InviteGroup2Response response = groupManageMemberService.inviteGroup2(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -127,10 +128,10 @@ public class GroupDetailController {
     [서버] 받은 enc ( ... ) by 랜덤 UUID, 랜덤 UUID redis에 INVITE_KEY:enc:[ ]:UUID:[ ]로 저장
     */
     @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<InviteGroup3Response> inviteGroup3(
+    public BaseResponse<String> inviteGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody InviteGroup3Request request) throws Exception{
-        InviteGroup3Response response = groupManageMemberService.inviteGroup3(request);
-        return SuccessResponse.from(response);
+        String response = groupManageMemberService.inviteGroup3(request);
+        return new BaseResponse<>(response);
     }
 }

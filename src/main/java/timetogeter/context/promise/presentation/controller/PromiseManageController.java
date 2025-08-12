@@ -13,6 +13,7 @@ import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.promise.application.dto.request.manage.*;
 import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
+import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 @RestController
@@ -35,12 +36,12 @@ public class PromiseManageController {
 		  (그룹키로 암호화한 사용자 고유 아이디)'를 리스트 형태로 반환
      */
     @PostMapping(value = "/createView1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseViewResponse1> createPromiseView1(
+    public BaseResponse<CreatePromiseViewResponse1> createPromiseView1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseViewRequest1 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseViewResponse1 response = promiseManageInfoService.createPromiseView1(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -53,12 +54,12 @@ public class PromiseManageController {
 			GroupShareKey테이블 내 "개인키로 암호화한 그룹키" 넘김
     */
     @PostMapping(value = "/createView2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseViewResponse2> createPromiseView2(
+    public BaseResponse<CreatePromiseViewResponse2> createPromiseView2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseViewRequest2 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseViewResponse2 response = promiseManageInfoService.createPromiseView2(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -70,12 +71,12 @@ public class PromiseManageController {
     [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환
     */
     @PostMapping(value = "/createView3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseViewResponse3> createPromiseView3(
+    public BaseResponse<CreatePromiseViewResponse3> createPromiseView3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseViewRequest3 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseViewResponse3 response = promiseManageInfoService.createPromiseView3(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 
@@ -91,12 +92,12 @@ public class PromiseManageController {
     [서버] GroupProxyUser테이블 내에서 encencGroupMemberId 반환
      */
     @PostMapping(value = "/create1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseAlimResponse1> createPromise1(
+    public BaseResponse<CreatePromiseAlimResponse1> createPromise1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest1 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseAlimResponse1 response = promiseManageInfoService.createPromise1(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -108,11 +109,11 @@ public class PromiseManageController {
     [웹] 개인키로 encGroupKey복호화해서 groupKey얻음
     */
     @PostMapping(value = "/create2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseAlimResponse2> createPromise2(
+    public BaseResponse<CreatePromiseAlimResponse2> createPromise2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest2 request) throws Exception{
         CreatePromiseAlimResponse2 response = promiseManageInfoService.createPromise2(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -127,11 +128,11 @@ public class PromiseManageController {
     [서버] Promise에 약속(임의) 저장해서 약속 아이디 반환
      */
     @PostMapping(value = "/create3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseAlimResponse3> createPromise3(
+    public BaseResponse<CreatePromiseAlimResponse3> createPromise3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest3 request) throws Exception{
         CreatePromiseAlimResponse3 response = promiseManageInfoService.createPromise3(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -143,12 +144,12 @@ public class PromiseManageController {
     [서버] encGroupKey(개인키로 암호화한 그룹키)리스트 반환
      */
     @PostMapping(value = "/create4", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseAlimResponse4> createPromise4(
+    public BaseResponse<CreatePromiseAlimResponse4> createPromise4(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest4 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseAlimResponse4 response = promiseManageInfoService.createPromise4(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -167,12 +168,12 @@ public class PromiseManageController {
 						PromiseProxyUser에 저장, promiseShareKey에 저장
      */
     @PostMapping(value = "/create5", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreatePromiseAlimResponse5> createPromise5(
+    public BaseResponse<CreatePromiseAlimResponse5> createPromise5(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromiseAlimRequest5 request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromiseAlimResponse5 response = promiseManageInfoService.createPromise5(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 //======================
@@ -188,12 +189,12 @@ public class PromiseManageController {
     [서버] GroupProxyUser테이블 내에서 encencGroupMemberId 반환
      */
        @PostMapping(value = "/create/join1", produces = MediaType.APPLICATION_JSON_VALUE)
-       public SuccessResponse<CreateJoinPromiseResponse1> createJoinPromise1(
+       public BaseResponse<CreateJoinPromiseResponse1> createJoinPromise1(
                @AuthenticationPrincipal UserPrincipal userPrincipal,
                @RequestBody CreateJoinPromiseRequest1 request) throws Exception{
            String userId = userPrincipal.getId();
            CreateJoinPromiseResponse1 response = promiseManageInfoService.createJoinPromise1(userId,request);
-           return SuccessResponse.from(response);
+           return new BaseResponse<>(response);
        }
 
 
@@ -206,11 +207,11 @@ public class PromiseManageController {
     [웹] 개인키로 encGroupKey복호화해서 groupKey얻음(저장)
      */
     @PostMapping(value = "/create/join2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateJoinPromiseResponse2> createJoinPromise2(
+    public BaseResponse<CreateJoinPromiseResponse2> createJoinPromise2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateJoinPromiseRequest2 request) throws Exception{
         CreateJoinPromiseResponse2 response = promiseManageInfoService.createJoinPromise2(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -221,11 +222,11 @@ public class PromiseManageController {
     [서버] redis에 promise:notify:%s:%s", encUserId, "PENDING" 이거 있으면, 해당 value 반환
     */
     @PostMapping(value = "/create/join3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateJoinPromiseResponse3> createJoinPromise3(
+    public BaseResponse<CreateJoinPromiseResponse3> createJoinPromise3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateJoinPromiseRequest3 request) throws Exception{
         CreateJoinPromiseResponse3 response = promiseManageInfoService.createJoinPromise3(request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
        /*
@@ -239,12 +240,12 @@ public class PromiseManageController {
        [서버] PromiseShareKey, PromiseProxyUser 테이블에 저장
        */
     @PostMapping(value = "/create/join4", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateJoinPromiseResponse4> createJoinPromise4(
+    public BaseResponse<CreateJoinPromiseResponse4> createJoinPromise4(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateJoinPromiseRequest4 request) throws Exception{
         String userId = userPrincipal.getId();
         CreateJoinPromiseResponse4 response = promiseManageInfoService.createJoinPromise4(userId,request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 }

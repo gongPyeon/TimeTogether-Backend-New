@@ -17,6 +17,7 @@ import timetogeter.context.promise.application.dto.response.detail.OverallPromis
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse3;
 import timetogeter.context.promise.application.dto.response.detail.OverallPromiseViewResponse4;
 import timetogeter.context.promise.application.service.PromiseDetailInfoService;
+import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 import java.util.List;
@@ -39,11 +40,11 @@ public class PromiseDetailController {
     [서버] PromiseProxyUser에서 encPromiseId(개인키로 암호화한 약속 아이디) 반환
      */
     @PostMapping(value = "/overallPromise1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<OverallPromiseViewResponse1>> overallPromise1(
+    public BaseResponse<List<OverallPromiseViewResponse1>> overallPromise1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
         String userId = userPrincipal.getId();
         List<OverallPromiseViewResponse1> response = promiseDetailInfoService.getEncPromiseIdList(userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -53,12 +54,12 @@ public class PromiseDetailController {
    [서버] Promise, PromiseCheck 테이블에서 약속 확정 여부(정하는중),(확정완료) 약속 정보 반환
     */
     @PostMapping(value = "/overallPromise2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<OverallPromiseViewResponse2>> overallPromise2(
+    public BaseResponse<List<OverallPromiseViewResponse2>> overallPromise2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody OverallPromiseviewRequest2 request) throws Exception{
         String userId = userPrincipal.getId();
         List<OverallPromiseViewResponse2> response = promiseDetailInfoService.getPromiseInfoList(userId, request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 
@@ -69,12 +70,12 @@ public class PromiseDetailController {
    [서버] PromiseShareKey에서 encPromiseKey로 해당되는 scheduleId들을 반환
    */
     @PostMapping(value = "/overallPromise3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<OverallPromiseViewResponse3>> overallPromise3(
+    public BaseResponse<List<OverallPromiseViewResponse3>> overallPromise3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody OverallPromiseViewRequest3 request) throws Exception{
         String userId = userPrincipal.getId();
         List<OverallPromiseViewResponse3> response = promiseDetailInfoService.getScheduleIdList(userId, request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -84,11 +85,11 @@ public class PromiseDetailController {
 [서버] PromiseShareKey에서 encPromiseKey로 해당되는 scheduleId들을 반환
 */
     @PostMapping(value = "/overallPromise4", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<OverallPromiseViewResponse4>> overallPromise4(
+    public BaseResponse<List<OverallPromiseViewResponse4>> overallPromise4(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody OverallPromiseViewRequest4 request) throws Exception{
         String userId = userPrincipal.getId();
         List<OverallPromiseViewResponse4> response = promiseDetailInfoService.getScheduleInfoList(userId, request);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 }
