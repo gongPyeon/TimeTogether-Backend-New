@@ -46,35 +46,45 @@ jobs:
             else
               NEW_PORT=8081
             fi
+            
+            echo "🧹 기존 컨테이너 정리 중..."
+            docker-compose -f docker-compose.v2.yml down || true
+            docker system prune -f
 
             echo "▶️ 현재 실행 포트: $CURRENT_PORT"
             echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
-
+            
             cp .env.prod .env.deploy
             sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
-
+            
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
-
-            echo "🩺 헬스체크 수행 중..."
-            for i in {1..10}; do
-              sleep 3
-              sudo sed -i "71s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://127.0.0.1:$NEW_PORT;|" /etc/nginx/nginx.conf
-              if [ "$STATUS" == "200" ]; then
-                echo "✅ 새 서버가 정상입니다."
-                break
-              elif [ "$i" -eq 10 ]; then
-                echo "❌ 새 서버가 정상적으로 시작되지 않았습니다."
-                    echo "🛑 컨테이너를 삭제하지 않고 유지합니다. SSH로 접속해서 로그를 확인하세요."
-                    # docker rm -f meetnow-server-$NEW_PORT || true 
-                exit 1
-              fi
+            
+            echo "🔁 nginx 프록시 포트 전환 중..."
+            sudo sed -i '59s|.*|        server 127.0.0.1:'"$NEW_PORT"';|' /etc/nginx/nginx.conf
+            sudo nginx -t && sudo systemctl reload nginx
+            
+            echo "🩺 포트 응답 여부 확인 중..."
+            MAX_RETRIES=30
+            RETRY_DELAY=2
+            COUNT=0
+            STATUS="000"
+  
+            until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || true)
+              echo "⏳ Waiting for health check... (status=$STATUS)"
+              sleep $RETRY_DELAY
+              COUNT=$((COUNT+1))
             done
 
-            echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i "s|proxy_pass http://localhost:[0-9]*;|proxy_pass http://localhost:$NEW_PORT;|" /etc/nginx/nginx.conf
-            sudo nginx -t && sudo systemctl reload nginx
-
+            if [ "$STATUS" != "200" ]; then
+              echo "❌ Health check failed after $MAX_RETRIES attempts"
+              exit 1
+            fi
+  
+            echo "✅ Health check succeeded"
+  
+  
             echo "🧹 이전 포트 컨테이너 정리 중..."
             if [ "$CURRENT_PORT" != "none" ]; then
               OLD_CONTAINER="meetnow-server-$CURRENT_PORT"

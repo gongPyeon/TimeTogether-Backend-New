@@ -120,9 +120,12 @@ public class GroupDetailController {
     그룹 상세 - 그룹 초대하기 - step3
 
     [웹] 개인키로 그룹키 획득,
-		그룹키 + 그룹아이디 + 랜덤 UUID(해당 초대코드가 유효하다는 증거)
-		생성해서 랜덤 UUID만 보냄  /api/v1/group/invite3 ->
-    [서버] 받은 랜덤 UUID만 redis에 "INVITE_KEY:" key로 저장
+		enc ( 그룹키, 그룹아이디, 랜덤 UUID(해당 초대코드가 유효하다는 증거), 초대하려는 userId ) by 랜덤 UUID, 
+		생성해서 랜덤 UUID
+		
+		위 2개의 값 보냄
+		/api/v1/group/invite3 ->
+    [서버] 받은 enc ( ... ) by 랜덤 UUID, 랜덤 UUID redis에 INVITE_KEY:enc:[ ]:UUID:[ ]로 저장
     */
     @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<String> inviteGroup3(
