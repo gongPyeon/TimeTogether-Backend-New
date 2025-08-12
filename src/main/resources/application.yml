@@ -4,9 +4,8 @@ spring:
 
 logging:
   level:
-    root: DEBUG
-    org.springframework: DEBUG
-
+    root: INFO
+    org.springframework: INFO
 
 management:
   endpoints:
@@ -16,4 +15,6 @@ management:
   endpoint:
     health:
       show-details: always  # /actuator/health에서 세부정보 표시
-
+  metrics:
+    enable:
+      jvm.file.descriptor: false

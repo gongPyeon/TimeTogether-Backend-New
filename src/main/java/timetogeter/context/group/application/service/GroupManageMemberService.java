@@ -124,6 +124,7 @@ public class GroupManageMemberService {
     //그룹 관리 - 그룹 초대받기 - step2 - 메인 서비스 메소드
     public JoinGroup2Response joinGroup2(JoinGroup2Request request, String userId) {
 
+
         //값 꺼내기
         String groupId = request.groupId(); //그룹 아이디
         String encGroupKey = request.encGroupKey(); //개인키로 암호화한 그룹키
