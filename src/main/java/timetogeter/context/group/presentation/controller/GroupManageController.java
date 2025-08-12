@@ -11,6 +11,7 @@ import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
+import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 import java.util.List;
@@ -37,11 +38,11 @@ public class GroupManageController {
 		 (그룹키로 암호화한 사용자 고유 아이디)'를 반환
      */
     @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<ViewGroup1Response>> viewGroup1(
+    public BaseResponse<List<ViewGroup1Response>> viewGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
         String userId = userPrincipal.getId();
         List<ViewGroup1Response> response = groupManageDisplayService.viewGroup1(userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -54,11 +55,11 @@ public class GroupManageController {
 			GroupShareKey테이블 내 "개인키로 암호화한 그룹키"를 리스트 형태로 넘김
      */
     @PostMapping(value = "/view2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<ViewGroup2Response>> viewGroup2(
+    public BaseResponse<List<ViewGroup2Response>> viewGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody List<ViewGroup2Request> requests) throws Exception{
         List<ViewGroup2Response> response = groupManageDisplayService.viewGroup2(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -70,11 +71,11 @@ public class GroupManageController {
     [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환 , <그룹 정보> 또한 리스트 형태로 반환
      */
     @PostMapping(value = "/view3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<ViewGroup3Response>> viewGroup3(
+    public BaseResponse<List<ViewGroup3Response>> viewGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody List<ViewGroup3Request> requests) throws Exception{
         List<ViewGroup3Response> response = groupManageDisplayService.viewGroup3(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 //======================
@@ -88,12 +89,12 @@ public class GroupManageController {
     [서버] Group에 request기반으로 저장, 저장한 후 생성된 Group의 아이디 프론트에 반환 ->
      */
     @PostMapping(value = "/new1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateGroup1Response> createGroup1(
+    public BaseResponse<CreateGroup1Response> createGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateGroup1Request request) throws Exception{
         String userId = userPrincipal.getId();
         CreateGroup1Response response = groupManageInfoService.createGroup1(request,userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -108,12 +109,12 @@ public class GroupManageController {
     [서버] 요청을 GroupProxyUser, Group, GroupShareKey에 저장
      */
     @PostMapping(value = "/new2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CreateGroup2Response> createGroup2(
+    public BaseResponse<CreateGroup2Response> createGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreateGroup2Request request) throws Exception{
         String userId = userPrincipal.getId();
         CreateGroup2Response response = groupManageInfoService.createGroup2(request,userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse(response);
     }
 
 //======================
@@ -140,12 +141,12 @@ public class GroupManageController {
 
      */
     @PostMapping(value = "/join1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<JoinGroup1Response> joinGroup1(
+    public BaseResponse<JoinGroup1Response> joinGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody JoinGroup1Request request) throws Exception{
         String userId = userPrincipal.getId();
         JoinGroup1Response response = groupManageMemberService.joinGroup1(request,userId);
-        return SuccessResponse.from(response);
+        return new BaseResponse(response);
     }
 
 //======================

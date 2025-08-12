@@ -19,6 +19,7 @@ import timetogeter.context.schedule.application.dto.response.CalendarViewRespons
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
 import timetogeter.context.schedule.application.service.CalendarDetailService;
 import timetogeter.context.schedule.application.service.CalendarViewService;
+import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 import java.util.List;
@@ -51,12 +52,12 @@ public class CalendarManageController {
     [서버] encPromiseKey에 해당하는 scheduleId를 리스트로 반환
      */
     @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CalendarViewResponse1> viewCalendar1(
+    public BaseResponse<CalendarViewResponse1> viewCalendar1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarViewRequest1 requests) throws Exception{
         String userId = userPrincipal.getId();
         CalendarViewResponse1 response = calendarViewService.viewCalendar1(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
     /*
@@ -68,12 +69,12 @@ public class CalendarManageController {
     [서버] scheduleId에 해당하는 Schedule 테이블 내 레코드를 리스트 형태로 반환
      */
     @PostMapping(value = "/view2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<List<CalendarViewResponse2>> viewCalendar2(
+    public BaseResponse<List<CalendarViewResponse2>> viewCalendar2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarViewRequest2 requests) throws Exception{
         String userId = userPrincipal.getId();
         List<CalendarViewResponse2> response = calendarViewService.viewCalendar2(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 
@@ -92,12 +93,12 @@ public class CalendarManageController {
     [서버] Schedule 테이블, PromiseShareKey 테이블 내에 저장
      */
     @PostMapping(value = "/create1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CalendarCreateResponse1> createCalendar1(
+    public BaseResponse<CalendarCreateResponse1> createCalendar1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarCreateRequest1 requests) throws Exception{
         String userId = userPrincipal.getId();
         CalendarCreateResponse1 response = calendarDetailService.createCalendar1(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 //======================
@@ -111,12 +112,12 @@ public class CalendarManageController {
     [서버] scheduleId에 해당하는 것에 수정해서 반환
      */
     @PostMapping(value = "/rewrite1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<CalendarRewriteResponse1> rewriteCalendar1(
+    public BaseResponse<CalendarRewriteResponse1> rewriteCalendar1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarRewriteRequest1 requests) throws Exception{
         String userId = userPrincipal.getId();
         CalendarRewriteResponse1 response = calendarDetailService.rewriteCalendar1(requests);
-        return SuccessResponse.from(response);
+        return new BaseResponse<>(response);
     }
 
 
