@@ -1,6 +1,6 @@
 package timetogeter.context.group.application.dto.response;
 
-public record JoinGroup1Response(
-        String result
+public record JoinGroup0Response(
+        String s3reserve
 ) {
 }

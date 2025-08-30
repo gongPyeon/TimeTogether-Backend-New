@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public record CreatePromiseAlimRequest3(
         String groupId,
         String title,
-        PromiseType type,
+        String type,
 
         String promiseImg,
         String managerId, // userId
