@@ -62,6 +62,9 @@ public class SecurityConfig {
     private RequestMatcher[] requestPermitAll() {
         List<RequestMatcher> requestMatchers = List.of(
                 antMatcher(GET, "/docs/**"),
+                antMatcher(GET, "/swagger-ui/**"),
+                antMatcher(GET, "/v3/api-docs/**"),
+                antMatcher(GET, "/swagger-ui.html"),
                 antMatcher(POST, "/static/docs/**"), // API 문서
                 antMatcher(POST, "/auth/**"), // 회원가입 & 로그인
                 antMatcher(GET, "/test/**"),
