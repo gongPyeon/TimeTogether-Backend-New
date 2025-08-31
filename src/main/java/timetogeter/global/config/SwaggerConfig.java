@@ -20,7 +20,7 @@ public class SwaggerConfig {
                         .scheme("bearer")
                         .bearerFormat("JWT")))
                 .info(apiInfo())
-                .servers(List.of(new Server().url("http://localhost:8080"))); // https://meetnow.duckdns.org
+                .servers(List.of(new Server().url("https://meetnow.duckdns.org"))); // https://meetnow.duckdns.org
     }
 
     private Info apiInfo() {
