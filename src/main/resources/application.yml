@@ -18,3 +18,13 @@ management:
   metrics:
     enable:
       jvm.file.descriptor: false
+
+springdoc:
+  swagger-ui:
+    path: /docs/swagger
+    disable-swagger-default-url: true
+    urls:
+      - name: Live (Annotations)
+        url: /v3/api-docs
+      - name: REST Docs (Generated)
+        url: /docs/openapi3.json
