@@ -61,7 +61,10 @@ public enum BaseErrorCode implements StatusCode {
     NOT_GROUP_MEMBER_ERROR(403, HttpStatus.UNAUTHORIZED, "그룹 멤버가 아닙니다."),
     GROUP_INVITECODE_EXPIRED(403, HttpStatus.FORBIDDEN, "초대코드가 만료되었거나 유효하지 않습니다."),
     GROUP_PROXY_USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "해당 객체가 존재하지 않습니다."),
-    GROUP_SHARE_KEY_NOT_FOUND(404,HttpStatus.NOT_FOUND, "해당 객체가 존재하지 않습니다." );
+    GROUP_SHARE_KEY_NOT_FOUND(404,HttpStatus.NOT_FOUND, "해당 객체가 존재하지 않습니다." ),
+
+    //서비스 내 유저 에러
+    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다.");
 
     //===================================
     private final int code;

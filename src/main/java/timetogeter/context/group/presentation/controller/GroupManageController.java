@@ -1,183 +1,505 @@
 package timetogeter.context.group.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import org.springframework.web.bind.annotation.*;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.*;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.interceptor.response.BaseResponse;
-import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
-
-import java.util.List;
+import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 
 @RestController
 @RequestMapping("/api/v1/group")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "그룹", description = "그룹 생성, 그룹 정보 수정, 그룹 멤버 초대/나가기 API")
 public class GroupManageController {
-
     private final GroupManageInfoService groupManageInfoService;
     private final GroupManageMemberService groupManageMemberService;
     private final GroupManageDisplayService groupManageDisplayService;
 
+
 //======================
-// 그룹 관리 - 그룹 메인 보기 (Step1,2,3)
+// 그룹 상세 - 그룹 초대하기 (Step1,2,3)
 //======================
 
     /*
-    그룹 관리 - 그룹 메인 보기 - step1
+    그룹 상세 - 그룹 초대하기 - step1
 
-    [웹] 그룹원이 userId를 담은 request를 요청 /api/v1/group/view1 ->
-    [서버] GroupProxyUser의 userId에 해당하는 '개인키로 암호화된 그룹 아이디', '개인키로 암호화한
-		 (그룹키로 암호화한 사용자 고유 아이디)'를 반환
+    [웹] 그룹원이 groupId, 개인키로 암호화한 그룹 아이디를 보냄 /api/v1/group/invite1 ->
+    [서버] GroupProxyUser테이블 내 encencGroupMemberId 반환 ->
      */
-    @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ViewGroup1Response>> viewGroup1(
-            @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
+    @Operation(
+            summary = "그룹 초대 - Step1",
+            description = """
+        그룹원이 groupId와 개인키로 암호화한 그룹 아이디를 서버에 전송하면,
+        서버는 GroupProxyUser 테이블에서 encencGroupMemberId를 반환합니다.
+        """,
+            security = @SecurityRequirement(name = "BearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = InviteGroup1Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "groupId 누락", value = """
+                    { "code": 400, "message": "groupId는 필수입니다." }
+                    """),
+                                    @ExampleObject(name = "encGroupId 누락", value = """
+                    { "code": 400, "message": "encGroupId는 필수입니다." }
+                    """)
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 401, "message": "인증이 필요합니다." }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 403, "message": "권한이 없습니다." }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "422", description = "복호화/무결성 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 422, "message": "encGroupId 복호화 실패" }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                """)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/invite1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<InviteGroup1Response> inviteGroup1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody InviteGroup1Request request) throws Exception{
         String userId = userPrincipal.getId();
-        List<ViewGroup1Response> response = groupManageDisplayService.viewGroup1(userId);
+        InviteGroup1Response response = groupManageMemberService.inviteGroup1(request,userId);
         return new BaseResponse<>(response);
     }
 
     /*
-    그룹 관리 - 그룹 메인 보기 - step2
+    그룹 상세 - 그룹 초대하기 - step2
 
-    [웹] 암호화된 그룹 아이디, 암호화된 (그룹키로 암호화된 사용자 고유 아이디)를 개인키로 복호화 후
-			그룹 아이디(리스트 형태로 그대로 저장해두기), (그룹키로 암호화된 사용자 고유 아이디)를 리스트 형태로 담아 요청
-			/api/v1/group/view2 ->
-    [서버] 그룹 아이디, (그룹키로 암호화한 사용자 고유 아이디)에 해당하는
-			GroupShareKey테이블 내 "개인키로 암호화한 그룹키"를 리스트 형태로 넘김
-     */
-    @PostMapping(value = "/view2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ViewGroup2Response>> viewGroup2(
+    [웹] 개인키로 encencGroupMemberId 복호화해서 encUserId 얻고,
+		encUserId, groupId 로 encGroupKey 요청 /api/v1/group/invite2 ->
+    [서버] GroupShareKey테이블 내 encGroupKey 반환->
+    */
+    @Operation(
+            summary = "그룹 초대 - Step2",
+            description = """
+        개인키로 encencGroupMemberId를 복호화하여 encUserId를 획득 후,
+        encUserId와 groupId로 encGroupKey를 요청합니다.
+        """,
+            security = @SecurityRequirement(name = "BearerAuth")
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = InviteGroup2Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "encUserId 누락", value = """
+                    { "code": 400, "message": "encUserId는 필수입니다." }
+                    """),
+                                    @ExampleObject(name = "groupId 누락", value = """
+                    { "code": 400, "message": "groupId는 필수입니다." }
+                    """)
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 401, "message": "인증이 필요합니다." }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 403, "message": "권한이 없습니다." }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "422", description = "복호화/무결성 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 422, "message": "encUserId 복호화 실패" }
+                """)
+                    )
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                """)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/invite2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<InviteGroup2Response> inviteGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody List<ViewGroup2Request> requests) throws Exception{
-        List<ViewGroup2Response> response = groupManageDisplayService.viewGroup2(requests);
+            @RequestBody InviteGroup2Request request) throws Exception{
+        InviteGroup2Response response = groupManageMemberService.inviteGroup2(request);
         return new BaseResponse<>(response);
     }
 
     /*
-    그룹 관리 - 그룹 메인 보기 - step3
+    그룹 상세 - 그룹 초대하기 - step3
 
-    [웹] 개인키로 "개인키로 암호화한 그룹키" 복호화후 저장해 두었다가,
-		이전 저장한 그룹 아이디를 GroupShareKey테이블 내 레코드 리스트 요청, 그룹 정보 요청 /api/v1/group/view3
-		->
-    [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환 , <그룹 정보> 또한 리스트 형태로 반환
-     */
-    @PostMapping(value = "/view3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<List<ViewGroup3Response>> viewGroup3(
+    [웹] 개인키로 그룹키 획득,
+		enc ( 그룹키, 그룹아이디, 랜덤 UUID(만들때마다 다른 값이 나오도록), 초대하려는 유저의 이메일 ) by 랜덤 값 6자리(=초대 암호),
+
+		위의 값 보냄
+		/api/v1/group/invite3 ->
+    [서버] 받은 값을 redis에 INVITE_KEY:받은 값으로 저장 (해당 링크에 TTL 적용 유효한지를 확인)
+    */
+    @Operation(summary = "그룹 초대 - Step3", description = """
+        개인키로 그룹키를 획득 후,
+        그룹키, 그룹아이디, 랜덤 UUID, 초대할 유저 이메일을 랜덤 6자리 초대암호로 암호화하여 서버에 전달합니다.
+        서버는 Redis에 TTL 적용 후 저장하며, 초대 링크 유효성을 확인할 수 있습니다.
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "초대코드 발급 성공",
+                    content = @Content(schema = @Schema(implementation = InviteGroup3Response.class))
+            ),
+
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "초대 암호 누락", value = """
+                                    { "code": 400, "message": "inviteCode는 필수입니다." }
+                                    """),
+                                    @ExampleObject(name = "그룹키 누락", value = """
+                                    { "code": 400, "message": "groupKey는 필수입니다." }
+                                    """)
+                            }
+                    )
+            ),
+
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 401, "message": "인증이 필요합니다." }
+                            """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 403, "message": "권한이 없습니다." }
+                            """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "422", description = "복호화/무결성 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 422, "message": "초대 암호 복호화 실패" }
+                            """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                            """)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<InviteGroup3Response> inviteGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody List<ViewGroup3Request> requests) throws Exception{
-        List<ViewGroup3Response> response = groupManageDisplayService.viewGroup3(requests);
+            @RequestBody InviteGroup3Request request) throws Exception{
+        InviteGroup3Response response = groupManageMemberService.inviteGroup3(request);
         return new BaseResponse<>(response);
     }
 
 //======================
-// 그룹 관리 - 그룹 만들기 (Step1,2)
-//======================
-
-    /*
-    그룹 관리 - 그룹 만들기 - step1
-
-    [웹] (예비 방장)그룹원이 Group정보를 담은 request를 요청 /api/v1/group/new1 ->
-    [서버] Group에 request기반으로 저장, 저장한 후 생성된 Group의 아이디 프론트에 반환 ->
-     */
-    @PostMapping(value = "/new1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<CreateGroup1Response> createGroup1(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody CreateGroup1Request request) throws Exception{
-        String userId = userPrincipal.getId();
-        CreateGroup1Response response = groupManageInfoService.createGroup1(request,userId);
-        return new BaseResponse<>(response);
-    }
-
-    /*
-    그룹 관리 - 그룹 만들기 - step2
-
-    [웹] 그룹키 자체적 생성후,
-         GroupId와
-         Group 아이디를 개인키로 암호화 한 것,
-		 그룹키로 암호화한 사용자 아이디,
-		 (그룹키로 암호화한 사용자 아이디)를 개인키로 암호화한 것,
-		 개인키로 암호화한 그룹키 5개를 묶어 request로 요청 /api/v1/group/new2 ->
-    [서버] 요청을 GroupProxyUser, Group, GroupShareKey에 저장
-     */
-    @PostMapping(value = "/new2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<CreateGroup2Response> createGroup2(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody CreateGroup2Request request) throws Exception{
-        String userId = userPrincipal.getId();
-        CreateGroup2Response response = groupManageInfoService.createGroup2(request,userId);
-        return new BaseResponse(response);
-    }
-
-//======================
-// 그룹 관리 - 초대받기 (Step1,2)
+// 그룹 관리 - 초대받기 (Step1)
 //======================
 
     /*
     그룹 상세 - 그룹 초대받기 - step1
 
     [웹]
-    랜덤 UUID
+    프론트에서 디코딩해서 얻은 encryptedValue와 함께
+    사용자의 정보들을 조합한후
 
     값 보냄
     /api/v1/group/join1->
 
     [서버]
-    받은 랜덤 UUID 값 유효성 검증후,
-    통과시, redis에서 enc( ... ) by 랜덤 UUID 값 반환
+    받은 encryptedValue와 값으로 초대코드 유효성 검증후,
+    통과시 저장
+    불통과시 시도 횟수 1증가 (5번이후는 해당 초대코드 유효x)
      */
-    @PostMapping(value = "/join1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<JoinGroup1Response> joinGroup1(
+    @Operation(summary = "그룹 초대받기 - Step1", description = """
+        초대코드를 사용하여 그룹에 참여합니다.
+        서버는 Redis에서 초대코드 유효성을 확인하고, 시도 횟수를 1 증가시킵니다.
+        검증 후 데이터베이스에 그룹 참여 정보를 저장합니다.
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 참여 성공",
+                    content = @Content(schema = @Schema(implementation = JoinGroupResponse.class))
+            ),
+
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "초대코드 누락", value = """
+                                { "code": 400, "message": "encryptedValue는 필수입니다." }
+                                """),
+                                    @ExampleObject(name = "그룹 ID 누락", value = """
+                                { "code": 400, "message": "groupId는 필수입니다." }
+                                """)
+                            }
+                    )
+            ),
+
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 401, "message": "인증이 필요합니다." }
+                        """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 403, "message": "권한이 없습니다." }
+                        """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "422", description = "초대코드 검증 실패/만료",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 422, "message": "초대코드가 만료되었거나 유효하지 않습니다." }
+                        """)
+                    )
+            ),
+
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                        """)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<JoinGroupResponse> joinGroup(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody JoinGroup1Request request) throws Exception{
+            @RequestBody JoinGroupRequest request) throws Exception{
         String userId = userPrincipal.getId();
-        JoinGroup1Response response = groupManageMemberService.joinGroup1(request,userId);
+        JoinGroupResponse response = groupManageMemberService.joinGroup(request,userId);
+        return new BaseResponse(response);
+    }
+
+//======================
+// 그룹 관리 - 나가기 (Step1,2,3)
+//======================
+
+    /*
+    그룹 관리 - 그룹 나가기 - step1
+
+    서버에서 그룹에서 나가겠냐는 메시지 반환
+     */
+    @Operation(summary = "그룹 나가기 - Step1", description = """
+    서버에서 그룹에서 나가겠냐는 메시지를 반환합니다.
+    사용자 확인 후, 나가기 전 메시지를 안내합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 전 메시지 반환 성공",
+                    content = @Content(schema = @Schema(implementation = LeaveGroup1Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/leave1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup1Response> leaveGroup1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody LeavGroup1Request request) throws Exception{
+        String userId = userPrincipal.getId();
+        LeaveGroup1Response response = groupManageMemberService.leaveGroup1(request, userId);
         return new BaseResponse(response);
     }
 
     /*
-    그룹 상세 - 그룹 초대받기 - step2
+    그룹 관리 - 그룹 나가기 - step2
 
-    [웹]
-    랜덤 UUID 값으로 enc( ... ) 값 복호화후
-    그룹키, 그룹아이디 꺼내
-
-                    개인키로 암호화한 그룹키 encGroupKey,
-            그룹키로 암호화한 사용자 고유 아이디 encUserId,
-            개인키로 암호화한 그룹 아이디 encGroupId,
-            개인키로 암호화한 encUserId - encencGroupMemberId
-
-    값 보냄
-    /api/v1/group/join2->
-
-    [서버]
-    GroupProxyUser, GroupShareKey테이블 내 정보 저장후
-    참여 완료 메시지 보냄
+    서버에서 encencMemberId 반환
      */
-    @PostMapping(value = "/join2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SuccessResponse<JoinGroup2Response> joinGroup2(
+    @Operation(summary = "그룹 나가기 - Step1", description = """
+    서버에서 그룹에서 나가겠냐는 메시지를 반환합니다.
+    사용자 확인 후, 나가기 전 메시지를 안내합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 전 메시지 반환 성공",
+                    content = @Content(schema = @Schema(implementation = LeaveGroup1Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/leave2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup2Response> leaveGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody JoinGroup2Request request) throws Exception{
-        String userId = userPrincipal.getId();
-        JoinGroup2Response response = groupManageMemberService.joinGroup2(request,userId);
-        return SuccessResponse.from(response);
+            @RequestBody LeaveGroup2Request request) throws Exception{
+        LeaveGroup2Response response = groupManageMemberService.leaveGroup2(request);
+        return new BaseResponse(response);
     }
 
-//======================
-// 그룹 관리 - 그룹 나가기
-//======================
-
     /*
-    그룹 관리 - 나가기 //TODO: 약속 테이블 관련 내용도 사라져야함
-    */
+    그룹 관리 - 그룹 나가기 - step3
 
+    서버에서 사용자 퇴장 처리 혹은 방장인경우, 그룹 폭파
+     */
+    @Operation(summary = "그룹 나가기 - Step3", description = """
+    서버에서 사용자의 퇴장 처리 혹은 방장인 경우 그룹 전체 삭제 처리합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 처리/그룹 삭제 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = LeaveGroup3Response.class),
+                            examples = {
+                                    @ExampleObject(name = "일반 그룹원 퇴장", value = """
+                        { "message": "00그룹 그룹에서 나갔어요." }
+                    """),
+                                    @ExampleObject(name = "방장 그룹 삭제", value = """
+                        { "message": "00그룹 그룹이 삭제되었어요." }
+                    """)
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹/회원 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @DeleteMapping(value = "/leave3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup3Response> leaveGroup3(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody LeaveGroup3Request request) throws Exception{
+        LeaveGroup3Response response = groupManageMemberService.leaveGroup3(request);
+        return new BaseResponse(response);
+    }
 
 }

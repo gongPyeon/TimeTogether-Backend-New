@@ -6,14 +6,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.entity.GroupShareKey;
+import timetogeter.global.interceptor.response.error.CustomException;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, String> {
-    Long countGroupShareKeyByGroupId(String groupId);
-
     @Query("SELECT g.encGroupKey FROM GroupShareKey g WHERE g.groupId = :groupId")
     List<String> findEncGroupKeyByGroupId(@Param("groupId") String groupId);
 
@@ -35,4 +34,11 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
             "AND gsk.enc_user_id = :encUserId",
             nativeQuery = true)
     Optional<String> findByEncGroupIdAndEncUserId(@Param("groupId") String groupId, @Param("encUserId") String encUserId);
+
+    @Query(value = "SELECT * FROM group_share_key gsk WHERE gsk.enc_user_id = :encUserId",
+            nativeQuery = true)
+    Optional<GroupShareKey> findByEncUserId(@Param("encUserId") String encUserId);
+
+
+    void deleteAllByGroupId(String s);
 }
