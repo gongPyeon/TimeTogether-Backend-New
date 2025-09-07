@@ -242,6 +242,7 @@ public class GroupManageMemberService {
     }
 
     //그룹 관리 - 그룹 나가기 - step3 - 메인 서비스 메소드
+    @Transactional
     public LeaveGroup3Response leaveGroup3(LeaveGroup3Request request) {
         boolean isManager = request.isManager();
         String message = "";

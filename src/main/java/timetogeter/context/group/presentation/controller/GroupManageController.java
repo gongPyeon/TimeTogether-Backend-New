@@ -382,6 +382,30 @@ public class GroupManageController {
 
     서버에서 그룹에서 나가겠냐는 메시지 반환
      */
+    @Operation(summary = "그룹 나가기 - Step1", description = """
+    서버에서 그룹에서 나가겠냐는 메시지를 반환합니다.
+    사용자 확인 후, 나가기 전 메시지를 안내합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 전 메시지 반환 성공",
+                    content = @Content(schema = @Schema(implementation = LeaveGroup1Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/leave1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<LeaveGroup1Response> leaveGroup1(
@@ -397,8 +421,32 @@ public class GroupManageController {
 
     서버에서 encencMemberId 반환
      */
+    @Operation(summary = "그룹 나가기 - Step1", description = """
+    서버에서 그룹에서 나가겠냐는 메시지를 반환합니다.
+    사용자 확인 후, 나가기 전 메시지를 안내합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 전 메시지 반환 성공",
+                    content = @Content(schema = @Schema(implementation = LeaveGroup1Response.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @SecurityRequirement(name = "BearerAuth")
-    @DeleteMapping(value = "/leave2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/leave2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<LeaveGroup2Response> leaveGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody LeaveGroup2Request request) throws Exception{
@@ -411,6 +459,40 @@ public class GroupManageController {
 
     서버에서 사용자 퇴장 처리 혹은 방장인경우, 그룹 폭파
      */
+    @Operation(summary = "그룹 나가기 - Step3", description = """
+    서버에서 사용자의 퇴장 처리 혹은 방장인 경우 그룹 전체 삭제 처리합니다.
+""")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "퇴장 처리/그룹 삭제 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = LeaveGroup3Response.class),
+                            examples = {
+                                    @ExampleObject(name = "일반 그룹원 퇴장", value = """
+                        { "message": "00그룹 그룹에서 나갔어요." }
+                    """),
+                                    @ExampleObject(name = "방장 그룹 삭제", value = """
+                        { "message": "00그룹 그룹이 삭제되었어요." }
+                    """)
+                            }
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "403", description = "권한 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "그룹/회원 정보 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
+    })
     @SecurityRequirement(name = "BearerAuth")
     @DeleteMapping(value = "/leave3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<LeaveGroup3Response> leaveGroup3(

@@ -35,11 +35,10 @@ public interface GroupShareKeyRepository extends JpaRepository<GroupShareKey, St
             nativeQuery = true)
     Optional<String> findByEncGroupIdAndEncUserId(@Param("groupId") String groupId, @Param("encUserId") String encUserId);
 
-    @Query(value = "SELECT gsk.enc_group_key " +
-            "FROM group_share_key as gsk " +
-            "WHERE gsk.enc_user_id = :encUserId",
+    @Query(value = "SELECT * FROM group_share_key gsk WHERE gsk.enc_user_id = :encUserId",
             nativeQuery = true)
-    Optional<GroupShareKey> findByEncUserId(String s);
+    Optional<GroupShareKey> findByEncUserId(@Param("encUserId") String encUserId);
+
 
     void deleteAllByGroupId(String s);
 }
