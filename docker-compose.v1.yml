@@ -42,7 +42,7 @@ services:
   meetnow-redis:
     image: redis
     ports:
-      - 6379:6379
+      - 6390:6379
     healthcheck:
       test: [ "CMD", "redis-cli", "ping", "--silent"]
       interval: 5s

@@ -29,7 +29,7 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RequestMapping("/api/v1/group")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "그룹", description = "그룹 생성, 그룹 정보 수정, 그룹 초대 API")
+@Tag(name = "그룹", description = "그룹 생성, 그룹 정보 수정, 그룹 멤버 초대/나가기 API")
 public class GroupDetailController {
     private final GroupManageInfoService groupManageInfoService;
     private final GroupManageMemberService groupManageMemberService;
@@ -264,57 +264,4 @@ public class GroupDetailController {
         return new BaseResponse<>(response);
     }
 
-
-//======================
-// 그룹 상세 - 그룹 초대하기 (Step1,2,3)
-//======================
-
-    /*
-    그룹 상세 - 그룹 초대하기 - step1
-
-    [웹] 그룹원이 groupId, 개인키로 암호화한 그룹 아이디를 보냄 /api/v1/group/invite1 ->
-    [서버] GroupProxyUser테이블 내 encencGroupMemberId 반환 ->
-     */
-    @PostMapping(value = "/invite1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<InviteGroup1Response> inviteGroup1(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody InviteGroup1Request request) throws Exception{
-        String userId = userPrincipal.getId();
-        InviteGroup1Response response = groupManageMemberService.inviteGroup1(request,userId);
-        return new BaseResponse<>(response);
-    }
-
-    /*
-    그룹 상세 - 그룹 초대하기 - step2
-
-    [웹] 개인키로 encencGroupMemberId 복호화해서 encUserId 얻고,
-		encUserId, groupId 로 encGroupKey 요청 /api/v1/group/invite2 ->
-    [서버] GroupShareKey테이블 내 encGroupKey 반환->
-    */
-    @PostMapping(value = "/invite2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<InviteGroup2Response> inviteGroup2(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody InviteGroup2Request request) throws Exception{
-        InviteGroup2Response response = groupManageMemberService.inviteGroup2(request);
-        return new BaseResponse<>(response);
-    }
-
-    /*
-    그룹 상세 - 그룹 초대하기 - step3
-
-    [웹] 개인키로 그룹키 획득,
-		enc ( 그룹키, 그룹아이디, 랜덤 UUID(해당 초대코드가 유효하다는 증거), 초대하려는 userId ) by 랜덤 UUID, 
-		생성해서 랜덤 UUID
-		
-		위 2개의 값 보냄
-		/api/v1/group/invite3 ->
-    [서버] 받은 enc ( ... ) by 랜덤 UUID, 랜덤 UUID redis에 INVITE_KEY:enc:[ ]:UUID:[ ]로 저장
-    */
-    @PostMapping(value = "/invite3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<InviteGroup3Response> inviteGroup3(
-            @AuthenticationPrincipal UserPrincipal userPrincipal,
-            @RequestBody InviteGroup3Request request) throws Exception{
-        InviteGroup3Response response = groupManageMemberService.inviteGroup3(request);
-        return new BaseResponse<>(response);
-    }
 }
