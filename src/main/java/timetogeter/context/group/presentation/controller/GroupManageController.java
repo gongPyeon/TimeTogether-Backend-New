@@ -1,5 +1,13 @@
 package timetogeter.context.group.presentation.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -12,6 +20,7 @@ import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.interceptor.response.BaseResponse;
+import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 import timetogeter.global.interceptor.response.error.dto.SuccessResponse;
 
 import java.util.List;
@@ -20,6 +29,7 @@ import java.util.List;
 @RequestMapping("/api/v1/group")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "그룹", description = "그룹 생성, 그룹 정보 수정, 그룹 초대 API")
 public class GroupManageController {
 
     private final GroupManageInfoService groupManageInfoService;
@@ -88,6 +98,44 @@ public class GroupManageController {
     [웹] (예비 방장)그룹원이 Group정보를 담은 request를 요청 /api/v1/group/new1 ->
     [서버] Group에 request기반으로 저장, 저장한 후 생성된 Group의 아이디 프론트에 반환 ->
      */
+    @Operation(summary = "그룹 만들기 - Step1", description = """
+        예비 방장이 그룹 정보를 생성하는 단계입니다.
+
+        - 요청: 그룹 정보(CreateGroup1Request)
+        - 처리: Group 테이블에 요청 기반으로 그룹 저장
+        - 반환: 생성된 Group의 아이디를 포함한 CreateGroup1Response
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 생성 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "그룹 이름 누락", value = """
+                                    { "code": 400, "message": "groupName은 필수입니다." }
+                                    """)
+                            }
+                    )),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 401, "message": "인증이 필요합니다." }
+                            """)
+                    )),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                            """)
+                    ))
+    })
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/new1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<CreateGroup1Response> createGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -108,6 +156,45 @@ public class GroupManageController {
 		 개인키로 암호화한 그룹키 5개를 묶어 request로 요청 /api/v1/group/new2 ->
     [서버] 요청을 GroupProxyUser, Group, GroupShareKey에 저장
      */
+
+    @Operation(summary = "그룹 만들기 - Step2", description = """
+        그룹 키 및 암호화 정보를 포함하여 그룹을 최종 생성하는 단계입니다.
+
+        - 요청: GroupId, 개인키/그룹키로 암호화한 사용자 아이디 등(CreateGroup2Request)
+        - 처리: GroupProxyUser, Group, GroupShareKey 테이블에 저장
+        - 반환: 생성 결과(CreateGroup2Response)
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 생성 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류 (필드 누락/유효성 실패)",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(name = "필수 필드 누락", value = """
+                                    { "code": 400, "message": "groupId 또는 encUserId 등 필수 필드가 누락되었습니다." }
+                                    """)
+                            }
+                    )),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 401, "message": "인증이 필요합니다." }
+                            """)
+                    )),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                            { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                            """)
+                    ))
+    })
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/new2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<CreateGroup2Response> createGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
