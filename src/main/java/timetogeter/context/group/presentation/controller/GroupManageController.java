@@ -47,6 +47,34 @@ public class GroupManageController {
     [서버] GroupProxyUser의 userId에 해당하는 '개인키로 암호화된 그룹 아이디', '개인키로 암호화한
 		 (그룹키로 암호화한 사용자 고유 아이디)'를 반환
      */
+    @Operation(summary = "그룹 메인 보기 - Step1", description = """
+        사용자 개인키로 암호화된 그룹 정보를 조회하는 단계입니다.
+
+        - 요청: 사용자 인증 (UserPrincipal)
+        - 처리: GroupProxyUser에서 userId 기반 그룹 정보 조회
+        - 반환: 개인키로 암호화된 그룹 아이디와 그룹키로 암호화된 사용자 고유 아이디 리스트
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 정보 조회 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 401, "message": "인증이 필요합니다." }
+                        """)
+                    )),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = """
+                        { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                        """)
+                    ))
+    })
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<List<ViewGroup1Response>> viewGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
@@ -64,6 +92,24 @@ public class GroupManageController {
     [서버] 그룹 아이디, (그룹키로 암호화한 사용자 고유 아이디)에 해당하는
 			GroupShareKey테이블 내 "개인키로 암호화한 그룹키"를 리스트 형태로 넘김
      */
+    @Operation(summary = "그룹 메인 보기 - Step2", description = """
+        암호화된 그룹 ID와 그룹키로 암호화한 사용자 고유 아이디를 기반으로 그룹키 정보를 조회하는 단계입니다.
+
+        - 요청: List<ViewGroup2Request> (암호화된 그룹 ID 및 사용자 ID)
+        - 처리: GroupShareKey 테이블에서 개인키로 암호화한 그룹키 조회
+        - 반환: List<ViewGroup2Response> (개인키로 암호화된 그룹키)
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹키 조회 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<List<ViewGroup2Response>> viewGroup2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -80,6 +126,24 @@ public class GroupManageController {
 		->
     [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환 , <그룹 정보> 또한 리스트 형태로 반환
      */
+    @Operation(summary = "그룹 메인 보기 - Step3", description = """
+        개인키로 암호화된 그룹키를 이용하여 그룹 레코드 및 그룹 정보를 조회하는 단계입니다.
+
+        - 요청: List<ViewGroup3Request> (이전 단계에서 저장한 그룹 ID 및 그룹키)
+        - 처리: 해당 그룹 ID에 대한 레코드 및 그룹 정보 조회
+        - 반환: List<ViewGroup3Response> (그룹 정보 및 레코드 리스트)
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "그룹 레코드 및 정보 조회 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<List<ViewGroup3Response>> viewGroup3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
