@@ -75,7 +75,7 @@ public class GroupController {
                     ))
     })
     @SecurityRequirement(name = "BearerAuth")
-    @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<List<ViewGroup1Response>> viewGroup1(
             @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
         String userId = userPrincipal.getId();

@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.*;
@@ -376,5 +373,51 @@ public class GroupManageController {
         return new BaseResponse(response);
     }
 
+//======================
+// 그룹 관리 - 나가기 (Step1,2,3)
+//======================
+
+    /*
+    그룹 관리 - 그룹 나가기 - step1
+
+    서버에서 그룹에서 나가겠냐는 메시지 반환
+     */
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/leave1", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup1Response> leaveGroup1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody LeavGroup1Request request) throws Exception{
+        String userId = userPrincipal.getId();
+        LeaveGroup1Response response = groupManageMemberService.leaveGroup1(request, userId);
+        return new BaseResponse(response);
+    }
+
+    /*
+    그룹 관리 - 그룹 나가기 - step2
+
+    서버에서 encencMemberId 반환
+     */
+    @SecurityRequirement(name = "BearerAuth")
+    @DeleteMapping(value = "/leave2", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup2Response> leaveGroup2(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody LeaveGroup2Request request) throws Exception{
+        LeaveGroup2Response response = groupManageMemberService.leaveGroup2(request);
+        return new BaseResponse(response);
+    }
+
+    /*
+    그룹 관리 - 그룹 나가기 - step3
+
+    서버에서 사용자 퇴장 처리 혹은 방장인경우, 그룹 폭파
+     */
+    @SecurityRequirement(name = "BearerAuth")
+    @DeleteMapping(value = "/leave3", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<LeaveGroup3Response> leaveGroup3(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody LeaveGroup3Request request) throws Exception{
+        LeaveGroup3Response response = groupManageMemberService.leaveGroup3(request);
+        return new BaseResponse(response);
+    }
 
 }

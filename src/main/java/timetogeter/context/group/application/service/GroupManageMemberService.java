@@ -1,5 +1,6 @@
 package timetogeter.context.group.application.service;
 
+import com.amazonaws.Request;
 import com.amazonaws.services.s3.AmazonS3;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -210,5 +213,63 @@ public class GroupManageMemberService {
         }
     }
 
+//======================
+// 그룹 관리 - 그룹 나가기 (Step1,2)
+//======================
 
+    //그룹 관리 - 그룹 나가기 - step1 - 메인 서비스 메소드
+    public LeaveGroup1Response leaveGroup1(LeavGroup1Request request, String userID) {
+        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByEncGroupId(request.encGroupId())
+                .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다"));
+
+        Group group = groupRepository.findByGroupId(request.groupId())
+                .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: "));
+
+        boolean isManager = userID.equals(group.getManagerId());
+        return new LeaveGroup1Response(request.groupId() ,
+                group.getGroupName()+" 그룹에서 나가시겠어요?",
+                isManager);
+    }
+
+    //그룹 관리 - 그룹 나가기 - step2 - 메인 서비스 메소드
+    public LeaveGroup2Response leaveGroup2(LeaveGroup2Request request) {
+        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByEncGroupId(request.encGroupId())
+                .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다"));
+
+        String encencGroupMemberId = groupProxyUser.getEncGroupMemberId();
+
+        return new LeaveGroup2Response(encencGroupMemberId);
+    }
+
+    //그룹 관리 - 그룹 나가기 - step3 - 메인 서비스 메소드
+    public LeaveGroup3Response leaveGroup3(LeaveGroup3Request request) {
+        boolean isManager = request.isManager();
+        String message = "";
+        Group group = groupRepository.findByGroupId(request.groupId())
+                .orElseThrow(() -> new GroupIdNotFoundException(BaseErrorCode.GROUP_ID_NOTFOUND, "[ERROR]: 존재하지 않는 그룹입니다: "));
+        String groupName = group.getGroupName();
+
+
+        if (isManager){//매니저가 나가는 경우
+            //request.groupId()에 해당하는 groupShareKeyRepository에서 다 지우기
+            groupShareKeyRepository.deleteAllByGroupId(request.groupId());
+
+            //TODO: groupProxyUser는 조금더 효과적으로 삭제하는 방법 찾는중
+
+            message = groupName+" 그룹이 삭제되었어요.";
+        }else {//일반 그룹원이 나가는 경우
+
+            GroupProxyUser groupProxyUser = groupProxyUserRepository.findByEncGroupId(request.encencGroupMemberId())
+                    .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다"));
+
+            GroupShareKey groupShareKey = groupShareKeyRepository.findByEncUserId(request.encUserId())
+                    .orElseThrow(() -> new GroupShareKeyNotFoundException(BaseErrorCode.GROUP_SHARE_KEY_NOT_FOUND, "[ERROR]: 해당 그룹 쉐어 키 정보가 없습니다"));
+
+            groupProxyUserRepository.delete(groupProxyUser);
+            groupShareKeyRepository.delete(groupShareKey);
+            message = groupName+" 그룹에서 나갔어요.";
+        }
+
+        return new LeaveGroup3Response(message);
+    }
 }
