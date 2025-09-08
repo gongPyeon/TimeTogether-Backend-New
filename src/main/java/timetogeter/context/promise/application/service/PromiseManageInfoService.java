@@ -49,7 +49,7 @@ public class PromiseManageInfoService {
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step1 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse1 createPromiseView1(String userId, CreatePromiseViewRequest1 request) {
+    public CreatePromise1Response createPromise1(String userId, CreatePromise1Request request) {
         String encGroupId = request.encGroupId();
         GroupProxyUser groupProxyUserFound = groupProxyUserRepository.findByUserIdAndEncGroupId(userId,encGroupId)
                 .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 유저의 그룹 프록시 정보가 없습니다."));
@@ -58,7 +58,7 @@ public class PromiseManageInfoService {
         '개인키로 암호화된 그룹 아이디'-> encGroupId
         '개인키로 암호화한 (그룹키로 암호화한 사용자 고유 아이디)' -> encGroupMemberId
          */
-        return new CreatePromiseViewResponse1(
+        return new CreatePromise1Response(
                 groupProxyUserFound.getEncGroupId(),
                 groupProxyUserFound.getEncGroupMemberId()
         );
@@ -66,7 +66,7 @@ public class PromiseManageInfoService {
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step2 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse2 createPromiseView2(String userId, CreatePromiseViewRequest2 request) {
+    public CreatePromise2Response createPromise2(String userId, CreatePromise2Request request) {
         String groupId = request.groupId();
         String encGroupMemberId = request.encGroupMemberId();
 
@@ -76,12 +76,12 @@ public class PromiseManageInfoService {
                         "[ERROR]: 그룹 키 조회에 실패했습니다. groupId=" + groupId + ", encGroupMemberId=" + encGroupMemberId
                 ));
 
-        return new CreatePromiseViewResponse2(encGroupKey);
+        return new CreatePromise2Response(encGroupKey);
     }
 
     //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step3 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse3 createPromiseView3(String userId, CreatePromiseViewRequest3 request) {
+    public CreatePromise3Response createPromise3(String userId, CreatePromise3Request request) {
 
 
         String groupId = request.groupId();
@@ -94,7 +94,7 @@ public class PromiseManageInfoService {
         List<String> encUserIdList = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
 
         // 응답 객체 생성
-        CreatePromiseViewResponse3 response = new CreatePromiseViewResponse3(
+        CreatePromise3Response response = new CreatePromise3Response(
                 group.getGroupId(),
                 group.getGroupName(),
                 group.getGroupImg(),

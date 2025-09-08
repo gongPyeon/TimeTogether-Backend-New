@@ -1,6 +1,6 @@
 package timetogeter.context.promise.application.dto.response.manage;
 
-public record CreatePromiseViewResponse2(
+public record CreatePromise2Response(
     String encGroupKey
 ) {
 }

@@ -1,6 +1,7 @@
 package timetogeter.context.promise.application.dto.request.manage;
 
-public record CreatePromiseViewRequest1(
-        String encGroupId
+public record CreatePromise3Request(
+        String groupId
+
 ) {
 }
