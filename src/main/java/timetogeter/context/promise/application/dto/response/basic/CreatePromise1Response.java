@@ -1,4 +1,4 @@
-package timetogeter.context.promise.application.dto.response.manage;
+package timetogeter.context.promise.application.dto.response.basic;
 
 public record CreatePromise1Response(
         String encGroupId,

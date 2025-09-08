@@ -6,13 +6,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.promise.application.dto.request.ExitPromiseReqDTO;
-import timetogeter.context.promise.application.dto.request.manage.CreatePromise1Request;
-import timetogeter.context.promise.application.dto.request.manage.CreatePromise2Request;
-import timetogeter.context.promise.application.dto.request.manage.CreatePromise3Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise3Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise4Request;
 import timetogeter.context.promise.application.dto.response.UserInfoResDTO;
-import timetogeter.context.promise.application.dto.response.manage.CreatePromise1Response;
-import timetogeter.context.promise.application.dto.response.manage.CreatePromise2Response;
-import timetogeter.context.promise.application.dto.response.manage.CreatePromise3Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise1Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise3Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise4Response;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
 import timetogeter.context.promise.application.service.PromiseSecurityService;
 import timetogeter.context.promise.application.dto.response.UserIdsResDTO;
@@ -48,7 +50,7 @@ public class PromiseController {
 
 
 //======================
-// 약속 만들기 - 기본 정보 입력 (Step1,2,3)
+// 약속 만들기 - 기본 정보 입력 (Step1,2,3,4)
 //======================
 
     /*
@@ -60,7 +62,7 @@ public class PromiseController {
 		  (그룹키로 암호화한 사용자 고유 아이디)'를 리스트 형태로 반환
      */
     @PostMapping(value = "/create1", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<CreatePromise1Response> createPromiseView1(
+    public BaseResponse<CreatePromise1Response> createPromise1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromise1Request request) throws Exception{
         String userId = userPrincipal.getId();
@@ -78,7 +80,7 @@ public class PromiseController {
 			GroupShareKey테이블 내 "개인키로 암호화한 그룹키" 넘김
     */
     @PostMapping(value = "/create2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<CreatePromise2Response> createPromiseView2(
+    public BaseResponse<CreatePromise2Response> createPromise2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromise2Request request) throws Exception{
         String userId = userPrincipal.getId();
@@ -87,19 +89,35 @@ public class PromiseController {
     }
 
     /*
-    약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step3
+    약속 만들기 - 기본 정보 입력  Step3
 
     [웹] 개인키로 "개인키로 암호화한 그룹키" 복호화후 저장해 두었다가,
 		이전 저장한 그룹 아이디를 GroupShareKey테이블 내 레코드 리스트 요청
 		 /promise/create3
-    [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환
+    [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환 (그룹 내 그룹원들 볼 수 있음)
     */
     @PostMapping(value = "/create3", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseResponse<CreatePromise3Response> createPromiseView3(
+    public BaseResponse<CreatePromise3Response> createPromise3(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CreatePromise3Request request) throws Exception{
+        CreatePromise3Response response = promiseManageInfoService.createPromise3(request);
+        return new BaseResponse<>(response);
+    }
+
+    /*
+    약속 만들기 - 기본 정보 입력  Step4
+
+    [웹] 개인키로 "개인키로 암호화한 그룹키" 복호화후 저장해 두었다가,
+		이전 저장한 그룹 아이디를 GroupShareKey테이블 내 레코드 리스트 요청
+		 /promise/create4
+    [서버] 해당 그룹 아이디에 해당하는 레코드들 리스트로 반환 (그룹 내 그룹원들 볼 수 있음)
+    */
+    @PostMapping(value = "/create4", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<CreatePromise4Response> createPromise4(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CreatePromise4Request request) throws Exception{
         String userId = userPrincipal.getId();
-        CreatePromise3Response response = promiseManageInfoService.createPromise3(userId,request);
+        CreatePromise4Response response = promiseManageInfoService.createPromise4(userId,request);
         return new BaseResponse<>(response);
     }
 

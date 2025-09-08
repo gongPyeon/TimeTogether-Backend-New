@@ -1,9 +1,11 @@
 package timetogeter.context.promise.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import timetogeter.context.group.domain.entity.Group;
-import timetogeter.context.promise.domain.vo.PromiseType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,6 +42,7 @@ public class Promise {
         this.groupId = groupId;
         this.title = title;
         this.type = promiseType;
+        this.managerId = managerId;
         this.promiseImg = promiseImg;
         this.startDate = startDate;
         this.endDate = endDate;

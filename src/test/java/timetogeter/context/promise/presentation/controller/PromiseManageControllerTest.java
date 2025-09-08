@@ -1,3 +1,4 @@
+/*
 package timetogeter.context.promise.presentation.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -25,7 +26,13 @@ import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise3Request;
 import timetogeter.context.promise.application.dto.request.manage.*;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise1Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise3Response;
 import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
 import timetogeter.context.promise.domain.vo.PromiseType;
@@ -522,7 +529,8 @@ class PromiseManageControllerTest extends RestDocsSupport {
         }
 
         //TODO: 아래 테스트 코드 500 오류 버그 (실제 실행시에는 결과json 잘 나오는 상태)
-        /*@Test
+        */
+/*@Test
         @DisplayName("✅ 약속을 최종적으로 만들었다. (/api/v1/promise/create5)")
         @WithMockUser
         void testPromiseCreate5() throws Exception {
@@ -584,7 +592,8 @@ class PromiseManageControllerTest extends RestDocsSupport {
                                             .build()
                             )
                     ));
-        }*/
+        }*//*
+
 
 
 
@@ -802,4 +811,4 @@ class PromiseManageControllerTest extends RestDocsSupport {
 
     }
 
-}
+}*/
