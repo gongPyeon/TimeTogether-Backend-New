@@ -11,6 +11,8 @@ public record RegisterUserCommand(String userId,
                                   Provider provider,
                                   Role role,
                                   String age,
-                                  Gender gender){
+                                  Gender gender,
+                                  String wrappedDEK
+                                  ){
 
 }

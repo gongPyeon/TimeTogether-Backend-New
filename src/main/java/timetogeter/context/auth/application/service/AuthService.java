@@ -12,8 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
+import timetogeter.context.auth.application.dto.response.OAuth2LoginResDTO;
 import timetogeter.context.auth.application.validator.AuthValidator;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
@@ -90,7 +92,7 @@ public class AuthService {
         }
     }
 
-    public TokenCommand login(OAuth2LoginReqDTO dto){
+    public OAuth2LoginResDTO login(OAuth2LoginReqDTO dto){
         try {
             Map<String, Object> attributes = getUserAttributes(dto);
             RegisterResponse registerResponse = oAuth2UserDetailService.loadOAuth2User(
@@ -103,7 +105,8 @@ public class AuthService {
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
             redisUtil.set(registerResponse.email(), REFRESH_HEADER + token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
-            return token;
+
+            return new OAuth2LoginResDTO(token, registerResponse.wrappedDEK());
         }catch (RedisConnectionFailureException e) {
             log.info(e.getMessage());
             throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 세션 저장에 실패했습니다.");
@@ -131,5 +134,14 @@ public class AuthService {
             log.error("{}:{}", userId, e.getMessage());
             throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 로그아웃 중 토큰 삭제에 실패했습니다.");
         }
+    }
+
+    @Transactional
+    public void setDetail(OAuth2LoginDetailReqDTO dto) {
+        User user = userRepository.findByUserId(dto.userId())
+                .orElseThrow(() -> new AuthFailureException(BaseErrorCode.INVALID_USER, "[ERROR] 소셜 회원가입이 완료되지 않은 상태입니다."));
+
+        user.setDetail(dto);
+        userRepository.save(user);
     }
 }
