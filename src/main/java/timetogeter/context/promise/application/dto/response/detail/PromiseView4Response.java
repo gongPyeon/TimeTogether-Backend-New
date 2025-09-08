@@ -1,8 +1,6 @@
 package timetogeter.context.promise.application.dto.response.detail;
 
-import timetogeter.context.promise.domain.vo.PromiseType;
-
-public record OverallPromiseViewResponse4(
+public record PromiseView4Response(
         boolean isConfirmed, //확정 여부
         String scheduleId, //일정 id
         String title , //일정 제목

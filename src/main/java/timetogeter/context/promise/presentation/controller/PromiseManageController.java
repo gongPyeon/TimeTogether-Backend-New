@@ -1,6 +1,14 @@
 package timetogeter.context.promise.presentation.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -19,6 +27,7 @@ import timetogeter.global.interceptor.response.BaseResponse;
 @RequestMapping("/promise")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "약속", description = "약속 생성, 약속 확인 , 약속 멤버 초대/참여하기 API")
 public class PromiseManageController {
     private final PromiseManageInfoService promiseManageInfoService;
 
@@ -32,8 +41,61 @@ public class PromiseManageController {
         /promise/invite1 ->
     [서버] GroupProxyUser테이블 내에서 encencGroupMemberId 반환
      */
+@Operation(
+        summary = "약속 초대 - Step1",
+        description = """
+        사용자를 약속에 초대합니다.
 
-
+        - 요청: 사용자 인증 (UserPrincipal) + InvitePromise1Request
+        - 처리: GroupProxyUser 테이블에서 encGroupMemberId 조회 후 반환
+        - 반환: encGroupKey 리스트 (InvitePromise1Response)
+        """
+)
+@ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "약속 초대 성공",
+                content = @Content(
+                        schema = @Schema(implementation = InvitePromise1Response.class),
+                        examples = @ExampleObject(value = """
+                            {
+                                "encGroupKeyList": ["encryptedKey1", "encryptedKey2"]
+                            }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "초대 요청 실패",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 400, "message": "초대 요청이 유효하지 않습니다." }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 401, "message": "인증이 필요합니다." }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "서버 내부 오류",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                        """)
+                )
+        )
+})
+@SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/invite1", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<InvitePromise1Response> invitePromise1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
@@ -53,6 +115,59 @@ public class PromiseManageController {
     [서버] encGroupKey 반환
     [웹] 개인키로 encGroupKey복호화해서 groupKey얻음
     */
+@Operation(
+        summary = "약속 참여 - Step1",
+        description = """
+        사용자가 약속에 참여합니다.
+
+        - 요청: 사용자 인증 (UserPrincipal) + JoinPromise1Request
+        - 처리: 참여 횟수 확인 후 참여 처리
+        - 예외: 참여 횟수가 5회를 초과하면 JoinLimitExceededException 발생
+        """
+)
+@ApiResponses({
+        @ApiResponse(
+                responseCode = "200",
+                description = "약속 참여 성공",
+                content = @Content(
+                        schema = @Schema(implementation = JoinPromise1Response.class),
+                        examples = @ExampleObject(value = """
+                            { "message": "약속에 참여하였습니다." }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "400",
+                description = "참여 횟수 초과",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 400, "message": "약속 참여 시도 횟수가 초과되었습니다." }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "401",
+                description = "인증 실패",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 401, "message": "인증이 필요합니다." }
+                        """)
+                )
+        ),
+        @ApiResponse(
+                responseCode = "500",
+                description = "서버 내부 오류",
+                content = @Content(
+                        schema = @Schema(implementation = BaseResponse.class),
+                        examples = @ExampleObject(value = """
+                            { "code": 500, "message": "서버 내부 오류가 발생했습니다." }
+                        """)
+                )
+        )
+})
+@SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/join1", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<JoinPromise1Response> joinPromise1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
