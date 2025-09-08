@@ -78,4 +78,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return registerResponse.role();
     }
 
+    public String getWrappedDEK() { return  registerResponse.wrappedDEK();}
+
 }

@@ -19,7 +19,7 @@ import timetogeter.context.auth.application.dto.request.LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
-import timetogeter.context.auth.application.dto.response.OAuth2LoginResDTO;
+import timetogeter.context.auth.application.dto.response.LoginResDTO;
 import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
 import timetogeter.global.interceptor.response.BaseCode;
@@ -146,13 +146,14 @@ public class AuthController {
     })
     @PostMapping("/login")
     public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
-        TokenCommand token = authService.login(dto);
+        LoginResDTO resDTO = authService.login(dto);
+        TokenCommand token = resDTO.token();
 
         response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
         CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
                 Math.toIntExact(token.refreshTokenExpirationTime()));
 
-        return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
+        return new BaseResponse<>(resDTO.wrappedDEK(), BaseCode.SUCCESS_LOGIN);
     }
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 진행한다")
@@ -192,7 +193,7 @@ public class AuthController {
     // KAKAO, NAVER, GOOGLE
     public BaseResponse<Object> login(@RequestBody @Valid OAuth2LoginReqDTO dto,
                                       HttpServletResponse response) {
-        OAuth2LoginResDTO resDTO = authService.login(dto);
+        LoginResDTO resDTO = authService.login(dto);
         TokenCommand token = resDTO.token();
 
         response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
