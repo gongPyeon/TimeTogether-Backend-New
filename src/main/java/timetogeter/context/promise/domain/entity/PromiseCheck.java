@@ -30,4 +30,5 @@ public class PromiseCheck {
     public PromiseCheck(int placeId) {
         this.placeId = placeId;
     }
+
 }

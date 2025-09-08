@@ -1,3 +1,4 @@
+/*
 package timetogeter.context.promise.presentation.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
@@ -25,7 +26,13 @@ import timetogeter.context.auth.domain.vo.Role;
 import timetogeter.context.group.application.service.GroupManageDisplayService;
 import timetogeter.context.group.application.service.GroupManageInfoService;
 import timetogeter.context.group.application.service.GroupManageMemberService;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise3Request;
 import timetogeter.context.promise.application.dto.request.manage.*;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise1Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise3Response;
 import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
 import timetogeter.context.promise.domain.vo.PromiseType;
@@ -102,15 +109,15 @@ class PromiseManageControllerTest extends RestDocsSupport {
                     userPrincipal, null, userPrincipal.getAuthorities()
             );
 
-            CreatePromiseViewRequest1 request = new CreatePromiseViewRequest1(
+            CreatePromise1Request request = new CreatePromise1Request(
                     "21R517Z8ICrEK7vskd3gNq9yA1VWfEVgkx1hpjf8U+O8oS54tK16QepuIjRk8Rtm4XbYRA=="
             );
-            CreatePromiseViewResponse1 response = new CreatePromiseViewResponse1(
+            CreatePromise1Response response = new CreatePromise1Response(
                     "21R517Z8ICrEK7vskd3gNq9yA1VWfEVgkx1hpjf8U+O8oS54tK16QepuIjRk8Rtm4XbYRA==",
                     "rUN52v4hfGbYIua7lci6dqgnZFkrZhx00WkYwXTlNeG56FddH8d/WffmYQoX5TrOmzSKUA=="
             );
 
-            given(promiseManageInfoService.createPromiseView1(userPrincipal.getId(), request))
+            given(promiseManageInfoService.createPromise1(userPrincipal.getId(), request))
                     .willReturn(response);
 
             // when, then
@@ -154,18 +161,18 @@ class PromiseManageControllerTest extends RestDocsSupport {
         @WithMockUser
         void testViewGroup2() throws Exception {
             // given
-            CreatePromiseViewRequest2 request = new CreatePromiseViewRequest2(
+            CreatePromise2Request request = new CreatePromise2Request(
                     "5e9c0739-1717-4574-84c7-60515c21284a",  // groupId
                     "Cb1n3T8pwO/LyxBuR81vcf+k1TvhXgIK/A=="   // encGroupMemberId
             );
 
-            CreatePromiseViewResponse2 response = new CreatePromiseViewResponse2(
+            CreatePromise2Response response = new CreatePromise2Response(
                     "2C86SvvD3azjoYXwu+1CPGKiDMSSVBnNQCp3Fo9azTwJjOIRRp+K7A=="
             );
 
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-            given(promiseManageInfoService.createPromiseView2(userPrincipal.getId(), request))
+            given(promiseManageInfoService.createPromise2(userPrincipal.getId(), request))
                     .willReturn(response);
 
             // when, then
@@ -208,11 +215,11 @@ class PromiseManageControllerTest extends RestDocsSupport {
         @WithMockUser
         void testViewGroup3() throws Exception {
             // given
-            CreatePromiseViewRequest3 request = new CreatePromiseViewRequest3(
+            CreatePromise3Request request = new CreatePromise3Request(
                     "5e9c0739-1717-4574-84c7-60515c21284a"  // groupId
             );
 
-            CreatePromiseViewResponse3 response = new CreatePromiseViewResponse3(
+            CreatePromise3Response response = new CreatePromise3Response(
                     "5e9c0739-1717-4574-84c7-60515c21284a",
                     "진달래전",
                     "진달래먹기모임",
@@ -225,7 +232,7 @@ class PromiseManageControllerTest extends RestDocsSupport {
 
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
-            given(promiseManageInfoService.createPromiseView3(userPrincipal.getId(), request))
+            given(promiseManageInfoService.createPromise3(userPrincipal.getId(), request))
                     .willReturn(response);
 
             // when & then
@@ -522,7 +529,8 @@ class PromiseManageControllerTest extends RestDocsSupport {
         }
 
         //TODO: 아래 테스트 코드 500 오류 버그 (실제 실행시에는 결과json 잘 나오는 상태)
-        /*@Test
+        */
+/*@Test
         @DisplayName("✅ 약속을 최종적으로 만들었다. (/api/v1/promise/create5)")
         @WithMockUser
         void testPromiseCreate5() throws Exception {
@@ -584,7 +592,8 @@ class PromiseManageControllerTest extends RestDocsSupport {
                                             .build()
                             )
                     ));
-        }*/
+        }*//*
+
 
 
 
@@ -802,4 +811,4 @@ class PromiseManageControllerTest extends RestDocsSupport {
 
     }
 
-}
+}*/

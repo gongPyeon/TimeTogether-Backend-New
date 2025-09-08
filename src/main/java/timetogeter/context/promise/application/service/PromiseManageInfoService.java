@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import timetogeter.context.auth.domain.repository.UserRepository;
+import timetogeter.context.auth.exception.UserNotFoundException;
 import timetogeter.context.group.exception.GroupIdNotFoundException;
 import timetogeter.context.group.exception.GroupProxyUserNotFoundException;
 import timetogeter.context.group.exception.GroupShareKeyNotFoundException;
@@ -13,22 +15,31 @@ import timetogeter.context.group.domain.entity.GroupProxyUser;
 import timetogeter.context.group.domain.repository.GroupProxyUserRepository;
 import timetogeter.context.group.domain.repository.GroupRepository;
 import timetogeter.context.group.domain.repository.GroupShareKeyRepository;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise3Request;
+import timetogeter.context.promise.application.dto.request.basic.CreatePromise4Request;
 import timetogeter.context.promise.application.dto.request.manage.*;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise1Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise3Response;
+import timetogeter.context.promise.application.dto.response.basic.CreatePromise4Response;
 import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.context.promise.domain.entity.PromiseProxyUser;
+import timetogeter.context.promise.domain.repository.PromiseCheckRepository;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,12 +55,14 @@ public class PromiseManageInfoService {
     private final PromiseProxyUserRepository promiseProxyUserRepository;
     private final PromiseShareKeyRepository promiseShareKeyRepository;
 
+    private final UserRepository userRepository;
+
     private final StringRedisTemplate redisTemplate;
 
 
-    //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step1 - 메인 서비스 메소드
+    //약속 만들기 - 기본 정보 입력 Step1 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse1 createPromiseView1(String userId, CreatePromiseViewRequest1 request) {
+    public CreatePromise1Response createPromise1(String userId, CreatePromise1Request request) {
         String encGroupId = request.encGroupId();
         GroupProxyUser groupProxyUserFound = groupProxyUserRepository.findByUserIdAndEncGroupId(userId,encGroupId)
                 .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 유저의 그룹 프록시 정보가 없습니다."));
@@ -58,15 +71,15 @@ public class PromiseManageInfoService {
         '개인키로 암호화된 그룹 아이디'-> encGroupId
         '개인키로 암호화한 (그룹키로 암호화한 사용자 고유 아이디)' -> encGroupMemberId
          */
-        return new CreatePromiseViewResponse1(
+        return new CreatePromise1Response(
                 groupProxyUserFound.getEncGroupId(),
                 groupProxyUserFound.getEncGroupMemberId()
         );
     }
 
-    //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step2 - 메인 서비스 메소드
+    //약속 만들기 - 기본 정보 입력 Step2 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse2 createPromiseView2(String userId, CreatePromiseViewRequest2 request) {
+    public CreatePromise2Response createPromise2(String userId, CreatePromise2Request request) {
         String groupId = request.groupId();
         String encGroupMemberId = request.encGroupMemberId();
 
@@ -76,12 +89,12 @@ public class PromiseManageInfoService {
                         "[ERROR]: 그룹 키 조회에 실패했습니다. groupId=" + groupId + ", encGroupMemberId=" + encGroupMemberId
                 ));
 
-        return new CreatePromiseViewResponse2(encGroupKey);
+        return new CreatePromise2Response(encGroupKey);
     }
 
-    //약속 만들기 - 기본 정보 입력 "화면" 보여주기 Step3 - 메인 서비스 메소드
+    //약속 만들기 - 기본 정보 입력 Step3 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseViewResponse3 createPromiseView3(String userId, CreatePromiseViewRequest3 request) {
+    public CreatePromise3Response createPromise3(CreatePromise3Request request) {
 
 
         String groupId = request.groupId();
@@ -94,7 +107,7 @@ public class PromiseManageInfoService {
         List<String> encUserIdList = groupShareKeyRepository.findEncUserIdsByGroupId(groupId);
 
         // 응답 객체 생성
-        CreatePromiseViewResponse3 response = new CreatePromiseViewResponse3(
+        CreatePromise3Response response = new CreatePromise3Response(
                 group.getGroupId(),
                 group.getGroupName(),
                 group.getGroupImg(),
@@ -106,46 +119,18 @@ public class PromiseManageInfoService {
         return response;
     }
 
-    //약속 만들기 - 약속 만들고 알림 보내기 Step1 - 메인 서비스 메소드
+    //약속 만들기 - 기본 정보 입력 Step4 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseAlimResponse1 createPromise1(String userId, CreatePromiseAlimRequest1 request) {
-        String encGroupId = request.encGroupId();
+    public CreatePromise4Response createPromise4(String userId, CreatePromise4Request request) {
 
-        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByUserIdAndEncGroupId(userId, encGroupId)
-                .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다."));
-        String encEncGroupMemberId = groupProxyUser.getEncGroupMemberId();
-
-        return new CreatePromiseAlimResponse1(encEncGroupMemberId);
-    }
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step2 - 메인 서비스 메소드
-    @Transactional
-    public CreatePromiseAlimResponse2 createPromise2(CreatePromiseAlimRequest2 request) {
-        String groupId = request.groupId();
-        String encGroupMemberId = request.encUserId();
-
-        String encGroupKey = groupShareKeyRepository.findEncGroupKey(groupId, encGroupMemberId)
-                .orElseThrow(() -> new GroupShareKeyNotFoundException(
-                        BaseErrorCode.GROUP_SHARE_KEY_NOT_FOUND,
-                        "[ERROR]: 그룹 키 조회에 실패했습니다. groupId=" + groupId + ", encGroupMemberId=" + encGroupMemberId
-                ));
-
-        return new CreatePromiseAlimResponse2(encGroupKey);
-
-    }
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step3 - 메인 서비스 메소드
-    @Transactional
-    public CreatePromiseAlimResponse3 createPromise3(CreatePromiseAlimRequest3 request) {
-        //1. Promise에 약속(임의)저장하기
+        //Promise에 약속(임의)저장하기
         Promise savedPromise = createPromise(request);
-        return new CreatePromiseAlimResponse3(savedPromise.getPromiseId());
+        return new CreatePromise4Response(savedPromise.getPromiseId());
     }
 
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step3 - 서브 서비스 메소드(1)
+    //약속 만들기 - 기본 정보 입력 - 서브 서비스 메소드(1)
     @Transactional
-    public Promise createPromise(CreatePromiseAlimRequest3 request) {
+    public Promise createPromise(CreatePromise4Request request) {
         Promise promise = Promise.of(
                 request.groupId(),
                 request.title(),
@@ -154,153 +139,51 @@ public class PromiseManageInfoService {
                 request.managerId(),
                 request.startDate(),
                 request.endDate()
-
         );
 
         return promiseRepository.save(promise);
     }
 
-    //약속 만들기 - 약속 만들고 알림 보내기 Step4 - 메인 서비스 메소드
+
+    //약속 만들기 - 초대하기 Step1 - 메인 서비스 메소드
     @Transactional
-    public CreatePromiseAlimResponse4 createPromise4(CreatePromiseAlimRequest4 request) {
+    public InvitePromise1Response invitePromise1(InvitePromise1Request request) {
+        List<Map<String, Integer>> whichUserIdIn = request.whichUserIdIn();
 
-        String groupId = request.groupId();
-        List<String> encUserIdList = request.encUserIdList();
+        List<String> emailList = new ArrayList<>();
 
-        List<String> encGroupKeyList = new ArrayList<>();
-
-        for (String encUserId : encUserIdList) {
-            // GroupShareKey에서 encGroupId와 encUserId에 해당하는 encGroupKey를 조회
-            String encGroupKey = groupShareKeyRepository.findByEncGroupIdAndEncUserId(groupId, encUserId)
-                    .orElseThrow(() -> new GroupShareKeyNotFoundException(BaseErrorCode.GROUP_SHARE_KEY_NOT_FOUND,
-                            String.format("encUserId=%s, groupId=%s 에 해당하는 GroupShareKey가 없습니다", encUserId, groupId)));
-
-            encGroupKeyList.add(encGroupKey);
-        }
-
-        return new CreatePromiseAlimResponse4(encGroupKeyList);
-    }
-
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step5 - 메인 서비스 메소드
-    @Transactional
-    public CreatePromiseAlimResponse5 createPromise5(String userId, CreatePromiseAlimRequest5 request) {
-        //1-1. 약속을 만든 userId 사용자를 PromiseProxyUser 테이블에 저장
-        //1-2. 약속을 만든 userId 사용자를 PromiseShareKey 테이블에 저장
-        saveCreatorToPromiseTables(userId, request);
-
-        //2. 각 예비 약속원이 접속했을때 알림에 뜨도록
-        prepareCandidatePromiseMembers(request);
-
-        return new CreatePromiseAlimResponse5("약속 생성 및 알림 전송 완료");
-    }
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step5 - 서브 서비스 메소드(2)
-    private void prepareCandidatePromiseMembers(CreatePromiseAlimRequest5 request) {
-        List<String> encEncGroupKeyList = request.encEncGroupKeyList();
-        List<HashMap<String, Integer>> userMaps = request.whichEncUserIdsIn();
-
-        for (int i = 0; i < userMaps.size(); i++) {
-            HashMap<String, Integer> userMap = userMaps.get(i);
-            String encEncGroupKey = encEncGroupKeyList.get(i); // userMap 인덱스에 대응되는 groupKey
-
-            for (Map.Entry<String, Integer> entry : userMap.entrySet()) {
-                String encUserId = entry.getKey();
-                Integer flag = entry.getValue();
-
-                if (flag == 1) { // 참여하는 예비 약속원에 대해서만
-                    // Redis 저장 (encEncGroupKey 함께 저장)
-                    String redisKey = String.format("promise:notify:%s:%s", encUserId, "PENDING");
-                    redisTemplate.opsForValue().set(
-                            redisKey,
-                            encEncGroupKey+"::"+request.promiseId(),
-                            Duration.ofHours(24) // TTL 24시간
-                    );
-
-                }
+        for (Map<String, Integer> userMap : whichUserIdIn) {
+            for (String userId : userMap.keySet()) {
+                // userRepository에서 userId로 이메일 조회
+                String email = userRepository.findByUserId(userId)
+                        .orElseThrow(() -> new UserNotFoundException(BaseErrorCode.INVALID_USER, "[ERROR]: 존재하지 않는 유저입니다."))
+                        .getEmail();
+                emailList.add(email);
             }
         }
+
+        return new InvitePromise1Response(emailList);
     }
 
-
-    //약속 만들기 - 약속 만들고 알림 보내기 Step5 - 서브 서비스 메소드(1)
-    private void saveCreatorToPromiseTables(String userId, CreatePromiseAlimRequest5 request) {
-        // PromiseProxyUser 저장
-        promiseProxyUserRepository.save(PromiseProxyUser.of(
-                userId,
-                request.encPromiseId(),
-                LocalDateTime.now(),
-                request.encPromiseMemberId()
-        ));
-
-        // PromiseShareKey 저장
-        promiseShareKeyRepository.save(PromiseShareKey.of(
-                userId,
-                request.encPromiseId(),
-                request.encPromiseKey(),
-                null
-        ));
-    }
-
-
-    //약속 만들기 - 약속 만들기 알림 수락 Step1 - 메인 서비스 메소드
+    //약속 만들기 - 참여하기 Step1 - 메인 서비스 메소드
     @Transactional
-    public CreateJoinPromiseResponse1 createJoinPromise1(String userId, CreateJoinPromiseRequest1 request) {
-        String encGroupId = request.encGroupId();
+    public JoinPromise1Response joinPromise1(String userId, JoinPromise1Request request) {
+        //약속을 만든 userId 사용자를 PromiseProxyUser 테이블에 저장
+        //약속을 만든 userId 사용자를 PromiseShareKey 테이블에 저장
+        saveCreatorToPromiseTables(userId, request);
 
-        GroupProxyUser groupProxyUser = groupProxyUserRepository.findByUserIdAndEncGroupId(userId, encGroupId)
-                .orElseThrow(() -> new GroupProxyUserNotFoundException(BaseErrorCode.GROUP_PROXY_USER_NOT_FOUND, "[ERROR]: 해당 그룹 프록시 정보가 없습니다."));
-        String encEncGroupMemberId = groupProxyUser.getEncGroupMemberId();
-
-        return new CreateJoinPromiseResponse1(encEncGroupMemberId);
-    }
-
-    //약속 만들기 - 약속 만들기 알림 수락 Step2 - 메인 서비스 메소드
-    @Transactional
-    public CreateJoinPromiseResponse2 createJoinPromise2(CreateJoinPromiseRequest2 request) {
-        String groupId = request.groupId();
-        String encGroupMemberId = request.encUserId();
-
-        String encGroupKey = groupShareKeyRepository.findEncGroupKey(groupId, encGroupMemberId)
-                .orElseThrow(() -> new GroupShareKeyNotFoundException(
-                        BaseErrorCode.GROUP_SHARE_KEY_NOT_FOUND,
-                        "[ERROR]: 그룹 키 조회에 실패했습니다. groupId=" + groupId + ", encGroupMemberId=" + encGroupMemberId
+        Promise promise = promiseRepository.findById(request.promiseId())
+                .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND,
+                        "promiseId=" + request.promiseId() + " 약속을 찾을 수 없습니다"
                 ));
 
-        return new CreateJoinPromiseResponse2(encGroupKey);
+        String promiseName = promise.getTitle(); //약속 제목
+
+        return new JoinPromise1Response(promiseName + " 약속에 참여하였습니다.");
     }
 
-    //약속 만들기 - 약속 만들기 알림 수락 Step3 - 메인 서비스 메소드
-    @Transactional
-    public CreateJoinPromiseResponse3 createJoinPromise3(CreateJoinPromiseRequest3 request) {
-        String encUserId = request.encUserId();
-
-        String redisKey = String.format("promise:notify:%s:%s", encUserId, "PENDING");
-
-        // Redis에서 값 조회
-        String encEncGroupKey = redisTemplate.opsForValue().get(redisKey);
-
-        if (encEncGroupKey == null) {
-            // Redis에 값이 없는 경우 (예: TTL 만료 or 잘못된 요청)
-            throw new IllegalStateException("약속 참여 알림 정보가 없습니다.");//TODO: 후에 exception 리팩토링 예정
-        }
-
-        //사용 후 Redis에서 삭제
-        redisTemplate.delete(redisKey);
-        return new CreateJoinPromiseResponse3(encEncGroupKey);
-    }
-
-    //약속 만들기 - 약속 만들기 알림 수락 Step4 - 메인 서비스 메소드
-    @Transactional
-    public CreateJoinPromiseResponse4 createJoinPromise4(String userId, CreateJoinPromiseRequest4 request) {
-        //1-1. userId 사용자를 PromiseProxyUser 테이블에 저장
-        //1-2. userId 사용자를 PromiseShareKey 테이블에 저장
-        saveCreatorToPromiseTables2(userId, request);
-        return new CreateJoinPromiseResponse4("약속 참여를 수락하셨습니다.");
-    }
-
-    //약속 만들기 - 약속 만들기 알림 수락 Step4 - 서브 서비스 메소드(1)
-    private void saveCreatorToPromiseTables2(String userId, CreateJoinPromiseRequest4 request) {
+    //약속 만들기 - 참여하기 Step1 - 서브 서비스 메소드(1)
+    private void saveCreatorToPromiseTables(String userId, JoinPromise1Request request) {
         // PromiseProxyUser 저장
         promiseProxyUserRepository.save(PromiseProxyUser.of(
                 userId,
@@ -311,10 +194,10 @@ public class PromiseManageInfoService {
 
         // PromiseShareKey 저장
         promiseShareKeyRepository.save(PromiseShareKey.of(
-                userId,
-                request.encPromiseId(),
+                request.promiseId(),
+                request.encUserId(),
                 request.encPromiseKey(),
-                null
+                UUID.randomUUID().toString()
         ));
     }
 

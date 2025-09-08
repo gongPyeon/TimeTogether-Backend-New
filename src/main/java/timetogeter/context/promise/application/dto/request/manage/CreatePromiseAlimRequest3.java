@@ -3,6 +3,7 @@ package timetogeter.context.promise.application.dto.request.manage;
 import timetogeter.context.promise.domain.vo.PromiseType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record CreatePromiseAlimRequest3(
         String groupId,
@@ -12,9 +13,7 @@ public record CreatePromiseAlimRequest3(
         String promiseImg,
         String managerId, // userId
 
-        LocalDate startDate,
-        LocalDate endDate
-
-
+        LocalDateTime startDate,
+        LocalDateTime endDate
 ) {
 }

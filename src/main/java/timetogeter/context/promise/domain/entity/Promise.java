@@ -1,9 +1,11 @@
 package timetogeter.context.promise.domain.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-import timetogeter.context.group.domain.entity.Group;
-import timetogeter.context.promise.domain.vo.PromiseType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,18 +33,22 @@ public class Promise {
     private LocalDate endDate;
     private int num = 0;
 
-    private Boolean dateTimeCheck = false;
-    private Boolean placeCheck = false;
-    private Boolean promiseCheck = false;
+    private Boolean dateTimeCheck;
+    private Boolean placeCheck;
+    private Boolean promiseCheck;
 
     private Promise(String groupId, String title, String promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
         this.promiseId = UUID.randomUUID().toString();
         this.groupId = groupId;
         this.title = title;
         this.type = promiseType;
+        this.managerId = managerId;
         this.promiseImg = promiseImg;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.dateTimeCheck = false;
+        this.placeCheck = false;
+        this.promiseCheck = false;
     }
 
     public static Promise of(String groupId, String title, String promiseType, String promiseImg, String managerId, LocalDate startDate, LocalDate endDate) {
