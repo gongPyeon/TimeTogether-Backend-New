@@ -42,11 +42,32 @@ services:
   meetnow-redis:
     image: redis
     ports:
-      - 6379:6379
+      - 6390:6379
     healthcheck:
       test: [ "CMD", "redis-cli", "ping", "--silent"]
       interval: 5s
       retries: 10
+
+  ngrinder-controller:
+    image: ngrinder/controller:3.5.7
+    container_name: ngrinder-controller
+    ports:
+      - "8081:8080"  # UI 접속용
+    environment:
+      - TZ=Asia/Seoul
+    networks:
+      - default
+
+  ngrinder-agent:
+    image: ngrinder/agent:3.5.5
+    container_name: ngrinder-agent
+    environment:
+      - CONTROLLER_HOST=ngrinder-controller
+      - TZ=Asia/Seoul
+    depends_on:
+      - ngrinder-controller
+    networks:
+      - default
 
 volumes:
   mysql-data:

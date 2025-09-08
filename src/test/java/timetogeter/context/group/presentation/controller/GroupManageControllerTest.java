@@ -30,7 +30,6 @@ import timetogeter.context.group.application.service.GroupManageMemberService;
 import timetogeter.global.RestDocsSupport;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.*;
@@ -491,9 +490,9 @@ class GroupManageControllerTest extends RestDocsSupport {
         void testInviteGroup1() throws Exception {
             // given
             String message = "toefl(수정됨제목)에 참여했어요.";
-            JoinGroup1Response responseDto = new JoinGroup1Response(message);
+            JoinGroupResponse responseDto = new JoinGroupResponse(message);
 
-            given(groupManageMemberService.joinGroup1(any(JoinGroup1Request.class), anyString()))
+            given(groupManageMemberService.joinGroup(any(JoinGroupRequest.class), anyString()))
                     .willReturn(responseDto);
 
             RegisterUserCommand dto = new RegisterUserCommand(

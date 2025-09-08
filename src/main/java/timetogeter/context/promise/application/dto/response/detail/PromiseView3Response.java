@@ -1,6 +1,6 @@
 package timetogeter.context.promise.application.dto.response.detail;
 
-public record OverallPromiseViewResponse1(
-        String encPromiseId
+public record PromiseView3Response(
+        String scheduleId
 ) {
 }

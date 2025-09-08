@@ -1,6 +1,6 @@
 package timetogeter.context.promise.application.dto.response.detail;
 
-public record OverallPromiseViewResponse2(
+public record PromiseView2Response(
     boolean isConfirmed, //약속 확정 여부 반환
     String promiseId, //약속 아이디
     String title, //약속 제목

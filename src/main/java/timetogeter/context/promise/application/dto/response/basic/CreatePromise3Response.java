@@ -1,8 +1,8 @@
-package timetogeter.context.promise.application.dto.response.manage;
+package timetogeter.context.promise.application.dto.response.basic;
 
 import java.util.List;
 
-public record CreatePromiseViewResponse3(
+public record CreatePromise3Response(
         String groupId,
         String groupName,
         String groupImg,
