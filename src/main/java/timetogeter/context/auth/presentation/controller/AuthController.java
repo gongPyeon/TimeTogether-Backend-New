@@ -203,6 +203,25 @@ public class AuthController {
     }
 
 
+    @Operation(summary = "소셜 로그인 회원가입", description = "소셜 로그인 시 사용자의 추가정보를 입력한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "사용자 오류", summary = "소셜로그인 사용자 유효성 확인",
+                                            value = """
+                                                    { "code": 400, "message": "접근 권한이 없어요" }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/oauth2/login/detail")
     public BaseResponse<Object> signUp(@RequestBody @Valid OAuth2LoginDetailReqDTO dto) {
         authService.setDetail(dto);
