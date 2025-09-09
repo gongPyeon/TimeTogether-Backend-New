@@ -3,6 +3,7 @@ package timetogeter.context.auth.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
 import timetogeter.context.auth.exception.InvalidAuthException;
 import timetogeter.context.auth.domain.vo.Gender;
@@ -38,8 +39,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    private String wrappedDEK;
+
     public User(UserSignUpDTO dto, PasswordEncoder passwordEncoder) {
-        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
+        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone(), dto.wrappedDEK());
         this.userId = dto.userId();
         this.email = dto.email();
         this.nickname = dto.nickname();
@@ -49,11 +52,12 @@ public class User {
         this.role = Role.USER;
         this.age = dto.age();
         this.gender = dto.gender();
+        this.wrappedDEK = dto.wrappedDEK();
     }
 
     public User(RegisterUserCommand dto){
         // 검증
-        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
+        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone(), "");
         this.userId = dto.userId();
         this.email = dto.email();
         this.nickname = dto.nickname();
@@ -63,13 +67,21 @@ public class User {
         this.role = dto.role();
         this.age = dto.age();
         this.gender = dto.gender();
+        this.wrappedDEK = dto.wrappedDEK();
     }
 
-    private void validate(String userId, String nickname, String email, String telephone){
+    private void validate(String userId, String nickname, String email, String telephone, String wrappedDEK){
         validateUserId(userId);
         validateUserNickname(nickname);
         validateEmail(email);
         validatePhone(telephone);
+        validateDEK(wrappedDEK);
+    }
+
+    private void validateDEK(String wrappedDEK) {
+        if (wrappedDEK == null) {
+            throw new InvalidAuthException(BaseErrorCode.INVALID_DEK,"[ERROR] wrappedDEK가 NULL입니다.");
+        }
     }
 
     private void validateUserId(String userId) {
@@ -101,5 +113,12 @@ public class User {
         if (!phone.matches("^01[016789]-\\d{3,4}-\\d{4}$")) {
             throw new InvalidAuthException(BaseErrorCode.INVALID_PHONE_FORMAT, "[ERROR] 전화번호 형식이 올바르지 않습니다.");
         }
+    }
+
+    public void setDetail(OAuth2LoginDetailReqDTO dto) {
+        this.gender = dto.gender();
+        this.telephone = dto.telephone();
+        this.age = dto.age();
+        this.wrappedDEK = dto.wrappedDEK();
     }
 }
