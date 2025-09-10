@@ -12,8 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
+import timetogeter.context.auth.application.dto.response.LoginResDTO;
 import timetogeter.context.auth.application.validator.AuthValidator;
 import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.auth.domain.repository.UserRepository;
@@ -69,7 +71,7 @@ public class AuthService {
         return accessToken;
     }
 
-    public TokenCommand login(LoginReqDTO dto) {
+    public LoginResDTO login(LoginReqDTO dto) {
         String userId = dto.userId();
         try {
             if(loginAttemptService.isLocked(userId)){
@@ -77,12 +79,13 @@ public class AuthService {
             }
 
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(dto.userId(), dto.password()));
+                    new UsernamePasswordAuthenticationToken(userId, dto.password()));
             loginAttemptService.resetFailedAttempts(userId); // 성공 시 실패 카운트 초기화
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.set(dto.userId(), token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
-            return token;
+            redisUtil.set(userId, token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
+            return new LoginResDTO(token, userPrincipal.getWrappedDEK());
         }catch(AuthenticationException e){
             // 인증 실패 시 카운트 증가
             loginAttemptService.increaseFailedAttempts(userId);
@@ -90,7 +93,7 @@ public class AuthService {
         }
     }
 
-    public TokenCommand login(OAuth2LoginReqDTO dto){
+    public LoginResDTO login(OAuth2LoginReqDTO dto){
         try {
             Map<String, Object> attributes = getUserAttributes(dto);
             RegisterResponse registerResponse = oAuth2UserDetailService.loadOAuth2User(
@@ -103,7 +106,8 @@ public class AuthService {
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
             redisUtil.set(registerResponse.email(), REFRESH_HEADER + token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
-            return token;
+
+            return new LoginResDTO(token, registerResponse.wrappedDEK());
         }catch (RedisConnectionFailureException e) {
             log.info(e.getMessage());
             throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 세션 저장에 실패했습니다.");
@@ -131,5 +135,14 @@ public class AuthService {
             log.error("{}:{}", userId, e.getMessage());
             throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 로그아웃 중 토큰 삭제에 실패했습니다.");
         }
+    }
+
+    @Transactional
+    public void setDetail(OAuth2LoginDetailReqDTO dto) {
+        User user = userRepository.findByUserId(dto.userId())
+                .orElseThrow(() -> new AuthFailureException(BaseErrorCode.INVALID_USER, "[ERROR] 소셜 회원가입이 완료되지 않은 상태입니다."));
+
+        user.setDetail(dto);
+        userRepository.save(user);
     }
 }

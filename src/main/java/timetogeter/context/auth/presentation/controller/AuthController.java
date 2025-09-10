@@ -16,8 +16,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.application.dto.request.LoginReqDTO;
+import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
+import timetogeter.context.auth.application.dto.response.LoginResDTO;
 import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
 import timetogeter.global.interceptor.response.BaseCode;
@@ -27,6 +29,8 @@ import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import timetogeter.global.security.util.cookie.CookieUtil;
+import timetogeter.global.security.util.jwt.TokenProvider;
+
 import static org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames.REFRESH_TOKEN;
 
 @RestController
@@ -142,13 +146,14 @@ public class AuthController {
     })
     @PostMapping("/login")
     public BaseResponse<Object> login(@RequestBody @Valid LoginReqDTO dto, HttpServletResponse response) {
-        TokenCommand token = authService.login(dto);
+        LoginResDTO resDTO = authService.login(dto);
+        TokenCommand token = resDTO.token();
 
         response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
         CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
                 Math.toIntExact(token.refreshTokenExpirationTime()));
 
-        return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
+        return new BaseResponse<>(resDTO.wrappedDEK(), BaseCode.SUCCESS_LOGIN);
     }
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 진행한다")
@@ -188,12 +193,39 @@ public class AuthController {
     // KAKAO, NAVER, GOOGLE
     public BaseResponse<Object> login(@RequestBody @Valid OAuth2LoginReqDTO dto,
                                       HttpServletResponse response) {
-        TokenCommand token = authService.login(dto);
+        LoginResDTO resDTO = authService.login(dto);
+        TokenCommand token = resDTO.token();
 
         response.setHeader(AUTHORIZATION, BEARER + token.accessToken());
         CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
                 Math.toIntExact(token.refreshTokenExpirationTime()));
 
+        return new BaseResponse<>(resDTO.wrappedDEK(), BaseCode.SUCCESS_LOGIN);
+    }
+
+
+    @Operation(summary = "소셜 로그인 회원가입", description = "소셜 로그인 시 사용자의 추가정보를 입력한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "요청 형식 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "사용자 오류", summary = "소셜로그인 사용자 유효성 확인",
+                                            value = """
+                                                    { "code": 400, "message": "접근 권한이 없어요" }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    @PostMapping("/oauth2/login/detail")
+    public BaseResponse<Object> signUp(@RequestBody @Valid OAuth2LoginDetailReqDTO dto) {
+        authService.setDetail(dto);
         return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
     }
 
@@ -245,7 +277,7 @@ public class AuthController {
         return new BaseResponse<>(BaseCode.SUCCESS_REISSUE);
     }
 
-    @Operation(summary = "액세스 토큰 재발급", description = "액세스 토큰을 재발급한다")
+    @Operation(summary = "로그아웃", description = "로그아웃한다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class))),

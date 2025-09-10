@@ -26,7 +26,8 @@ public class OAuth2UserDetailService {
                 providerType,
                 Role.USER,
                 null, // age
-                null // gender
+                null, // gender
+                null
         );
 
         return userRegisterService.getOrRegisterUser(registerUserCommand);
