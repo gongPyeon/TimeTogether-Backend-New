@@ -8,8 +8,7 @@ import timetogeter.context.auth.domain.vo.Gender;
 @Schema(requiredProperties = {"userId","email","password","nickname"})
 public record UserSignUpDTO(
         @NotNull String userId,
-        @NotNull
-        String email,
+        @NotNull String email,
         @NotNull String password,
         @NotNull String nickname,
         @NotNull String wrappedDEK,
