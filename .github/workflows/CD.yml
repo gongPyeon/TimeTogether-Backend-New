@@ -54,10 +54,11 @@ jobs:
             # Canary 컨테이너 실행 (docker run)
             docker pull haerizian561024/meetnow-server:latest
             docker run -d --name meetnow-server-$CANARY_PORT \
-              --env-file .env.deploy \
-              -p $CANARY_PORT:8080 \
-              haerizian561024/meetnow-server:latest
-
+            --env-file .env.deploy \
+            -p $CANARY_PORT:8080 \
+            haerizian561024/meetnow-server:latest java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
+  
+  
             echo "🩺 Canary 헬스 체크 시작..."
             MAX_RETRIES=30
             RETRY_DELAY=2
