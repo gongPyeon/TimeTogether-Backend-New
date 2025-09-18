@@ -33,12 +33,7 @@ jobs:
             set -e
             cd /home/ubuntu/meetnow
 
-            # 비밀 키 직접 변수 선언
-            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_TOKEN=${{ secrets.DOCKERHUB_TOKEN }}
-
-            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
-
+            echo "▶️ 현재 실행 중인 서버 포트 확인"
             CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
 
             if [ "$CURRENT_PORT" == "8081" ]; then
@@ -48,47 +43,50 @@ jobs:
             else
               CANARY_PORT=8081
             fi
-            
+          
             echo "▶️ Canary 컨테이너를 $CANARY_PORT 포트에 배포합니다."
             
             cp .env.prod .env.deploy
             sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
             
+            docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
             
-            echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i '58s|.*|        server 127.0.0.1:'"$NEW_PORT"';|' /etc/nginx/nginx.conf
-            sudo nginx -t && sudo systemctl reload nginx
-            
-            echo "🩺 포트 응답 여부 확인 중..."
+            echo "🩺 Canary 헬스 체크 시작..."
             MAX_RETRIES=30
             RETRY_DELAY=2
             COUNT=0
             STATUS="000"
-  
+            
             until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || true)
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$CANARY_PORT/actuator/health || true)
               echo "⏳ Waiting for health check... (status=$STATUS)"
               sleep $RETRY_DELAY
               COUNT=$((COUNT+1))
             done
 
             if [ "$STATUS" != "200" ]; then
-              echo "❌ Health check failed after $MAX_RETRIES attempts"
+              echo "❌ Health check failed. Rolling back..."
+              docker rm -f meetnow-server-$CANARY_PORT
               exit 1
             fi
-            
-            echo "✅ Canary 헬스 체크 성공"            
-            LAST_TRAFFIC=0
-            for TRAFFIC in 10 30 100; do
-              sudo sed -i "s|upstream meetnow_server {.*}|upstream meetnow_server {\n    server 127.0.0.1:$CURRENT_PORT weight=$((100-TRAFFIC));\n    server 127.0.0.1:$CANARY_PORT weight=$TRAFFIC;\n}|" /etc/nginx/nginx.conf
+            echo "✅ Canary 헬스 체크 성공"
+
+            #점진적 트래픽 전환 (10%, 30%, 100%)
+              for TRAFFIC in 10 30 100; do
+                sudo tee /etc/nginx/conf.d/meetnow_upstream.conf > /dev/null <<EOL
+              upstream meetnow_server {
+              server 127.0.0.1:$CURRENT_PORT weight=$((100-TRAFFIC));
+              server 127.0.0.1:$CANARY_PORT weight=$TRAFFIC;
+              }
+              EOL
+              
               sudo nginx -t && sudo systemctl reload nginx
               echo "🔁 트래픽 $TRAFFIC% Canary로 전환"
-              LAST_TRAFFIC=$TRAFFIC
-              sleep 10
+              sleep 10 #100%전환까지 총 30초 소요 -> 후에 동적 전환(요청률, 헬스체크 상태, 에러율 기반)으로 트래픽 전환 예정
             done
-            
-            
+
             echo "✅ Canary 배포 완료 (포트: $CANARY_PORT)"
-            echo "   📊 현재 트래픽 비율: 기존 서버($CURRENT_PORT): $((100-LAST_TRAFFIC))%, Canary($CANARY_PORT): $LAST_TRAFFIC%"
+            echo "   📊 현재 트래픽 비율: 기존 서버($CURRENT_PORT): $((100-TRAFFIC))%, Canary($CANARY_PORT): $TRAFFIC%"
