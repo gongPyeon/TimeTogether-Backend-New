@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login to Docker Hub (on GitHub runner)
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -36,30 +36,34 @@ jobs:
             echo "▶️ 현재 실행 중인 서버 포트 확인"
             CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
 
+            # Canary 포트 결정
             if [ "$CURRENT_PORT" == "8081" ]; then
               CANARY_PORT=8082
-            elif [ "$CURRENT_PORT" == "8082" ]; then
-              CANARY_PORT=8083
             else
               CANARY_PORT=8081
             fi
-            
+
             echo "▶️ Canary 컨테이너를 $CANARY_PORT 포트에 배포합니다."
-            
+
+            # 환경파일 준비
             cp .env.prod .env.deploy
             sed -i "s/^PORT=.*/PORT=$CANARY_PORT/" .env.deploy
-            
+
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-            
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server
-            
+
+            # Canary 컨테이너 실행 (docker run)
+            docker pull haerizian561024/meetnow-server:latest
+            docker run -d --name meetnow-server-$CANARY_PORT \
+              --env-file .env.deploy \
+              -p $CANARY_PORT:8080 \
+              haerizian561024/meetnow-server:latest
+
             echo "🩺 Canary 헬스 체크 시작..."
             MAX_RETRIES=30
             RETRY_DELAY=2
             COUNT=0
             STATUS="000"
-            
+
             until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
               STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$CANARY_PORT/actuator/health || true)
               echo "⏳ Waiting for health check... (status=$STATUS)"
@@ -68,18 +72,19 @@ jobs:
             done
 
             if [ "$STATUS" != "200" ]; then
-              echo "❌ Health check failed. Rolling back..."
+              echo "❌ 헬스체크 실패. 새로운 컨테이너만 삭제..."
               docker rm -f meetnow-server-$CANARY_PORT
               exit 1
             fi
             echo "✅ Canary 헬스 체크 성공"
 
+            # 트래픽 점진 분산
             for TRAFFIC in 10 30 100; do
-            echo "upstream meetnow_server {
-                server 127.0.0.1:$CURRENT_PORT weight=$((100-TRAFFIC));
-                server 127.0.0.1:$CANARY_PORT weight=$TRAFFIC;
-              }" | sudo tee /etc/nginx/conf.d/meetnow_upstream.conf > /dev/null
-          
+              echo "upstream meetnow_server {
+                  server 127.0.0.1:$CURRENT_PORT weight=$((100-TRAFFIC));
+                  server 127.0.0.1:$CANARY_PORT weight=$TRAFFIC;
+                }" | sudo tee /etc/nginx/conf.d/meetnow_upstream.conf > /dev/null
+
               sudo nginx -t && sudo systemctl reload nginx
               echo "🔁 트래픽 $TRAFFIC% Canary로 전환"
               sleep 10
