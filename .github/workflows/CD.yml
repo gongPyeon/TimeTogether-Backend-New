@@ -47,12 +47,12 @@ jobs:
             echo "▶️ Canary 컨테이너를 $CANARY_PORT 포트에 배포합니다."
             
             cp .env.prod .env.deploy
-            sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
+            sed -i "s/^PORT=.*/PORT=$CANARY_PORT/" .env.deploy
             
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             
             docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
+            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server
             
             echo "🩺 Canary 헬스 체크 시작..."
             MAX_RETRIES=30
