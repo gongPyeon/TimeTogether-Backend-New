@@ -1,4 +1,4 @@
-name: CD
+name: CD-Stable
 
 on:
   workflow_run:
@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  deploy:
+  deploy-stable:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main'
@@ -23,81 +23,36 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: SSH to Server and Deploy
+      - name: SSH to Stable EC2 and Deploy
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.SERVER_HOST }}
+          host: ${{ secrets.STABLE_EC2_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             set -e
             cd /home/ubuntu/meetnow
 
-            echo "▶️ 현재 실행 중인 서버 포트 확인"
-            CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K(8081|8082)(?=->8080)' || echo "none")
-
-            # Canary 포트 결정
-            if [ "$CURRENT_PORT" == "8081" ]; then
-              CANARY_PORT=8082
-              OLD_PORT=8082
+            echo "▶️ Redis 컨테이너 확인 및 실행"
+            if ! docker ps --format '{{.Names}}' | grep -q "meetnow-redis"; then
+              docker run -d --name meetnow-redis -p 6379:6379 redis:latest
+              echo "✅ Redis 컨테이너 실행 완료"
             else
-              CANARY_PORT=8081
-              OLD_PORT=8081
+              echo "ℹ️ Redis 컨테이너 이미 실행 중"
             fi
 
-            echo "▶️ Canary 컨테이너를 $CANARY_PORT 포트에 배포합니다."
-            
-            # 이전 같은 이름의 컨테이너 정리 (있을 경우만)
-            if docker ps -a --format '{{.Names}}' | grep -q "meetnow-server-$CANARY_PORT"; then
-              echo "🗑 기존 meetnow-server-$CANARY_PORT 삭제"
-              docker rm -f meetnow-server-$CANARY_PORT || true
-            fi
-            
-            # 환경파일 준비
-            cp .env.prod .env.deploy
-            sed -i "s/^PORT=.*/PORT=$CANARY_PORT/" .env.deploy
-
+            echo "▶️ Stable 컨테이너 실행"
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+            docker pull haerizian561024/meetnow-server:stable
 
-            # Canary 컨테이너 실행 (docker run)
-            docker pull haerizian561024/meetnow-server:latest
-            docker run -d --name meetnow-server-$CANARY_PORT \
-              --env-file .env.deploy \
-              -p $CANARY_PORT:8080 \
-              haerizian561024/meetnow-server:latest java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
-  
-  
-            echo "🩺 Canary 헬스 체크 시작..."
-            MAX_RETRIES=30
-            RETRY_DELAY=2
-            COUNT=0
-            STATUS="000"
-
-            until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$CANARY_PORT/actuator/health || true)
-              echo "⏳ Waiting for health check... (status=$STATUS)"
-              sleep $RETRY_DELAY
-              COUNT=$((COUNT+1))
-            done
-
-            if [ "$STATUS" != "200" ]; then
-              echo "❌ 헬스체크 실패. 새로운 컨테이너만 삭제..."
-              docker rm -f meetnow-server-$CANARY_PORT
-              exit 1
+            if docker ps -a --format '{{.Names}}' | grep -q "meetnow-server-stable"; then
+              echo "🗑 기존 Stable 컨테이너 삭제"
+              docker rm -f meetnow-server-stable
             fi
-            echo "✅ Canary 헬스 체크 성공"
 
-            # 트래픽 점진 분산
-            for TRAFFIC in 10 30 100; do
-              echo "upstream meetnow_server {
-                  server 127.0.0.1:$CURRENT_PORT weight=$((100-TRAFFIC));
-                  server 127.0.0.1:$CANARY_PORT weight=$TRAFFIC;
-                }" | sudo tee /etc/nginx/conf.d/meetnow_upstream.conf > /dev/null
+            docker run -d --name meetnow-server-stable \
+              --env-file .env.prod \
+              -p 8083:8080 \
+              haerizian561024/meetnow-server:stable java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
 
-              sudo nginx -t && sudo systemctl reload nginx
-              echo "🔁 트래픽 $TRAFFIC% Canary로 전환"
-              sleep 10
-            done
-
-            echo "✅ Canary 배포 완료 (포트: $CANARY_PORT)"
-            echo "   📊 현재 트래픽 비율: 기존 서버($CURRENT_PORT): $((100-TRAFFIC))%, Canary($CANARY_PORT): $TRAFFIC%"
+            echo "✅ Stable 컨테이너 배포 완료"
