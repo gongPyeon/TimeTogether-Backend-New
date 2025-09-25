@@ -50,11 +50,11 @@ jobs:
               haerizian561024/meetnow-server:stable java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
 
             echo "🩺 Stable 헬스 체크 시작..."
-            MAX_RETRIES=30
-            RETRY_DELAY=2
+            MAX_RETRIES=60
+            RETRY_DELAY=3
             COUNT=0
             STATUS="000"
-
+            
             until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
               STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8083/actuator/health || true)
               echo "⏳ Waiting for health check... (status=$STATUS)"
@@ -63,7 +63,8 @@ jobs:
             done
 
             if [ "$STATUS" != "200" ]; then
-              echo "❌ 헬스체크 실패. Stable 컨테이너 삭제"
+              echo "❌ 헬스체크 실패. 컨테이너 로그 확인"
+              docker logs meetnow-server-stable --tail 20
               docker rm -f meetnow-server-stable
               exit 1
             fi
