@@ -47,8 +47,10 @@ jobs:
             docker run -d --name meetnow-server-stable \
               --env-file .env.prod \
               -p 8083:8080 \
-              haerizian561024/meetnow-server:stable java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
-
+              haerizian561024/meetnow-server:stable java \
+              -Dcom.amazonaws.sdk.disableMbean=true \
+              -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
+  
             echo "🩺 Stable 헬스 체크 시작..."
             MAX_RETRIES=60
             RETRY_DELAY=3
