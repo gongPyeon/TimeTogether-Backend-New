@@ -34,4 +34,4 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push haerizian561024/meetnow-server:latest
+        run: docker push haerizian561024/meetnow-server:stable
