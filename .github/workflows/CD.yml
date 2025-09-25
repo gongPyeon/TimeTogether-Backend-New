@@ -39,12 +39,20 @@ jobs:
             # Canary 포트 결정
             if [ "$CURRENT_PORT" == "8081" ]; then
               CANARY_PORT=8082
+              OLD_PORT=8082
             else
               CANARY_PORT=8081
+              OLD_PORT=8081
             fi
 
             echo "▶️ Canary 컨테이너를 $CANARY_PORT 포트에 배포합니다."
-
+            
+            # 이전 같은 이름의 컨테이너 정리 (있을 경우만)
+            if docker ps -a --format '{{.Names}}' | grep -q "meetnow-server-$CANARY_PORT"; then
+              echo "🗑 기존 meetnow-server-$CANARY_PORT 삭제"
+              docker rm -f meetnow-server-$CANARY_PORT || true
+            fi
+            
             # 환경파일 준비
             cp .env.prod .env.deploy
             sed -i "s/^PORT=.*/PORT=$CANARY_PORT/" .env.deploy
@@ -54,9 +62,9 @@ jobs:
             # Canary 컨테이너 실행 (docker run)
             docker pull haerizian561024/meetnow-server:latest
             docker run -d --name meetnow-server-$CANARY_PORT \
-            --env-file .env.deploy \
-            -p $CANARY_PORT:8080 \
-            haerizian561024/meetnow-server:latest java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
+              --env-file .env.deploy \
+              -p $CANARY_PORT:8080 \
+              haerizian561024/meetnow-server:latest java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
   
   
             echo "🩺 Canary 헬스 체크 시작..."
