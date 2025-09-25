@@ -34,7 +34,7 @@ jobs:
             cd /home/ubuntu/meetnow
 
             echo "▶️ 현재 실행 중인 서버 포트 확인"
-            CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
+            CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K(8081|8082)(?=->8080)' || echo "none")
 
             # Canary 포트 결정
             if [ "$CURRENT_PORT" == "8081" ]; then
