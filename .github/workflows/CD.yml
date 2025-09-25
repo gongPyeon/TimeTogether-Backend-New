@@ -33,26 +33,40 @@ jobs:
             set -e
             cd /home/ubuntu/meetnow
 
-            echo "▶️ Redis 컨테이너 확인 및 실행"
-            if ! docker ps --format '{{.Names}}' | grep -q "meetnow-redis"; then
-              docker run -d --name meetnow-redis -p 6379:6379 redis:latest
-              echo "✅ Redis 컨테이너 실행 완료"
-            else
-              echo "ℹ️ Redis 컨테이너 이미 실행 중"
-            fi
-
             echo "▶️ Stable 컨테이너 실행"
             docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
             docker pull haerizian561024/meetnow-server:stable
 
+            # 기존 컨테이너 삭제
             if docker ps -a --format '{{.Names}}' | grep -q "meetnow-server-stable"; then
               echo "🗑 기존 Stable 컨테이너 삭제"
               docker rm -f meetnow-server-stable
             fi
 
+            # Stable 컨테이너 실행
             docker run -d --name meetnow-server-stable \
               --env-file .env.prod \
               -p 8083:8080 \
               haerizian561024/meetnow-server:stable java -XX:+IgnoreUnrecognizedVMOptions -XX:-UseContainerSupport -jar app.jar
 
+            echo "🩺 Stable 헬스 체크 시작..."
+            MAX_RETRIES=30
+            RETRY_DELAY=2
+            COUNT=0
+            STATUS="000"
+
+            until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8083/actuator/health || true)
+              echo "⏳ Waiting for health check... (status=$STATUS)"
+              sleep $RETRY_DELAY
+              COUNT=$((COUNT+1))
+            done
+
+            if [ "$STATUS" != "200" ]; then
+              echo "❌ 헬스체크 실패. Stable 컨테이너 삭제"
+              docker rm -f meetnow-server-stable
+              exit 1
+            fi
+
+            echo "✅ Stable 헬스 체크 성공"
             echo "✅ Stable 컨테이너 배포 완료"
