@@ -10,7 +10,9 @@ public record RegisterResponse(String userId,
                                String password,
                                Provider provider,
                                Role role,
-                               String wrappedDEK) {
+                               String imgIv,
+                               String emailIv,
+                               String phoneIv) {
 
     public static RegisterResponse from(User user) {
         return new RegisterResponse(
@@ -20,7 +22,9 @@ public record RegisterResponse(String userId,
                 user.getPassword(),
                 user.getProvider(),
                 user.getRole(),
-                user.getWrappedDEK()
+                user.getImgIv(),
+                user.getEmailIv(),
+                user.getPhoneIv()
         );
     }
 }

@@ -1,5 +1,6 @@
 package timetogeter.context.auth.application.dto;
 
+import jakarta.validation.constraints.NotNull;
 import timetogeter.context.auth.domain.vo.Gender;
 import timetogeter.context.auth.domain.vo.Provider;
 import timetogeter.context.auth.domain.vo.Role;
@@ -12,7 +13,9 @@ public record RegisterUserCommand(String userId,
                                   Role role,
                                   String age,
                                   Gender gender,
-                                  String wrappedDEK
+                                  String imgIv,
+                                  String emailIv,
+                                  String phoneIv
                                   ){
 
 }
