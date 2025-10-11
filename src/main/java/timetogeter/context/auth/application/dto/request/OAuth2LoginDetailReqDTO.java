@@ -6,8 +6,11 @@ import timetogeter.context.auth.domain.vo.Gender;
 public record OAuth2LoginDetailReqDTO(
         String userId,
         String telephone,
-        @NotNull String age,
-        @NotNull Gender gender,
-        @NotNull String wrappedDEK
+        String age,
+        Gender gender,
+        String img,
+        String imgIv,
+        String emailIv,
+        String phoneIv
 ) {
 }

@@ -19,6 +19,7 @@ import timetogeter.context.auth.application.dto.request.LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginDetailReqDTO;
 import timetogeter.context.auth.application.dto.request.OAuth2LoginReqDTO;
 import timetogeter.context.auth.application.dto.request.UserSignUpDTO;
+import timetogeter.context.auth.application.dto.response.IvListResDTO;
 import timetogeter.context.auth.application.dto.response.LoginResDTO;
 import timetogeter.context.auth.application.dto.response.testDTO;
 import timetogeter.context.auth.application.service.AuthService;
@@ -153,7 +154,8 @@ public class AuthController {
         CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
                 Math.toIntExact(token.refreshTokenExpirationTime()));
 
-        return new BaseResponse<>(resDTO.wrappedDEK(), BaseCode.SUCCESS_LOGIN);
+        IvListResDTO ivDTO = new IvListResDTO(resDTO.imgIv(), resDTO.emailIv(), resDTO.phoneIv());
+        return new BaseResponse<>(ivDTO, BaseCode.SUCCESS_LOGIN);
     }
 
     @Operation(summary = "소셜 로그인", description = "소셜 로그인을 진행한다")
@@ -200,7 +202,8 @@ public class AuthController {
         CookieUtil.addCookie(response, REFRESH_TOKEN, token.refreshToken(),
                 Math.toIntExact(token.refreshTokenExpirationTime()));
 
-        return new BaseResponse<>(resDTO.wrappedDEK(), BaseCode.SUCCESS_LOGIN);
+        IvListResDTO ivDTO = new IvListResDTO(resDTO.imgIv(), resDTO.emailIv(), resDTO.phoneIv());
+        return new BaseResponse<>(ivDTO, BaseCode.SUCCESS_LOGIN);
     }
 
 
@@ -223,7 +226,7 @@ public class AuthController {
                     )
             )
     })
-    @PostMapping("/oauth2/login/detail")
+    @PostMapping("/login/detail")
     public BaseResponse<Object> signUp(@RequestBody @Valid OAuth2LoginDetailReqDTO dto) {
         authService.setDetail(dto);
         return new BaseResponse<>(BaseCode.SUCCESS_LOGIN);
