@@ -1,4 +1,4 @@
-name: CD
+name: CD-Stable
 
 on:
   workflow_run:
@@ -7,7 +7,7 @@ on:
       - completed
 
 jobs:
-  deploy:
+  deploy-stable:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main'
@@ -17,13 +17,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Login to Docker Hub (on GitHub runner)
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: SSH to Server and Deploy
+      - name: SSH to Stable EC2 and Deploy (Blue-Green + Redis + Nginx)
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -33,63 +33,67 @@ jobs:
             set -e
             cd /home/ubuntu/meetnow
 
-            # 비밀 키 직접 변수 선언
-            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            DOCKERHUB_TOKEN=${{ secrets.DOCKERHUB_TOKEN }}
-
-            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
-
-            CURRENT_PORT=$(docker ps --filter "name=meetnow-server" --format "{{.Ports}}" | grep -oP '0\.0\.0\.0:\K\d+(?=->8080)' || echo "none")
-
-            if [ "$CURRENT_PORT" == "8081" ]; then
-              NEW_PORT=8082
+            echo "▶️ Redis 컨테이너 확인"
+            if ! docker ps -a --format '{{.Names}}' | grep -q "meetnow-redis"; then
+              echo "📦 Redis 컨테이너 없음 → 생성"
+              docker compose -f docker-compose.v2.yml up -d meetnow-redis
             else
-              NEW_PORT=8081
+              echo "✅ Redis 컨테이너 이미 존재 → 건너뜀"
             fi
-            
-            echo "🧹 기존 컨테이너 정리 중..."
-            docker-compose -f docker-compose.v2.yml down || true
-            docker system prune -f
 
-            echo "▶️ 현재 실행 포트: $CURRENT_PORT"
-            echo "🚀 새 컨테이너를 $NEW_PORT 포트에 배포합니다."
-            
-            cp .env.prod .env.deploy
-            sed -i "s/^PORT=.*/PORT=$NEW_PORT/" .env.deploy
-            
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml pull meetnow-server
-            docker-compose --env-file .env.deploy -f docker-compose.v2.yml up -d --remove-orphans --force-recreate meetnow-server meetnow-redis
-            
-            echo "🔁 nginx 프록시 포트 전환 중..."
-            sudo sed -i '58s|.*|        server 127.0.0.1:'"$NEW_PORT"';|' /etc/nginx/nginx.conf
-            sudo nginx -t && sudo systemctl reload nginx
-            
-            echo "🩺 포트 응답 여부 확인 중..."
-            MAX_RETRIES=30
-            RETRY_DELAY=2
+            echo "▶️ Blue-Green 배포 시작"
+            if docker ps --format '{{.Names}}' | grep -q "meetnow-server-blue"; then
+              CURRENT="blue"
+              NEXT="green"
+              PORT=8082
+            else
+              CURRENT="green"
+              NEXT="blue"
+              PORT=8081
+            fi
+
+            echo "🟦 현재 서버 컨테이너: $CURRENT"
+            echo "🟩 신규 서버 컨테이너: $NEXT (PORT=$PORT)"
+
+            # 신규 서버 컨테이너 실행 (항상 최신 이미지 pull)
+            PORT=$PORT docker compose -f docker-compose.v2.yml --env-file .env.prod up -d --build --pull always meetnow-server
+
+            # 컨테이너 이름을 blue/green 으로 교체
+            docker rename meetnow-server-$PORT meetnow-server-$NEXT
+
+            echo "🩺 $NEXT 컨테이너 헬스 체크 시작..."
+            MAX_RETRIES=60
+            RETRY_DELAY=3
             COUNT=0
             STATUS="000"
-  
+
             until [ "$STATUS" = "200" ] || [ $COUNT -ge $MAX_RETRIES ]; do
-              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$NEW_PORT/actuator/health || true)
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$PORT/actuator/health || true)
               echo "⏳ Waiting for health check... (status=$STATUS)"
               sleep $RETRY_DELAY
               COUNT=$((COUNT+1))
             done
 
             if [ "$STATUS" != "200" ]; then
-              echo "❌ Health check failed after $MAX_RETRIES attempts"
+              echo "❌ 헬스체크 실패. 신규 컨테이너 로그 확인"
+              docker logs meetnow-server-$NEXT --tail 20
+              docker rm -f meetnow-server-$NEXT
               exit 1
             fi
-  
-            echo "✅ Health check succeeded"
-  
-  
-            echo "🧹 이전 포트 컨테이너 정리 중..."
-            if [ "$CURRENT_PORT" != "none" ]; then
-              OLD_CONTAINER="meetnow-server-$CURRENT_PORT"
-              docker stop $OLD_CONTAINER || true
-              docker rm $OLD_CONTAINER || true
+
+            echo "✅ 신규 컨테이너($NEXT) 헬스 체크 성공"
+
+            # 🔄 Nginx upstream.conf 교체
+            echo "▶️ Nginx upstream.conf 갱신 (PORT=$PORT)"
+            echo "upstream backend { server 127.0.0.1:$PORT; }" | sudo tee /etc/nginx/upstream.conf > /dev/null
+            sudo nginx -t
+            sudo systemctl reload nginx
+            echo "✅ Nginx reload 완료 (backend → $PORT)"
+
+            # 기존 컨테이너 종료
+            if docker ps -a --format '{{.Names}}' | grep -q "meetnow-server-$CURRENT"; then
+              echo "🗑 기존 컨테이너($CURRENT) 종료"
+              docker rm -f meetnow-server-$CURRENT
             fi
 
-            echo "✅ 배포 완료 (포트: $NEW_PORT)"
+            echo "🚀 Blue-Green 배포 완료 → 현재 활성 컨테이너는 $NEXT (PORT=$PORT)"
