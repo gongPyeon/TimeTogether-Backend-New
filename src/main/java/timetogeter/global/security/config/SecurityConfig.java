@@ -62,6 +62,14 @@ public class SecurityConfig {
 
     private RequestMatcher[] requestPermitAll() {
         List<RequestMatcher> requestMatchers = List.of(
+                antMatcher(GET, "/swagger-ui/**"),
+                antMatcher(GET, "/swagger-ui.html"),
+                antMatcher(GET, "/v3/api-docs/**"),
+                antMatcher(GET, "/swagger-resources/**"),
+                antMatcher(GET, "/webjars/**"),
+                antMatcher(GET, "/docs/**"),
+                antMatcher(POST, "/static/docs/**"),
+
                 antMatcher(GET, "/docs/**"),
                 antMatcher(GET, "/swagger-ui/**"),
                 antMatcher(GET, "/v3/api-docs/**"),
