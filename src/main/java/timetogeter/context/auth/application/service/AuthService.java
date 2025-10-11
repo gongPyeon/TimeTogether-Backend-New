@@ -85,7 +85,7 @@ public class AuthService {
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
             redisUtil.set(userId, token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
-            return new LoginResDTO(token, userPrincipal.getWrappedDEK());
+            return new LoginResDTO(token, userPrincipal.getImgIv(), userPrincipal.getEmailIv(), userPrincipal.getPhoneIv());
         }catch(AuthenticationException e){
             // 인증 실패 시 카운트 증가
             loginAttemptService.increaseFailedAttempts(userId);
@@ -107,7 +107,7 @@ public class AuthService {
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
             redisUtil.set(registerResponse.email(), REFRESH_HEADER + token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
 
-            return new LoginResDTO(token, registerResponse.wrappedDEK());
+            return new LoginResDTO(token, registerResponse.imgIv(), registerResponse.emailIv(), registerResponse.phoneIv());
         }catch (RedisConnectionFailureException e) {
             log.info(e.getMessage());
             throw new AuthFailureException(BaseErrorCode.REDIS_ERROR, "[ERROR] 세션 저장에 실패했습니다.");

@@ -27,6 +27,8 @@ public class OAuth2UserDetailService {
                 Role.USER,
                 null, // age
                 null, // gender
+                null,
+                null,
                 null
         );
 

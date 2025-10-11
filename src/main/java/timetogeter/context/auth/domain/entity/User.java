@@ -39,10 +39,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private String wrappedDEK;
+    private String imgIv;
+    private String emailIv;
+    private String phoneIv;
 
     public User(UserSignUpDTO dto, PasswordEncoder passwordEncoder) {
-        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone(), dto.wrappedDEK());
+        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
         this.userId = dto.userId();
         this.email = dto.email();
         this.nickname = dto.nickname();
@@ -52,12 +54,11 @@ public class User {
         this.role = Role.USER;
         this.age = dto.age();
         this.gender = dto.gender();
-        this.wrappedDEK = dto.wrappedDEK();
     }
 
     public User(RegisterUserCommand dto){
         // 검증
-        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone(), "");
+        validate(dto.userId(), dto.nickname(), dto.email(), dto.telephone());
         this.userId = dto.userId();
         this.email = dto.email();
         this.nickname = dto.nickname();
@@ -67,58 +68,62 @@ public class User {
         this.role = dto.role();
         this.age = dto.age();
         this.gender = dto.gender();
-        this.wrappedDEK = dto.wrappedDEK();
     }
 
-    private void validate(String userId, String nickname, String email, String telephone, String wrappedDEK){
+    private void validate(String userId, String nickname, String email, String telephone){
         validateUserId(userId);
         validateUserNickname(nickname);
         validateEmail(email);
         validatePhone(telephone);
-        validateDEK(wrappedDEK);
-    }
-
-    private void validateDEK(String wrappedDEK) {
-        if (wrappedDEK == null) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_DEK,"[ERROR] wrappedDEK가 NULL입니다.");
-        }
     }
 
     private void validateUserId(String userId) {
-        if (userId == null || userId.length() < 1 || userId.length() > 20) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_LENGTH,"[ERROR] 아이디는 1~20자여야 합니다.");
+
+        if (userId == null) {
+            throw new InvalidAuthException(BaseErrorCode.INVALID_AUTH,"[ERROR] 아이디가 NULL입니다..");
         }
-        if (!userId.matches("^[a-zA-Z0-9_]+$")) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_FORMAT,"[ERROR] 아이디는 영어, 숫자, 언더바만 가능합니다.");
-        }
+//        if (userId == null || userId.length() < 1 || userId.length() > 20) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_LENGTH,"[ERROR] 아이디는 1~20자여야 합니다.");
+//        }
+//        if (!userId.matches("^[a-zA-Z0-9_]+$")) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_ID_FORMAT,"[ERROR] 아이디는 영어, 숫자, 언더바만 가능합니다.");
+//        }
     }
 
     private void validateUserNickname(String nickname) {
-        if (nickname == null || nickname.length() < 1 || nickname.length() > 20) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_NICKNAME_LENGTH,"[ERROR] 닉네임은 1~20자여야 합니다.");
+        if (nickname == null) {
+            throw new InvalidAuthException(BaseErrorCode.INVALID_AUTH,"[ERROR] 닉네임이 NULL입니다.");
         }
-        if (!nickname.matches("^[a-zA-Z0-9가-힣]+$")) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_NICKNAME_FORMAT,"[ERROR] 닉네임은 영어, 숫자, 한글만 가능합니다.");
-        }
+//        if (nickname == null || nickname.length() < 1 || nickname.length() > 20) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_NICKNAME_LENGTH,"[ERROR] 닉네임은 1~20자여야 합니다.");
+//        }
+//        if (!nickname.matches("^[a-zA-Z0-9가-힣]+$")) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_NICKNAME_FORMAT,"[ERROR] 닉네임은 영어, 숫자, 한글만 가능합니다.");
+//        }
     }
 
     private void validateEmail(String email){
-        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_EMAIL_FORMAT, "[ERROR] 이메일 형식이 올바르지 않습니다.");
-        }
+        if(email == null)  throw new InvalidAuthException(BaseErrorCode.INVALID_AUTH,"[ERROR] email이 NULL입니다.");
+//        if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_EMAIL_FORMAT, "[ERROR] 이메일 형식이 올바르지 않습니다.");
+//        }
     }
 
     private void validatePhone(String phone){
         if(phone == null) return;
-        if (!phone.matches("^01[016789]-\\d{3,4}-\\d{4}$")) {
-            throw new InvalidAuthException(BaseErrorCode.INVALID_PHONE_FORMAT, "[ERROR] 전화번호 형식이 올바르지 않습니다.");
-        }
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_DEK,"[ERROR] phone이 NULL입니다.");
+//        if (!phone.matches("^01[016789]-\\d{3,4}-\\d{4}$")) {
+//            throw new InvalidAuthException(BaseErrorCode.INVALID_PHONE_FORMAT, "[ERROR] 전화번호 형식이 올바르지 않습니다.");
+//        }
     }
 
     public void setDetail(OAuth2LoginDetailReqDTO dto) {
         this.gender = dto.gender();
         this.telephone = dto.telephone();
         this.age = dto.age();
-        this.wrappedDEK = dto.wrappedDEK();
+        this.userImg = dto.img();
+        this.imgIv = dto.imgIv();
+        this.emailIv = dto.emailIv();
+        this.phoneIv = dto.phoneIv();
     }
 }
