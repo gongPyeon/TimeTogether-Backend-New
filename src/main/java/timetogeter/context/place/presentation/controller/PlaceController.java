@@ -12,6 +12,7 @@ import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
 import timetogeter.context.place.application.service.MyPlaceService;
 import timetogeter.context.place.application.service.PlaceBoardService;
+import timetogeter.context.place.application.service.TrainingScheduler;
 import timetogeter.context.place.application.service.UserBoardService;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.global.interceptor.response.BaseCode;
@@ -28,6 +29,7 @@ public class PlaceController {
     private final PlaceBoardService placeBoardService;
     private final UserBoardService userBoardService;
     private final MyPlaceService myPlaceService;
+    private final TrainingScheduler trainingScheduler;
 
     // 올려진 장소 확인
     @GetMapping("/{promiseId}/{page}")
@@ -80,11 +82,11 @@ public class PlaceController {
     }
 
     // 장소 추천 (AI)
-    @PostMapping("/ai/{promiseId}")
-    public BaseResponse<Object> checkAIPlace(@RequestBody UserAIInfoReqDTO reqDTO,
+    @PostMapping("/ai/recommend/{promiseId}")
+    public BaseResponse<Object> recommendPlace(@RequestBody UserAIInfoReqDTO reqDTO,
                                              @PathVariable("promiseId") String promiseId) {
         List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(promiseId, reqDTO);
-        return new BaseResponse<>(dto, BaseCode.SUCCESS_PLACE_AI);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_RECOMMEND_PLACE);
     }
 
 
@@ -106,7 +108,11 @@ public class PlaceController {
         return new BaseResponse<>(BaseCode.SUCCESS_PLACE_RATING);
     }
 
-    // 장소 학습 API 구현
-
+    // 장소 학습 API 구현 - 테스트용 추후에 스케쥴러만 남길 예정
+    @PostMapping("/ai/train")
+    public BaseResponse<Object> trainPlace() {
+        trainingScheduler.sendTrainingData();
+        return new BaseResponse<>(BaseCode.SUCCESS_TRAIN_PLACE);
+    }
 
 }

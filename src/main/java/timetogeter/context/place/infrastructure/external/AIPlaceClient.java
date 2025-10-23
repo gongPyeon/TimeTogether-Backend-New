@@ -14,6 +14,7 @@ import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
 import timetogeter.global.security.util.api.ApiService;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -45,7 +46,9 @@ public class AIPlaceClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<List<PlaceRatingDTO>> entity = new HttpEntity<>(history, headers);
+        Map<String, List<PlaceRatingDTO>> body = Map.of("history", history);
+        HttpEntity<Map<String, List<PlaceRatingDTO>>> entity = new HttpEntity<>(body, headers);
+
         String url = aiApiUrl + "/place/train";
         ResponseEntity<SimpleAIResDTO> response = apiService.send(url, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
 
