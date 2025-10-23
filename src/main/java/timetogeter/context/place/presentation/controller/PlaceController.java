@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
+import timetogeter.context.place.application.dto.request.UserBoardReqDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.application.dto.response.PlaceRegisterResDTO;
 import timetogeter.context.place.application.service.MyPlaceService;
 import timetogeter.context.place.application.service.PlaceBoardService;
+import timetogeter.context.place.application.service.UserBoardService;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
@@ -24,6 +26,7 @@ import java.util.List;
 public class PlaceController {
 
     private final PlaceBoardService placeBoardService;
+    private final UserBoardService userBoardService;
     private final MyPlaceService myPlaceService;
 
     // 올려진 장소 확인
@@ -95,5 +98,15 @@ public class PlaceController {
         PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
+
+    @PostMapping("rating/{placeId}")
+    public BaseResponse<Object> updatePlaceRating(@RequestBody UserBoardReqDTO reqDTO,
+                                                  @PathVariable("placeId") int placeId) {
+        userBoardService.updatePlaceRating(placeId, reqDTO);
+        return new BaseResponse<>(BaseCode.SUCCESS_PLACE_RATING);
+    }
+
+    // 장소 학습 API 구현
+
 
 }

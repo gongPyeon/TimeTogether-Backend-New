@@ -28,9 +28,10 @@ public class AIPlaceClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        log.info("test 슈도 아이디: {}", aiReqDTO.userId());
         HttpEntity<AIReqDTO> entity = new HttpEntity<>(aiReqDTO, headers);
-        ResponseEntity<AIResDTO> response = apiService.send(aiApiUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+
+        String url = aiApiUrl + "/place/recommend";
+        ResponseEntity<AIResDTO> response = apiService.send(url, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
 
         AIResDTO aiResDTO = response.getBody();
         if (aiResDTO != null) {
@@ -45,7 +46,8 @@ public class AIPlaceClient {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<List<PlaceRatingDTO>> entity = new HttpEntity<>(history, headers);
-        ResponseEntity<SimpleAIResDTO> response = apiService.send(aiApiUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+        String url = aiApiUrl + "/place/train";
+        ResponseEntity<SimpleAIResDTO> response = apiService.send(url, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
 
         return response.getBody();
     }

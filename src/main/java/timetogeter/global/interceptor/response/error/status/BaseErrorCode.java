@@ -41,6 +41,8 @@ public enum BaseErrorCode implements StatusCode {
     GROUP_NOT_FOUND(404, HttpStatus.NOT_FOUND, "그룹이 존재하지 않아요"),
     PLACE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "장소를 찾을 수 없어요"),
     INVALID_PLACE_NUM(400, HttpStatus.BAD_REQUEST, "장소 등록은 최대 5개까지 가능해요"),
+    PLACE_RATING_NUM(400, HttpStatus.BAD_REQUEST, "장소 평점 범위는 1~5에요"),
+
     PROMISE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "약속을 찾을 수 없어요"),
     PROMISE_MANGER_FORBIDDEN(403, HttpStatus.FORBIDDEN, "약속장에 대한 접근 권한이 없어요"),
     VOTE_NUM_MAX(400, HttpStatus.BAD_REQUEST, "더이상 투표할 수 없어요"),

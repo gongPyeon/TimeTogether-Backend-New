@@ -20,7 +20,8 @@ public enum BaseCode implements StatusCode {
     SUCCESS_SCHEDULE_UPDATE("일정 등록에 성공했어요"),
     SUCCESS_EXIT_PROMISE("약속을 나갔어요"),
     TIME_OK("내 시간을 저장했어요"), // TODO: 기간 확인
-    SUCCESS_PLACE_AI("추천을 완료했어요");
+    SUCCESS_PLACE_AI("추천을 완료했어요"),
+    SUCCESS_PLACE_RATING("별점이 등록되었어요 \n 다음에 더 똑똑하게 추천해 드릴게요");
 
     private final int code;
     private final String message;
