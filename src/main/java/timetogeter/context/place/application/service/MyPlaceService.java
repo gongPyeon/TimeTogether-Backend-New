@@ -55,7 +55,6 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
     public List<PlaceRegisterResDTO> recommendPlace(String promiseId, UserAIInfoReqDTO dto) {
         String pseudoId = dto.pseudoId();
-        log.info("슈도 아이디: {}", pseudoId);
         List<PlaceRatingDTO> history = getByPlaceHistory(pseudoId);
         String purpose = promiseQueryService.getPurpose(promiseId);
         AIReqDTO aiReqDTO = new AIReqDTO(pseudoId, dto.latitude(), dto.longitude(), purpose, history);
