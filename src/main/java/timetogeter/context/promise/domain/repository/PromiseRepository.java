@@ -16,5 +16,5 @@ public interface PromiseRepository extends JpaRepository<Promise, String> {
     List<Promise> findByPromiseIdIn(@Param("promiseIdList") List<String> promiseIdList);
 
     @Query("SELECT p.managerId FROM Promise p WHERE p.promiseId = :promiseId")
-    Optional<String> findMangerById(String promiseId);
+    Optional<String> findMangerById(@Param("promiseId")String promiseId);
 }

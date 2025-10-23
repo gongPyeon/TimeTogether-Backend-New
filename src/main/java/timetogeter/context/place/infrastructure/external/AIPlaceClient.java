@@ -1,10 +1,12 @@
 package timetogeter.context.place.infrastructure.external;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import timetogeter.context.place.application.dto.AIResDTO;
 import timetogeter.context.place.application.dto.PlaceRatingDTO;
 import timetogeter.context.place.application.dto.SimpleAIResDTO;
 import timetogeter.context.place.application.dto.request.AIReqDTO;
@@ -15,21 +17,27 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AIPlaceClient {
     private final ApiService apiService;
 
     @Value("${ai.api.url}")
     private String aiApiUrl;
 
-    // TODO: PlaceRegisterDTO 위치 AI가 최대 20개만 반환(말하기)
     public List<PlaceRegisterResDTO> requestAIRecommendation(AIReqDTO aiReqDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
+        log.info("test 슈도 아이디: {}", aiReqDTO.userId());
         HttpEntity<AIReqDTO> entity = new HttpEntity<>(aiReqDTO, headers);
-        ResponseEntity<List<PlaceRegisterResDTO>> response = apiService.send(aiApiUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<AIResDTO> response = apiService.send(aiApiUrl, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
 
-        return response.getBody();
+        AIResDTO aiResDTO = response.getBody();
+        if (aiResDTO != null) {
+            return aiResDTO.result();
+        }
+
+        return List.of();
     }
 
     public SimpleAIResDTO requestAITraining(List<PlaceRatingDTO> history) {

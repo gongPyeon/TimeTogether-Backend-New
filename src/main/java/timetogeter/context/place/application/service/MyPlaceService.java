@@ -2,6 +2,7 @@ package timetogeter.context.place.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import timetogeter.context.place.application.dto.PlaceRatingDTO;
 import timetogeter.context.place.application.dto.request.AIReqDTO;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MyPlaceService { // TODO: 내 장소 관리 시스템
 
     private final PromisePlaceRepository placeRepository;
@@ -51,10 +53,12 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
         placeRepository.saveAll(places);
     }
 
-    public List<PlaceRegisterResDTO> recommendPlace(String userId, String promiseId, UserAIInfoReqDTO dto) {
-        List<PlaceRatingDTO> history = getByPlaceHistory(userId);
+    public List<PlaceRegisterResDTO> recommendPlace(String promiseId, UserAIInfoReqDTO dto) {
+        String pseudoId = dto.pseudoId();
+        log.info("슈도 아이디: {}", pseudoId);
+        List<PlaceRatingDTO> history = getByPlaceHistory(pseudoId);
         String purpose = promiseQueryService.getPurpose(promiseId);
-        AIReqDTO aiReqDTO = new AIReqDTO(userId, dto.latitude(), dto.longitude(), purpose, history);
+        AIReqDTO aiReqDTO = new AIReqDTO(pseudoId, dto.latitude(), dto.longitude(), purpose, history);
         return aiPlaceClient.requestAIRecommendation(aiReqDTO);
     }
 

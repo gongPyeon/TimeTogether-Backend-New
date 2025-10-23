@@ -17,6 +17,7 @@ import timetogeter.global.interceptor.response.BaseResponse;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/place")
@@ -76,13 +77,11 @@ public class PlaceController {
     }
 
     // 장소 추천 (AI)
-    @PostMapping("/check/ai/{promiseId}")
-    public BaseResponse<Object> checkAIPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
-                                             @RequestBody UserAIInfoReqDTO reqDTO,
+    @PostMapping("/ai/{promiseId}")
+    public BaseResponse<Object> checkAIPlace(@RequestBody UserAIInfoReqDTO reqDTO,
                                              @PathVariable("promiseId") String promiseId) {
-        String userId = userPrincipal.getId(); // 이미 다 암호화되어있음
-        List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(userId, promiseId, reqDTO);
-        return new BaseResponse<>(dto, BaseCode.SUCCESS_REGISTER_PLACE);
+        List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(promiseId, reqDTO);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_PLACE_AI);
     }
 
 

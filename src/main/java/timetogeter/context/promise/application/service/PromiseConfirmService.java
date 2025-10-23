@@ -30,7 +30,7 @@ public class PromiseConfirmService {
 
     public PromiseRegisterDTO confirmedSchedule(String promiseId, int placeId) {
         Promise promise = get(promiseId);
-        if(!promise.getDateTimeCheck()) return new PromiseRegisterDTO();
+        if(!promise.getDateTimeCheck()) return null;
 
         PromiseCheck promiseCheck = getPromiseCheck(promiseId);
 

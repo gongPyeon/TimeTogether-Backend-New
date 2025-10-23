@@ -20,7 +20,12 @@ public class PlaceBoardRepositoryImpl implements PlaceBoardRepositoryCustom {
     public List<PlaceRatingDTO> findAllRatingsByUserId(String userId) {
         QUserBoard u = QUserBoard.userBoard;
 
-        return queryFactory
+        // userId가 null이면 빈 리스트 반환
+        if (userId == null) {
+            return List.of();
+        }
+
+        List<PlaceRatingDTO> result = queryFactory
                 .select(Projections.constructor(PlaceRatingDTO.class,
                         u.placeBoardId,
                         u.userId,
@@ -29,13 +34,15 @@ public class PlaceBoardRepositoryImpl implements PlaceBoardRepositoryCustom {
                 .from(u)
                 .where(u.userId.eq(userId))
                 .fetch();
+
+        return result != null ? result : List.of();
     }
 
     @Override
     public List<PlaceRatingDTO> findAllRatings() {
         QUserBoard u = QUserBoard.userBoard;
 
-        return queryFactory
+        List<PlaceRatingDTO> result = queryFactory
                 .select(Projections.constructor(PlaceRatingDTO.class,
                         u.placeBoardId,
                         u.userId,
@@ -43,5 +50,7 @@ public class PlaceBoardRepositoryImpl implements PlaceBoardRepositoryCustom {
                 ))
                 .from(u)
                 .fetch();
+
+        return result != null ? result : List.of();
     }
 }
