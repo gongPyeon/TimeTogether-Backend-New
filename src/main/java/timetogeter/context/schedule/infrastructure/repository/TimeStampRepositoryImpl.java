@@ -27,4 +27,18 @@ public class TimeStampRepositoryImpl implements TimeStampRepositoryCustom {
                 )
                 .fetch();
     }
+
+    @Override
+    public List<String> findTimeStampsByUserIdAndTimeStamp(String userId, List<LocalDate> dates) {
+        QTimeStamp t = QTimeStamp.timeStamp;
+
+        return queryFactory
+                .select(t.encTimeStamp)
+                .from(t)
+                .where(
+                        t.userId.eq(userId),
+                        t.timeStampInfo.in(dates)
+                )
+                .fetch();
+    }
 }

@@ -39,12 +39,14 @@ public class PromiseController {
     private final PromiseSecurityService promiseSecurityService;
     private final PromiseManageInfoService promiseManageInfoService;
 
+    // promiseId로 약속키로 암호화된 사용자 키들을 모두 반환
     @GetMapping("/mem/s1/{promiseId}")
     public BaseResponse<Object> getUsersByPromiseTime1(@PathVariable("promiseId") String promiseId) {
         UserIdsResDTO dto = promiseSecurityService.getUsersByPromiseTime(promiseId);
         return new BaseResponse<>(dto);
     }
 
+    // 프론트에서 약속키로 암호화된 사용자를 모두 복호화한 후, 실제 사용자 아이디로 요청해서 약속원들의 정보를 반환
     @GetMapping("/mem/s2/{promiseId}")
     public BaseResponse<Object> getUsersByPromiseTime2(@PathVariable("promiseId") String promiseId,
                                                        @RequestBody UserIdsResDTO reqDTO) {
@@ -52,6 +54,7 @@ public class PromiseController {
         return new BaseResponse<>(dto);
     }
 
+    // 개인이 약속 나가기 시 promise와 관련된 테이블 삭제
     @GetMapping("/exit")
     public BaseResponse<Object> exitPromise(@RequestBody ExitPromiseReqDTO reqDTO) {
         promiseSecurityService.exitPromise(reqDTO);

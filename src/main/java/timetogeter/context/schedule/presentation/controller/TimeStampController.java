@@ -20,11 +20,11 @@ import timetogeter.global.interceptor.response.BaseResponse;
 public class TimeStampController {
     private final TimeStampQueryService timeStampQueryService;
 
-//    @PostMapping("/get")
-//    public BaseResponse<Object> getTimeStampList(@AuthenticationPrincipal UserPrincipal userPrincipal,
-//                                                 @RequestBody TimestampReqDTO reqDTO){
-//        String userId = userPrincipal.getId();
-//        TimestampResDTO dto = timeStampQueryService.getTimeStampList(reqDTO);
-//        return new BaseResponse<>(dto);
-//    }
+    @PostMapping("/get")
+    public BaseResponse<Object> getTimeStampList(@AuthenticationPrincipal UserPrincipal userPrincipal,
+                                                 @RequestBody TimestampReqDTO reqDTO){
+        String userId = userPrincipal.getId();
+        TimestampResDTO dto = timeStampQueryService.getTimeStampList(userId, reqDTO);
+        return new BaseResponse<>(dto);
+    }
 }
