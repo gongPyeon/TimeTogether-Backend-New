@@ -34,6 +34,7 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RequiredArgsConstructor
 @RequestMapping("/promise")
 @Tag(name = "약속", description = "약속 생성, 약속 확인, 약속 멤버 초대/참여하기/나가기 API")
+@SecurityRequirement(name = "BearerAuth")
 public class PromiseController {
 
     private final PromiseSecurityService promiseSecurityService;
