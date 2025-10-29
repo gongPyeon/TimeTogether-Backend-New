@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,8 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/time")
+@Tag(name = "시간", description = "시간 관련 API")
+@SecurityRequirement(name = "BearerAut")
 public class TimeController {
 
     private final TimeBoardService timeBoardService;
