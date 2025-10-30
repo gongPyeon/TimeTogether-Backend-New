@@ -2,12 +2,17 @@ package timetogeter.context.promise.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.application.service.UserQueryService;
 import timetogeter.context.promise.application.dto.UserInfoDTO;
+import timetogeter.context.promise.application.dto.request.DispersePromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.ExitPromiseReqDTO;
 import timetogeter.context.promise.application.dto.response.UserInfoResDTO;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
+import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.promise.application.dto.response.UserIdsResDTO;
 
@@ -18,6 +23,8 @@ import java.util.List;
 public class PromiseSecurityService {
     private final PromiseShareKeyRepository promiseShareKeyRepository;
     private final PromiseProxyUserRepository promiseProxyUserRepository;
+    private final PromiseRepository promiseRepository;
+
     private final PromiseQueryService promiseQueryService;
     private final UserQueryService userQueryService;
 
@@ -38,5 +45,14 @@ public class PromiseSecurityService {
     public void exitPromise(ExitPromiseReqDTO reqDTO) {
         promiseProxyUserRepository.findByEncPromiseId(reqDTO.encPromiseId()).ifPresent(promiseProxyUserRepository::delete);
         promiseShareKeyRepository.findByEncPromiseKey(reqDTO.encPromiseKey()).ifPresent(promiseShareKeyRepository::delete);
+    }
+
+    @Transactional
+    public void dispersePromise(DispersePromiseReqDTO reqDTO) {
+        promiseShareKeyRepository.deleteAllByEncPromiseId(reqDTO.promiseId());
+        promiseRepository.deletePromiseWithRelatedData(reqDTO.promiseId());
+        if (reqDTO.userIds() != null && !reqDTO.userIds().isEmpty()) {
+            promiseProxyUserRepository.deleteAllByUserIdIn(reqDTO.userIds());
+        }
     }
 }

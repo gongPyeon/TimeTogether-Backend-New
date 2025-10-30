@@ -47,7 +47,7 @@ public enum BaseErrorCode implements StatusCode {
     PROMISE_MANGER_FORBIDDEN(403, HttpStatus.FORBIDDEN, "약속장에 대한 접근 권한이 없어요"),
     VOTE_NUM_MAX(400, HttpStatus.BAD_REQUEST, "더이상 투표할 수 없어요"),
     PAGE_NOT_FOUND(400, HttpStatus.BAD_REQUEST, "총 페이지를 초과한 요청이에요"),
-    INVALID_VOTE(403, HttpStatus.BAD_REQUEST, "투표 취소권한이 없어요"),
+    INVALID_VOTE(403, HttpStatus.FORBIDDEN, "투표 취소권한이 없어요"),
     PLACE_NULL(400, HttpStatus.BAD_REQUEST, "장소등록에 필수정보가 누락됐어요"),
     INVALID_PLACE_NAME(400, HttpStatus.BAD_REQUEST, "장소등록은 1자 이상 30자 이내여야해요"),
     INVALID_PLACE_INFO(400, HttpStatus.BAD_REQUEST, "장소정보는 200자 이내여야해요"),

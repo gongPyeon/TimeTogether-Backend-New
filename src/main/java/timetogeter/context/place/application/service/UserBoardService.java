@@ -18,6 +18,10 @@ public class UserBoardService {
     @Transactional
     public void updatePlaceRating(int placeId, UserBoardReqDTO dto) {
         UserBoard userBoard = userBoardRepository.findByPlaceBoardIdAndUserId(placeId, dto.pseudoId())
+                .map(existing -> {
+                    existing.update(placeId, dto.pseudoId(), dto.rating());
+                    return existing;
+                })
                 .orElseGet(() -> UserBoard.of(placeId, dto.pseudoId(), dto.rating()));
 
         userBoard.update(placeId, dto.pseudoId(), dto.rating());

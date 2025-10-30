@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
@@ -335,6 +336,8 @@ public class PlaceController {
     }
 
     // 장소 학습 API 구현 - 테스트용 추후에 스케쥴러만 남길 예정
+    @Profile("dev")
+    @Operation(summary = "[DEV ONLY] AI 학습 트리거", description = "개발 환경에서만 AI 학습을 수동으로 트리거한다")
     @PostMapping("/ai/train")
     public BaseResponse<Object> trainPlace() {
         trainingScheduler.sendTrainingData();

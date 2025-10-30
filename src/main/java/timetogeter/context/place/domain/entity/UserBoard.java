@@ -43,7 +43,7 @@ public class UserBoard {
     }
 
     public void validRating(int rating){
-        if(rating < 0 || 5 < rating)
+        if(rating < 0 || rating > 5)
             throw new PlaceNotFoundException(BaseErrorCode.PLACE_RATING_NUM, "[ERROR] 장소 평점 범위는 1~5입니다.");
     }
 }

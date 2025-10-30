@@ -28,7 +28,7 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RequiredArgsConstructor
 @RequestMapping("/time")
 @Tag(name = "시간", description = "시간 관련 API")
-@SecurityRequirement(name = "BearerAut")
+@SecurityRequirement(name = "BearerAuth")
 public class TimeController {
 
     private final TimeBoardService timeBoardService;

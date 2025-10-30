@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.promise.application.dto.request.DispersePromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.ExitPromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
@@ -69,9 +70,20 @@ public class PromiseController {
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
     @GetMapping("/exit")
-    public BaseResponse<Object> exitPromise(@RequestBody ExitPromiseReqDTO reqDTO) {
+    public BaseResponse<Object> exitPromise( @RequestBody ExitPromiseReqDTO reqDTO) {
         promiseSecurityService.exitPromise(reqDTO);
         return new BaseResponse<>(BaseCode.SUCCESS_EXIT_PROMISE);
+    }
+
+    @Operation(summary = "약속 해산하기", description = "약속을 해산할 경우 약속관련 테이블을 모두 삭제한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @GetMapping("/disperse")
+    public BaseResponse<Object> dispersePromise(@RequestBody DispersePromiseReqDTO reqDTO) {
+        promiseSecurityService.dispersePromise(reqDTO);
+        return new BaseResponse<>(BaseCode.SUCCESS_DISPERSE_PROMISE);
     }
 
 
