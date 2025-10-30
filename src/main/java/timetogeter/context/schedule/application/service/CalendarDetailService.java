@@ -15,8 +15,6 @@ import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service

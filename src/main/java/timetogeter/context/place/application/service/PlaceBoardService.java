@@ -2,6 +2,7 @@ package timetogeter.context.place.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import static timetogeter.global.common.util.PageUtil.PLACE_PAGE;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PromisePlaceRepository placeRepository;
@@ -29,8 +31,12 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     private final PromiseConfirmService promiseConfirmService;
 
     public PlaceBoardDTO getPlaceBoard(String userId, String promiseId, int page) {
-        PageRequest pageRequest = PageRequest.of(page - 1, PLACE_PAGE);
+        if(page < 1) throw new PlaceNotFoundException(BaseErrorCode.PAGE_NOT_FOUND, "[ERROR] 총 페이지를 초과한 요청입니다.");
+        page = page-1;
+
+        PageRequest pageRequest = PageRequest.of(page, PLACE_PAGE);
         Page<PromisePlace> placePage = placeRepository.findByPromiseId(promiseId, pageRequest);
+
         if(page > placePage.getTotalPages()) throw new PlaceNotFoundException(BaseErrorCode.PAGE_NOT_FOUND, "[ERROR] 총 페이지를 초과한 요청입니다.");
 
         List<PlaceDTO> places = placePage.getContent()

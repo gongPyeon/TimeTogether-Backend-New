@@ -8,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import timetogeter.context.place.exception.PlaceNotFoundException;
+import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+
 @Entity
 @Getter
 @AllArgsConstructor(access = AccessLevel.PACKAGE)
@@ -20,5 +23,27 @@ public class UserBoard {
     private String userId;
 
     private int rating;
-    private String placeInfo;
+
+    public UserBoard(int placeBoardId, String userId, int rating) {
+        validRating(rating);
+        this.placeBoardId = placeBoardId;
+        this.userId = userId;
+        this.rating = rating;
+    }
+
+    public static UserBoard of(int placeBoardId, String userId, int rating) {
+        return new UserBoard(placeBoardId, userId, rating);
+    }
+
+    public void update(int placeBoardId, String userId, int rating) {
+        validRating(rating);
+        this.placeBoardId = placeBoardId;
+        this.userId = userId;
+        this.rating = rating;
+    }
+
+    public void validRating(int rating){
+        if(rating < 0 || rating > 5)
+            throw new PlaceNotFoundException(BaseErrorCode.PLACE_RATING_NUM, "[ERROR] 장소 평점 범위는 1~5입니다.");
+    }
 }

@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.promise.application.dto.request.DispersePromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.ExitPromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise1Request;
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise2Request;
@@ -33,18 +34,29 @@ import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/promise")
-@Tag(name = "약속", description = "약속 생성, 약속 확인 , 약속 멤버 초대/참여하기 API")
+@Tag(name = "약속", description = "약속 생성, 약속 확인, 약속 멤버 초대/참여하기/나가기 API")
+@SecurityRequirement(name = "BearerAuth")
 public class PromiseController {
 
     private final PromiseSecurityService promiseSecurityService;
     private final PromiseManageInfoService promiseManageInfoService;
 
+    @Operation(summary = "암호화된 약속원들의 아이디 조회", description = "암호화된 약속원들의 아이디를 조회한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
     @GetMapping("/mem/s1/{promiseId}")
     public BaseResponse<Object> getUsersByPromiseTime1(@PathVariable("promiseId") String promiseId) {
         UserIdsResDTO dto = promiseSecurityService.getUsersByPromiseTime(promiseId);
         return new BaseResponse<>(dto);
     }
 
+    @Operation(summary = "약속원 정보 조회", description = "약속원에 대한 정보를 조회한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
     @GetMapping("/mem/s2/{promiseId}")
     public BaseResponse<Object> getUsersByPromiseTime2(@PathVariable("promiseId") String promiseId,
                                                        @RequestBody UserIdsResDTO reqDTO) {
@@ -52,10 +64,26 @@ public class PromiseController {
         return new BaseResponse<>(dto);
     }
 
-    @GetMapping("/exit")
+    @Operation(summary = "약속 나가기", description = "약속을 나갈 경우 약속관련 테이블을 삭제한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @DeleteMapping("/exit")
     public BaseResponse<Object> exitPromise(@RequestBody ExitPromiseReqDTO reqDTO) {
         promiseSecurityService.exitPromise(reqDTO);
         return new BaseResponse<>(BaseCode.SUCCESS_EXIT_PROMISE);
+    }
+
+    @Operation(summary = "약속 해산하기", description = "약속을 해산할 경우 약속관련 테이블을 모두 삭제한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @DeleteMapping("/disperse")
+    public BaseResponse<Object> dispersePromise(@RequestBody DispersePromiseReqDTO reqDTO) {
+        promiseSecurityService.dispersePromise(reqDTO);
+        return new BaseResponse<>(BaseCode.SUCCESS_DISPERSE_PROMISE);
     }
 
 
