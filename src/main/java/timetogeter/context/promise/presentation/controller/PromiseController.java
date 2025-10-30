@@ -69,8 +69,8 @@ public class PromiseController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/exit")
-    public BaseResponse<Object> exitPromise( @RequestBody ExitPromiseReqDTO reqDTO) {
+    @DeleteMapping("/exit")
+    public BaseResponse<Object> exitPromise(@RequestBody ExitPromiseReqDTO reqDTO) {
         promiseSecurityService.exitPromise(reqDTO);
         return new BaseResponse<>(BaseCode.SUCCESS_EXIT_PROMISE);
     }
@@ -80,7 +80,7 @@ public class PromiseController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/disperse")
+    @DeleteMapping("/disperse")
     public BaseResponse<Object> dispersePromise(@RequestBody DispersePromiseReqDTO reqDTO) {
         promiseSecurityService.dispersePromise(reqDTO);
         return new BaseResponse<>(BaseCode.SUCCESS_DISPERSE_PROMISE);

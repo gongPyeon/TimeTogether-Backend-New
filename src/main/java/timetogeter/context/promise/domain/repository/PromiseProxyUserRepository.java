@@ -21,6 +21,6 @@ public interface PromiseProxyUserRepository extends JpaRepository<PromiseProxyUs
 
 
     @Modifying
-    @Query("DELETE FROM PromiseShareKey p WHERE p.encUserId IN :userIds")
+    @Query("DELETE FROM PromiseProxyUser p WHERE p.userId IN :userIds")
     void deleteAllByUserIdIn(@Param("userIds") List<String> userIds);
 }
