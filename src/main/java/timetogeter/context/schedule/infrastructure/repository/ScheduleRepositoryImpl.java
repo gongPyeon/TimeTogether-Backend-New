@@ -29,12 +29,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (filters.contains("title")) {
+        boolean noFilters = (filters == null || filters.isEmpty());
+
+        if (noFilters || filters.contains("title")) {
             builder.or(s.title.containsIgnoreCase(query));
         }
-        if (filters.contains("place")) {
+        if (noFilters || filters.contains("place")) {
             builder.or(p.placeName.containsIgnoreCase(query));
         }
+
 
         return queryFactory
                 .selectFrom(s)

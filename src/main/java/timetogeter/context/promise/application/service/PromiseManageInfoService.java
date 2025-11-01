@@ -27,7 +27,6 @@ import timetogeter.context.promise.application.dto.response.basic.CreatePromise4
 import timetogeter.context.promise.application.dto.response.manage.*;
 import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.context.promise.domain.entity.PromiseProxyUser;
-import timetogeter.context.promise.domain.repository.PromiseCheckRepository;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;

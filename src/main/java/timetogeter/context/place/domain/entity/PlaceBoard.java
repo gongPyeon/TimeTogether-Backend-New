@@ -19,10 +19,11 @@ public class PlaceBoard {
 
     private String placeName;
     private String placeAddr;
+    private String placeInfo;
 
     private Boolean aiPlace;
 
-    public static PlaceBoard of(String placeName, String placeAddr, Boolean aiPlace) {
+    public static PlaceBoard of(String placeName, String placeAddr, Boolean aiPlace) { // TODO: placeInfo 추가
         PlaceBoard placeBoard = new PlaceBoard();
         placeBoard.placeName = placeName;
         placeBoard.placeAddr = placeAddr;

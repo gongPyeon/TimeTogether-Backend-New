@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;
+import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.context.schedule.application.dto.PromiseDetailDTO;
 import timetogeter.context.schedule.application.dto.request.ScheduleConfirmReqDTO;
@@ -13,9 +14,10 @@ import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO
 import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;
 import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.schedule.domain.entity.TimeStamp;
+import timetogeter.context.schedule.domain.repository.TimeStampRepository;
 import timetogeter.context.schedule.exception.ScheduleNotFoundException;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
-import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.List;
@@ -26,7 +28,9 @@ import java.util.stream.Collectors;
 public class ConfirmedScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final PromiseRepository promiseRepository;
     private final PromiseShareKeyRepository promiseShareKeyRepository;
+    private final TimeStampRepository timeStampRepository;
 
 
     public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO) {
@@ -68,10 +72,14 @@ public class ConfirmedScheduleService {
         return new PromiseListResDTO(dtoList);
     }
 
+    // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime)
     @Transactional
-    public void confirmSchedule(String groupId, ScheduleConfirmReqDTO reqDTO) {
+    public void confirmSchedule(String userId, String groupId, ScheduleConfirmReqDTO reqDTO) {
         Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
+        TimeStamp timeStamp = TimeStamp.of(reqDTO.encTimeStamp(), reqDTO.timeStampInfo(), userId);
+        timeStampRepository.save(timeStamp);
         scheduleRepository.save(schedule);
+
 
         List<PromiseShareKey> shareKeys = promiseShareKeyRepository.findByPromiseId(reqDTO.promiseId());
         if (shareKeys.isEmpty()) {
@@ -82,5 +90,7 @@ public class ConfirmedScheduleService {
             key.updateScheduleId(reqDTO.scheduleId());
         }
         promiseShareKeyRepository.saveAll(shareKeys);
+
+        promiseRepository.deletePromiseWithRelatedData(reqDTO.promiseId());
     }
 }

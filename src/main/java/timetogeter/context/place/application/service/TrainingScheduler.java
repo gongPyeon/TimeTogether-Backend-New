@@ -22,6 +22,7 @@ public class TrainingScheduler {
     // @Scheduled(fixedRate = 600000) // 10분마다 실행 (단위: ms)
     public void sendTrainingData() {
         List<PlaceRatingDTO> history = placeBoardRepository.findAllRatings();
+        log.info("history: {}", history);
         SimpleAIResDTO resDTO = aiPlaceClient.requestAITraining(history);
         log.info("code:{}, message:{}", resDTO.code(), resDTO.message());
     }
