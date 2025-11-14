@@ -22,10 +22,12 @@ public class LoginAttemptService {
         try {
             String failKey = FAIL_HEADER + userId;
             String lockKey = LOCK_HEADER + userId;
-            Integer failCount = Integer.parseInt(redisUtil.get(failKey)) + 1;
-            redisUtil.set(failKey, failCount, 1, TimeUnit.HOURS);
+            Long failCount = redisUtil.increaseFailedAttemptsAndSetTTL(
+                    failKey, 1, TimeUnit.HOURS
+            );
+            Integer currentFailCount = failCount.intValue();
 
-            Duration lockDuration = getLockDurationByFailCount(failCount);
+            Duration lockDuration = getLockDurationByFailCount(currentFailCount);
             if (lockDuration != null) {
                 redisUtil.set(lockKey, LOCKED, lockDuration);
             }

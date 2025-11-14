@@ -84,7 +84,7 @@ public class AuthService {
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.set(userId, token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
+            redisUtil.set(REFRESH_HEADER + userId, token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
             return new LoginResDTO(token, userPrincipal.getImgIv(), userPrincipal.getEmailIv(), userPrincipal.getPhoneIv());
         }catch(AuthenticationException e){
             // 인증 실패 시 카운트 증가
@@ -105,7 +105,7 @@ public class AuthService {
             );
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.set(registerResponse.email(), REFRESH_HEADER + token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
+            redisUtil.set(registerResponse.email(), token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
 
             return new LoginResDTO(token, registerResponse.imgIv(), registerResponse.emailIv(), registerResponse.phoneIv());
         }catch (RedisConnectionFailureException e) {
