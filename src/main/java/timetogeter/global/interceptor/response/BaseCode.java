@@ -23,7 +23,8 @@ public enum BaseCode implements StatusCode {
     TIME_OK("내 시간을 저장했어요"), // TODO: 기간 확인
     SUCCESS_RECOMMEND_PLACE("추천을 완료했어요"),
     SUCCESS_PLACE_RATING("별점이 등록되었어요 \n 다음에 더 똑똑하게 추천해 드릴게요"),
-    SUCCESS_TRAIN_PLACE("장소 학습을 완료했어요");
+    SUCCESS_TRAIN_PLACE("장소 학습을 완료했어요"),
+    SUCCESS_REFRESH_BY_ID("아이디에 해당하는 리프레시 토큰이 존재해요");
 
     private final int code;
     private final String message;

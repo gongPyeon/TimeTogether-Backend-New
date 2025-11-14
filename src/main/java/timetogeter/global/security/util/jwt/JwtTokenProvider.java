@@ -93,17 +93,17 @@ public class JwtTokenProvider implements TokenProvider {
     @Override
     public String validateToken(String token) {
         //
-        System.out.println("=== 토큰 검증 시작 ===");
-        System.out.println("검증 토큰 (길이:" + token.length() + "): " + token);
-        System.out.println("사용 중인 비밀키 (Base64 인코딩): " + Base64.getEncoder().encodeToString(key.getEncoded()));
+        log.info("=== 토큰 검증 시작 ===");
+        log.info("검증 토큰 (길이:" + token.length() + "): " + token);
+        log.info("사용 중인 비밀키 (Base64 인코딩): " + Base64.getEncoder().encodeToString(key.getEncoded()));
         //
         String error = "";
-        System.out.println("토큰 : " + token);
+        log.info("토큰 : " + token);
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             Claims claims = claimsJws.getBody();
             //
-            System.out.println("서명 검증 성공. subject: " + claims.getSubject());
+            log.info("서명 검증 성공. subject: " + claims.getSubject());
             //
             return claims.getSubject();
         }catch (SecurityException | MalformedJwtException e){
