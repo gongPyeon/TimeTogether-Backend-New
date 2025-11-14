@@ -2,6 +2,7 @@ package timetogeter.global.common.util.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -31,5 +32,20 @@ public class RedisUtil {
 
     public void set(String key, Object value, Duration duration) {
         redisTemplate.opsForValue().set(key, String.valueOf(value), duration);
+    }
+
+    public Long increment(String key) {
+        return redisTemplate.opsForValue().increment(key);
+    }
+
+    public Boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
+    }
+
+    public Long increaseFailedAttemptsAndSetTTL(String key, long timeout, TimeUnit unit) {
+        Long failCount = this.increment(key);
+        this.expire(key, timeout, unit);
+
+        return failCount;
     }
 }
