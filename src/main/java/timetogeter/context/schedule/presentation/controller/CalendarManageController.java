@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.schedule.application.dto.request.CalendarCreateRequest1;
+import timetogeter.context.schedule.application.dto.request.CalendarCreateRequest2;
 import timetogeter.context.schedule.application.dto.request.CalendarRewriteRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest1;
 import timetogeter.context.schedule.application.dto.request.CalendarViewRequest2;
 import timetogeter.context.schedule.application.dto.response.CalendarCreateResponse1;
+import timetogeter.context.schedule.application.dto.response.CalendarCreateResponse2;
 import timetogeter.context.schedule.application.dto.response.CalendarRewriteResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse1;
 import timetogeter.context.schedule.application.dto.response.CalendarViewResponse2;
@@ -41,22 +43,17 @@ public class CalendarManageController {
     /*
     캘린더 - 캘린더 메인, 일정 확인 - step1
 
-    [웹] 자신이 가진 개인 일정은 PromiseShareKey 테이블 내에서
-        encUserId : 개인키로 암호화된 사용자 아이디
-        encPromiseKey : 개인키로 암호화된 개인키
-        scheduleId : 스케줄 아이디
-        이렇게 저장됨. 따라서 개인키로 개인키를 암호화한 encPromiseKey, 약속키를 개인키로 암호화한 리스트를
-        요청으로 보냄
-        /api/v1/calendar/month1
+    [웹] timeStampInfo 리스트를 요청
+        /api/v1/calendar/view1
 
-    [서버] encPromiseKey에 해당하는 scheduleId를 리스트로 반환
+    [서버] timeStampInfo와 userId로 encTimeStamp 리스트를 반환
      */
     @PostMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<CalendarViewResponse1> viewCalendar1(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarViewRequest1 requests) throws Exception{
         String userId = userPrincipal.getId();
-        CalendarViewResponse1 response = calendarViewService.viewCalendar1(requests);
+        CalendarViewResponse1 response = calendarViewService.viewCalendar1(requests, userId);
         return new BaseResponse<>(response);
     }
 
@@ -64,18 +61,15 @@ public class CalendarManageController {
     캘린더 - 캘린더 메인, 일정 확인 - step2
 
     [웹] scheduleId를 리스트 형태로 요청
-        /api/v1/calendar/month2
+        /api/v1/calendar/view2
 
-    [서버] scheduleId에 해당하는 Schedule 테이블 내 레코드를 리스트 형태로 반환
+    [서버] scheduleId에 해당하는 Schedule 정보와 장소 정보를 리스트 형태로 반환
      */
     @PostMapping(value = "/view2", produces = MediaType.APPLICATION_JSON_VALUE)
     public BaseResponse<List<CalendarViewResponse2>> viewCalendar2(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarViewRequest2 requests) throws Exception{
-        long apiStart = System.currentTimeMillis(); // 전체 API 처리 시작
         List<CalendarViewResponse2> response = calendarViewService.viewCalendar2(requests);
-        long apiEnd = System.currentTimeMillis(); // 전체 API 처리 종료
-        log.info("Total /view2 API processing time {} ms", apiEnd - apiStart);
 
         return new BaseResponse<>(response);
     }
@@ -100,7 +94,23 @@ public class CalendarManageController {
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody CalendarCreateRequest1 requests) throws Exception{
         String userId = userPrincipal.getId();
-        CalendarCreateResponse1 response = calendarDetailService.createCalendar1(requests);
+        CalendarCreateResponse1 response = calendarDetailService.createCalendar1(requests, userId);
+        return new BaseResponse<>(response);
+    }
+
+    /*
+    [웹] 개인 일정 저장
+        encStartTimeAndEndTime, timeStampInfo를 요청
+    /api/v1/calendar/create2
+
+    [서버] TimeStamp 테이블에 저장하고 성공 메시지 반환
+     */
+    @PostMapping(value = "/create2", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<CalendarCreateResponse2> createCalendar2(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody CalendarCreateRequest2 requests) throws Exception{
+        String userId = userPrincipal.getId();
+        CalendarCreateResponse2 response = calendarDetailService.createCalendar2(requests, userId);
         return new BaseResponse<>(response);
     }
 

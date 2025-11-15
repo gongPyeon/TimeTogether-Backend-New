@@ -7,10 +7,7 @@ public record CalendarCreateRequest1(
 
         String placeName,
         String placeAddr,
+        String placeInfo
 
-        String encStartTimeAndEndTime,
-
-        String encPromiseKey,
-        String encUserId
 ) {
 }
