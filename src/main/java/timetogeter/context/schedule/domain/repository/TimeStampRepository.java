@@ -8,5 +8,5 @@ import timetogeter.context.schedule.domain.repository.custom.TimeStampRepository
 import java.time.LocalDate;
 import java.util.List;
 
-public interface TimeStampRepository extends JpaRepository<TimeStamp, String>, TimeStampRepositoryCustom {
+public interface TimeStampRepository extends JpaRepository<TimeStamp, Long>, TimeStampRepositoryCustom {
 }
