@@ -20,6 +20,8 @@ import timetogeter.context.schedule.exception.ScheduleNotFoundException;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,9 +78,21 @@ public class ConfirmedScheduleService {
     @Transactional
     public void confirmSchedule(String userId, String groupId, ScheduleConfirmReqDTO reqDTO) {
         Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);
-        TimeStamp timeStamp = TimeStamp.of(reqDTO.encTimeStamp(), reqDTO.timeStampInfo(), userId);
-        timeStampRepository.save(timeStamp);
         scheduleRepository.save(schedule);
+
+        final String encTimeStamp = reqDTO.encTimeStamp();
+        final LocalDate timeStampInfo = reqDTO.timeStampInfo();
+
+        List<String> allUserIds = new ArrayList<>(reqDTO.userList());
+
+        if (!allUserIds.contains(userId)) {
+            allUserIds.add(userId);
+        }
+
+        List<TimeStamp> timeStamps = allUserIds.stream()
+                .map(id -> TimeStamp.of(encTimeStamp, timeStampInfo, id))
+                .collect(Collectors.toList());
+        timeStampRepository.saveAll(timeStamps);
 
 
         List<PromiseShareKey> shareKeys = promiseShareKeyRepository.findByPromiseId(reqDTO.promiseId());

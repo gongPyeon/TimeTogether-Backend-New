@@ -1,6 +1,8 @@
 package timetogeter.context.schedule.domain.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
@@ -14,6 +16,8 @@ import java.time.LocalDate;
 public class TimeStamp {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long timestampId;
     private String encTimeStamp; // 년 월 일 시간
     private LocalDate timeStampInfo; // 년 월 일
     private String userId;
