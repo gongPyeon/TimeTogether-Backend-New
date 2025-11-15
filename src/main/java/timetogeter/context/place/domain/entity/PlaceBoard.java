@@ -23,11 +23,12 @@ public class PlaceBoard {
 
     private Boolean aiPlace;
 
-    public static PlaceBoard of(String placeName, String placeAddr, Boolean aiPlace) { // TODO: placeInfo 추가
+    public static PlaceBoard of(String placeName, String placeAddr, Boolean aiPlace, String placeInfo) {
         PlaceBoard placeBoard = new PlaceBoard();
         placeBoard.placeName = placeName;
         placeBoard.placeAddr = placeAddr;
         placeBoard.aiPlace = aiPlace;
+        placeBoard.placeInfo = placeInfo;
         return placeBoard;
     }
 

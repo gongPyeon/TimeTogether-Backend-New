@@ -10,4 +10,6 @@ public interface TimeStampRepositoryCustom {
     List<String> findTimeStampsByUserIdAndDateRange(String userId, LocalDate startDate, LocalDate endDate);
 
     List<String> findTimeStampsByUserIdAndTimeStamp(String userId, List<LocalDate> dates);
+    
+    List<String> findAllScheduleIdsByUserId(String userId);
 }

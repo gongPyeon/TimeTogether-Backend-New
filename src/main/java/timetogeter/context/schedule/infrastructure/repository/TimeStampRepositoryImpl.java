@@ -41,4 +41,15 @@ public class TimeStampRepositoryImpl implements TimeStampRepositoryCustom {
                 )
                 .fetch();
     }
+
+    @Override
+    public List<String> findAllScheduleIdsByUserId(String userId) {
+        QTimeStamp t = QTimeStamp.timeStamp;
+
+        return queryFactory
+                .select(t.encTimeStamp)
+                .from(t)
+                .where(t.userId.eq(userId))
+                .fetch();
+    }
 }

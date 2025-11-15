@@ -1,7 +1,9 @@
 package timetogeter.context.schedule.application.dto.request;
-import java.util.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public record CalendarViewRequest1(
-        List<String> encPromiseKeyList
+        List<LocalDate> timeStampInfoList
 ) {
 }
