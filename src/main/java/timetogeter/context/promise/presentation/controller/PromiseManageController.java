@@ -59,7 +59,8 @@ public class PromiseManageController {
                         schema = @Schema(implementation = InvitePromise1Response.class),
                         examples = @ExampleObject(value = """
                             {
-                                "encGroupKeyList": ["encryptedKey1", "encryptedKey2"]
+                                "whichEmailIn": ["user1@example.com", "user2@example.com"],
+                                "message": "가입 링크를 이메일로 전송했어요."
                             }
                         """)
                 )

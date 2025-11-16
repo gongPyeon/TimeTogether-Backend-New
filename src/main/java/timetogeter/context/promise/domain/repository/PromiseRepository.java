@@ -16,6 +16,9 @@ public interface PromiseRepository extends JpaRepository<Promise, String>, Promi
     @Query(value = "SELECT * FROM promise WHERE promise_id IN (:promiseIdList)", nativeQuery = true)
     List<Promise> findByPromiseIdIn(@Param("promiseIdList") List<String> promiseIdList);
 
+    @Query(value = "SELECT * FROM promise WHERE group_id = :groupId AND promise_id IN (:promiseIdList)", nativeQuery = true)
+    List<Promise> findByGroupIdAndPromiseIdIn(@Param("groupId") String groupId, @Param("promiseIdList") List<String> promiseIdList);
+
     @Query("SELECT p.managerId FROM Promise p WHERE p.promiseId = :promiseId")
     Optional<String> findMangerById(@Param("promiseId")String promiseId);
 }

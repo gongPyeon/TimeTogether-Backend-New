@@ -33,6 +33,7 @@ import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
+import timetogeter.global.mail.EmailService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class PromiseManageInfoService {
     private final UserRepository userRepository;
 
     private final StringRedisTemplate redisTemplate;
+    private final EmailService emailService;
 
 
     //약속 만들기 - 기본 정보 입력 Step1 - 메인 서비스 메소드
@@ -160,8 +162,26 @@ public class PromiseManageInfoService {
                 emailList.add(email);
             }
         }
+        //메일들로 가입 링크 전송
+        String joinLinkUrl = "https://meetnow.duckdns.org/promise/join1";
+        String subject = "[MeetNow] 약속 참여 링크 안내";
+        String contentTemplate = """
+                안녕하세요,
+                
+                아래 링크를 통해 약속 참여를 완료해 주세요.
+                %s
+                
+                만약 본 메일을 요청하지 않으셨다면, 이 메일은 무시하셔도 됩니다.
+                
+                감사합니다.
+                MeetNow 드림
+                """;
+        for (String email : emailList) {
+            String content = contentTemplate.formatted(joinLinkUrl);
+            emailService.sendPlainText(email, subject, content);
+        }
 
-        return new InvitePromise1Response(emailList);
+        return new InvitePromise1Response(emailList, "참여 링크를 이메일로 전송했어요.");
     }
 
     //약속 만들기 - 참여하기 Step1 - 메인 서비스 메소드
