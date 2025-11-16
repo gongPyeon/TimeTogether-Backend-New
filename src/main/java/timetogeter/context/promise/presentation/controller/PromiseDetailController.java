@@ -62,7 +62,7 @@ public class PromiseDetailController {
                     description = "약속 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = BaseResponse.class),
+                            schema = @Schema(implementation = PromiseView1Response.class),
                             examples = @ExampleObject(
                                     value = """
                                 {
