@@ -83,7 +83,7 @@ public class PromiseDetailInfoService {
     // 디테일 확인 - 사용자가 속한 그룹 내 약속을 (확정완료) 로 구분지어 보여주는 화면 Step4 - 메인 메소드
     public List<PromiseView4Response> getScheduleInfoList(String userId, PromiseView4Request request) {
         //request내 각 scheduleId들에 대해 Schedule객체를 반환
-        List<String> scheduleIdList = request.sheduleIdList();
+        List<String> scheduleIdList = request.scheduleIdList();
         List<Schedule> schedules = scheduleRepository.findByScheduleIdIn(scheduleIdList);
 
         return schedules.stream()
@@ -93,7 +93,7 @@ public class PromiseDetailInfoService {
                         schedule.getScheduleId(),
                         schedule.getTitle(),
                         schedule.getPurpose(),
-                        schedule.getPlaceId(),
+                        Long.valueOf(schedule.getPlaceId()),
                         schedule.getGroupId()
                 ))
                 .collect(Collectors.toList());
