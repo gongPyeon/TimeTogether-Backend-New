@@ -40,8 +40,8 @@ public class GroupManageController {
     /*
     그룹 참가 URL 접속 후 로그인한 사용자의 이메일 반환
 
-    [웹] 그룹 참가 URL (http://localhost:8080/api/v1/group/join/{groupId})에 접속 후 로그인
-    [서버] 로그인한 사용자의 이메일 반환
+    [웹] 그룹 참가 URL (api/v1/group/join/{groupId})에 접속 후 로그인
+    [서버] 로그인한 사용자의 이메일에 가입 링크 메일 전송
      */
     @Operation(
             summary = "그룹 참가 - 이메일 조회",
@@ -60,7 +60,7 @@ public class GroupManageController {
                       "code": 200,
                       "message": "요청에 성공했습니다.",
                       "result": {
-                        "email": "user@example.com"
+                        "message": "가입 링크를 이메일로 전송했어요."
                       }
                     }
                     """)

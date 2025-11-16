@@ -14,6 +14,7 @@ import timetogeter.context.auth.domain.repository.UserRepository;
 import timetogeter.context.auth.exception.UserNotFoundException;
 import timetogeter.context.group.application.dto.request.*;
 import timetogeter.context.group.application.dto.response.*;
+import timetogeter.global.mail.EmailService;
 import timetogeter.context.group.exception.GroupIdNotFoundException;
 import timetogeter.context.group.exception.GroupInviteCodeExpired;
 import timetogeter.context.group.exception.GroupProxyUserNotFoundException;
@@ -63,6 +64,7 @@ public class GroupManageMemberService {
 
     private final GroupManageDisplayService groupManageDisplayService;
 
+    private final EmailService emailService;
     private final StringRedisTemplate redisTemplate;
     private final RestTemplate restTemplate;
 
@@ -130,7 +132,23 @@ public class GroupManageMemberService {
                 .orElseThrow(() -> new UserNotFoundException(BaseErrorCode.USER_NOT_FOUND, "[ERROR]: 존재하지 않는 유저입니다."))
                 .getEmail();
 
-        return new GetGroupJoinEmailResponse(email);
+        // 해당 이메일로 가입 링크 메일 전송
+        String joinLinkUrl = "https://meetnow.duckdns.org/api/v1/group/member/save";
+        String subject = "[MeetNow] 그룹 참여 링크 안내";
+        String content = """
+                안녕하세요,
+                
+                아래 링크를 통해 그룹 참여를 완료해 주세요.
+                %s
+                
+                만약 본 메일을 요청하지 않으셨다면, 이 메일은 무시하셔도 됩니다.
+                
+                감사합니다.
+                MeetNow 드림
+                """.formatted(joinLinkUrl);
+        emailService.sendPlainText(email, subject, content);
+
+        return new GetGroupJoinEmailResponse("가입 링크를 이메일로 전송했어요."); // 이메일 전달 완료 메시지 반환
     }
 
     // 그룹 멤버 저장 - 가공된 정보들을 데이터베이스에 저장

@@ -44,8 +44,10 @@ public class PromiseDetailInfoService {
     // 디테일 확인 - 사용자가 속한 그룹 내 약속을 (정하는중) 로 구분지어 보여주는 화면 Step2 - 메인 메소드
     public List<PromiseView2Response> getPromiseInfoList(String userId, Promiseview2Request request) {
         //1. request내 각 promiseId들에 대해 PromiseRepository객체를 반환
+        //+ 그냥 반환하는게 아니라, promise 테이블 내에서 groupId에 해당하는 promiseId와 겹치는거만 반환하도록 쿼리 추가
         List<String> promiseIdList = request.promiseIdList();
-        List<Promise> promises = promiseRepository.findByPromiseIdIn(promiseIdList);
+        String groupId = request.groupId();
+        List<Promise> promises = promiseRepository.findByGroupIdAndPromiseIdIn(groupId, promiseIdList);
 
 
         //2. request내 각 promiseId들에 대해 PromiseCheck내의 insConfirmed를 반환
@@ -65,13 +67,15 @@ public class PromiseDetailInfoService {
 
     // 디테일 확인 - 사용자가 속한 그룹 내 약속을 (정하는중) , (확정완료) 로 구분지어 보여주는 화면 Step3 - 메인 메소드
     public List<PromiseView3Response> getScheduleIdList(String userId, PromiseView3Request request) {
-        List<String> encPromiseKeyList = request.encPromiseKeyList();
+        List<String> promiseIdList = request.promiseIdList();
+        List<String> encPromiseKeyList = promiseShareKeyRepository.findEncPromiseKeysByPromiseIdIn(promiseIdList);
 
         // encPromiseKey에 해당하는 scheduleId 조회
         List<String> scheduleIds = promiseShareKeyRepository.findScheduleIdsByEncPromiseKeyList(encPromiseKeyList);
 
         // 응답으로 변환
         return scheduleIds.stream()
+                .distinct()
                 .map(PromiseView3Response::new)
                 .collect(Collectors.toList());
     }

@@ -2,6 +2,7 @@ package timetogeter.context.promise.presentation.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -44,20 +45,49 @@ public class PromiseDetailController {
     [웹] 로그인 상태로 토큰 담아 요청 ->
     [서버] PromiseProxyUser에서 encPromiseId(개인키로 암호화한 약속 아이디) 반환
      */
-    @Operation(summary = "약속 디테일 - Step1", description = """
-            로그인한 사용자가 속한 그룹 내 약속을 조회합니다.
+    @Operation(
+            summary = "약속 디테일 - Step1",
+            description = """
+                로그인한 사용자가 속한 약속 아이디를 모두 조회합니다.
 
-            - 요청: 사용자 인증 (UserPrincipal)
-            - 처리: PromiseProxyUser에서 encPromiseId(개인키로 암호화된 약속 아이디) 조회
-            - 반환: 개인키로 암호화된 약속 아이디 리스트
-            """)
+                - 요청: accesstoken -> 사용자 인증 (UserPrincipal)
+                - 처리: PromiseProxyUser에서 encPromiseId(개인키로 암호화된 약속 아이디) 조회
+                - 반환: 개인키로 암호화된 약속 아이디 리스트
+                - 이후 작업: 개인키로 복호화해 약속 아이디 리스트 얻음
+                """
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "약속 조회 성공",
-                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "약속 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = BaseResponse.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "code": 200,
+                                  "message": "요청에 성공했습니다.",
+                                  "result": [
+                                    {
+                                      "encPromiseId": "0cL0PMOtGq5i6nZnJKlrdXQhdZNxJa8Kumur5fUQrxvYps58yM2OIXDP+/D6IHwa8/w0cw=="
+                                    }
+                                  ]
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @SecurityRequirement(name = "BearerAuth")
     @GetMapping(value = "/view1", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,25 +99,61 @@ public class PromiseDetailController {
     }
 
     /*
-    디테일 확인 - 사용자가 속한 그룹 내 약속을 (정하는중) 로 구분지어 보여주는 화면 - Step2
+    디테일 확인 - 사용자가 속한 그룹 내 약속 (정하는중) 구분지어 보여주는 화면 - Step2
 
    [웹] promiseId를 담아 요청 ->
    [서버] Promise, PromiseCheck 테이블에서 약속 확정 여부(정하는중) 약속 정보 반환
     */
-    @Operation(summary = "약속 디테일 - Step2", description = """
-            사용자가 속한 그룹 내 (정하는중) 약속 정보를 조회합니다.
+    @Operation(
+            summary = "약속 디테일 - Step2",
+            description = """
+                사용자가 속한 그룹 내 정하는 중인 약속 정보를 조회합니다.
 
-            - 요청: 사용자 인증 (UserPrincipal) + Promiseview2Request (encPromiseId 리스트)
-            - 처리: Promise, PromiseCheck 테이블에서 약속 확정 여부 조회
-            - 반환: 약속 정보 리스트
-            """)
+                - 요청: 사용자 인증 (UserPrincipal) + groupId, promiseIdList
+                - 처리: Promise, PromiseCheck 테이블에서 약속 확정 여부 조회
+                - 반환: 정하는 중인 약속이 존재하면, 해당 약속 정보 반환
+                - 이후 작업: 반환된 약속 정보중 promiseId를 리스트 형태로 이후에 요청해야함
+                """
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "약속 조회 성공",
-                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "약속 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PromiseView2Response.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "code": 200,
+                                  "message": "요청에 성공했습니다.",
+                                  "result": [
+                                    {
+                                      "isConfirmed": false,
+                                      "promiseId": "e3f971e9-0e41-48b2-bb2e-b7594b98e170",
+                                      "title": "초콜릿모임",
+                                      "type": "스터디",
+                                      "startDate": "2025-11-14",
+                                      "endDate": "2025-11-19",
+                                      "managerId": "hyerihyeri",
+                                      "promiseImg": "빼빼로만들기-초콜릿"
+                                    }
+                                  ]
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view2", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -106,20 +172,49 @@ public class PromiseDetailController {
    [웹] 개인키로 암호화한 약속키를 담아 요청 ->
    [서버] PromiseShareKey에서 encPromiseKey로 해당되는 scheduleId들을 반환
    */
-    @Operation(summary = "약속 디테일 - Step3", description = """
-            사용자가 속한 그룹 내 (정하는중 + 확정완료) 약속별 scheduleId 조회
+    @Operation(
+            summary = "약속 디테일 - Step3",
+            description = """
+                사용자가 속한 그룹 내 약속별 scheduleId 조회
 
-            - 요청: 사용자 인증 (UserPrincipal) + PromiseView3Request (encPromiseKey 리스트)
-            - 처리: PromiseShareKey에서 encPromiseKey로 scheduleId 조회
-            - 반환: scheduleId 리스트
-            """)
+                - 요청: 사용자 인증 (UserPrincipal) + promiseIdList
+                - 처리: PromiseShareKey에서 encPromiseKey로 scheduleId 조회
+                - 반환: scheduleId 리스트 
+                - 이후 작업: 다음 요청에서 scheduleId 리스트 필요함
+                """
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "scheduleId 조회 성공",
-                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "scheduleId 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PromiseView3Response.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "code": 200,
+                                  "message": "요청에 성공했습니다.",
+                                  "result": [
+                                    {
+                                      "scheduleId": "61a4c8e6-ea48-47d3-9523-9cf09dd6aae4"
+                                    }
+                                  ]
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view3", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -137,20 +232,54 @@ public class PromiseDetailController {
     [웹] 개인키로 암호화한 약속키를 담아 요청 ->
     [서버] PromiseShareKey에서 encPromiseKey로 해당되는 scheduleId들을 반환
     */
-    @Operation(summary = "약속 디테일 - Step4", description = """
-            사용자가 속한 그룹 내 확정 완료된 약속별 scheduleId 조회
+    @Operation(
+            summary = "약속 디테일 - Step4",
+            description = """
+                사용자가 속한 그룹 내 확정 완료된 약속(=스케줄)의 scheduleId 조회
 
-            - 요청: 사용자 인증 (UserPrincipal) + PromiseView4Request (encPromiseKey 리스트)
-            - 처리: PromiseShareKey에서 encPromiseKey로 scheduleId 조회
-            - 반환: scheduleId 리스트
-            """)
+                - 요청: 사용자 인증 (UserPrincipal) + ScheduleIdListRequest
+                - 처리: 스케줄 ID로 확정된 약속 정보 조회
+                - 반환: 확정된 약속 정보 리스트
+                """
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "scheduleId 조회 성공",
-                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
-            @ApiResponse(responseCode = "401", description = "인증 실패",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "scheduleId 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PromiseView4Response.class),
+                            examples = @ExampleObject(
+                                    value = """
+                                {
+                                  "code": 200,
+                                  "message": "요청에 성공했습니다.",
+                                  "result": [
+                                    {
+                                      "isConfirmed": true,
+                                      "scheduleId": "61a4c8e6-ea48-47d3-9523-9cf09dd6aae4",
+                                      "title": "61a4c8e6-ea48-47d3-9523-9cf09dd6aae4",
+                                      "content": "초콜릿다음엔?",
+                                      "purpose": "초콜릿초콜릿",
+                                      "placeId": 1,
+                                      "groupId": "d71ac3eb-fc61-4cff-92c7-478a0e092936"
+                                    }
+                                  ]
+                                }
+                                """
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))
+            )
     })
     @SecurityRequirement(name = "BearerAuth")
     @PostMapping(value = "/view4", produces = MediaType.APPLICATION_JSON_VALUE)

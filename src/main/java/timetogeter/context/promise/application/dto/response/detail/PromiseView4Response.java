@@ -1,12 +1,27 @@
 package timetogeter.context.promise.application.dto.response.detail;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public record PromiseView4Response(
-        boolean isConfirmed, //확정 여부
-        String scheduleId, //일정 id
-        String title , //일정 제목
-        String content, //일정 내용
-        String purpose, //일정 유형
-        int placeId, //일정 장소 아이디
-        String groupId //그룹 아이디
+        @Schema(description = "약속 확정 여부", example = "true")
+        boolean isConfirmed,
+
+        @Schema(description = "스케줄 ID", example = "61a4c8e6-ea48-47d3-9523-9cf09dd6aae4")
+        String scheduleId,
+
+        @Schema(description = "제목", example = "61a4c8e6-ea48-47d3-9523-9cf09dd6aae4")
+        String title,
+
+        @Schema(description = "내용", example = "초콜릿다음엔?")
+        String content,
+
+        @Schema(description = "목적", example = "초콜릿초콜릿")
+        String purpose,
+
+        @Schema(description = "장소 ID", example = "1")
+        Long placeId,
+
+        @Schema(description = "그룹 ID", example = "d71ac3eb-fc61-4cff-92c7-478a0e092936")
+        String groupId
 ) {
 }
