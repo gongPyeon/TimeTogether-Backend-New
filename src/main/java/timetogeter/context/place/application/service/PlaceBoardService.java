@@ -69,6 +69,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         votingService.cancelVote(userId, placeId);
 
         PromisePlace place = get(placeId);
+        place.cancelVote();
         placeRepository.save(place);
     }
 
