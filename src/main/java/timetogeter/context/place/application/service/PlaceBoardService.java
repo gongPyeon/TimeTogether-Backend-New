@@ -48,7 +48,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
                 .stream()
                 .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceAddr(), p.getVoting(),
                         p.hasVotedBy(userId),  // 장소 삭제 유무
-                        votingService.hasVotedBy(userId, p.getPlaceId()))) // 투표 취소가 가능한지
+                        votingService.hasVotedBy(userId, p.getPlaceId()), p.getAiPlaceId())) // 투표 취소가 가능한지
                 .collect(Collectors.toList());
 
         return new PlaceBoardDTO(page, placePage.getTotalPages(), places);
