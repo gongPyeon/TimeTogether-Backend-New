@@ -62,8 +62,8 @@ public class ConfirmedScheduleService {
         return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), encUserIds);
     }
 
-    public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
-        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query, filter);
+    public PromiseListResDTO searchPromiseView(String query) {
+        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query);
 
         List<PromiseResDTO> dtoList = result.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))

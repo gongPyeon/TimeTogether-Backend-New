@@ -105,7 +105,7 @@ public class AuthService {
             );
 
             TokenCommand token = jwtTokenProvider.generateToken(authentication);
-            redisUtil.set(registerResponse.email(), token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
+            redisUtil.set(REFRESH_HEADER + registerResponse.userId(), token.refreshToken(), token.refreshTokenExpirationTime(), TimeUnit.SECONDS);
 
             return new LoginResDTO(token, registerResponse.imgIv(), registerResponse.emailIv(), registerResponse.phoneIv());
         }catch (RedisConnectionFailureException e) {

@@ -36,7 +36,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     private final List<RequestMatcher> whiteList = List.of(
             antMatcher(GET, "/docs/**"),
             antMatcher(POST, "/static/docs/**"),
-            antMatcher(POST, "/auth/**"),
+            antMatcher(POST, "/auth/sign-up"),
+            antMatcher(POST, "/auth/oauth2/login"),
+            antMatcher(POST, "/auth/login"),
             antMatcher(GET, "/test/**"),
             //antMatcher(POST, "/api/v1/group/**"),
             antMatcher(GET, "/actuator/**")

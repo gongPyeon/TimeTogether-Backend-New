@@ -70,6 +70,10 @@ public class SecurityConfig {
                 antMatcher(GET, "/docs/**"),
                 antMatcher(POST, "/static/docs/**"),
 
+                antMatcher(POST, "/auth/sign-up"),
+                antMatcher(POST, "/auth/oauth2/login"),
+                antMatcher(POST, "/auth/login"),
+
                 antMatcher(GET, "/docs/**"),
                 antMatcher(GET, "/swagger-ui/**"),
                 antMatcher(GET, "/v3/api-docs/**"),
