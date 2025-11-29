@@ -2,6 +2,7 @@ package timetogeter.context.promise.application.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import timetogeter.context.place.exception.VoteFailException;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
@@ -14,6 +15,7 @@ import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PromiseConfirmService {
 
     private final PromiseRepository promiseRepository;
@@ -28,7 +30,7 @@ public class PromiseConfirmService {
         return managerId.equals(userId);
     }
 
-    public PromiseRegisterDTO confirmedSchedule(String promiseId, int placeId) {
+    public PromiseRegisterDTO confirmedScheduleByPlace(String promiseId, int placeId) {
         Promise promise = get(promiseId);
         if(!promise.getDateTimeCheck()) return null;
 
@@ -39,7 +41,7 @@ public class PromiseConfirmService {
                 promiseCheck.getPlaceId());
     }
 
-    public PromiseRegisterDTO confirmedSchedule(String promiseId, String DateTime) {
+    public PromiseRegisterDTO confirmedScheduleByTime(String promiseId) {
         Promise promise = get(promiseId);
         if(!promise.getPlaceCheck()) return new PromiseRegisterDTO();
 
@@ -50,25 +52,39 @@ public class PromiseConfirmService {
                 promiseCheck.getPlaceId());
     }
 
-    // TODO: 두개의 리포지토리 업데이트?
     @Transactional
     public void confirmPromisePlace(String promiseId, int placeId){
         Promise promise = get(promiseId);
         promise.confirmPlaceCheck();
         promiseRepository.save(promise);
 
-        PromiseCheck promiseCheck = new PromiseCheck(placeId);
-        promiseCheckRepository.save(promiseCheck);
+        PromiseCheck finalCheck = promiseCheckRepository.findByPromiseId(promiseId)
+                .map(existingCheck -> {
+                    existingCheck.setPlaceId(placeId);
+                    return existingCheck;
+                })
+                .orElseGet(() -> {
+                    return new PromiseCheck(promiseId, placeId);
+                });
+
+        promiseCheckRepository.save(finalCheck);
     }
 
     @Transactional
-    public void confirmPromiseDateTime(String promiseId, String DateTime){
+    public void confirmPromiseDateTime(String promiseId, String dateTime){
         Promise promise = get(promiseId);
         promise.confirmDateTimeCheck();
         promiseRepository.save(promise);
 
-        PromiseCheck promiseCheck = new PromiseCheck(DateTime);
-        promiseCheckRepository.save(promiseCheck);
+        PromiseCheck finalCheck = promiseCheckRepository.findByPromiseId(promiseId)
+                .map(existingCheck -> {
+                    existingCheck.setDateTime(dateTime);
+                    return existingCheck;
+                })
+                .orElseGet(() -> {
+                    return new PromiseCheck(promiseId, dateTime);
+                });
+        promiseCheckRepository.save(finalCheck);
     }
 
     public void checkTotalVote(String promiseId, int voteNum) {

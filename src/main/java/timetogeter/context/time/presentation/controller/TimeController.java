@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
+import timetogeter.context.time.application.dto.request.ConfirmDateReqDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
 import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
@@ -23,6 +24,8 @@ import timetogeter.context.time.application.service.TimeBoardService;
 import timetogeter.global.interceptor.response.BaseCode;
 import timetogeter.global.interceptor.response.BaseResponse;
 import timetogeter.global.interceptor.response.error.dto.ErrorResponse;
+
+import java.time.OffsetDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -158,9 +161,9 @@ public class TimeController {
     @PostMapping("/confirm/{promiseId}")
     public BaseResponse<Object> confirmDateTime(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                 @PathVariable("promiseId") String promiseId,
-                                                @RequestBody String dateTime) {
+                                                @RequestBody ConfirmDateReqDTO reqDTO) {
         String userId = userPrincipal.getId();
-        PromiseRegisterDTO dto = timeBoardService.confirmDateTime(userId, promiseId, dateTime);
+        PromiseRegisterDTO dto = timeBoardService.confirmDateTime(userId, promiseId, reqDTO.dateTime());
         return new BaseResponse<>(dto);
     }
 }

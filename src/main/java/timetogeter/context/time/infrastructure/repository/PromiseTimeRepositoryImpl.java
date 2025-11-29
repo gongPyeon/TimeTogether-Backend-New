@@ -39,12 +39,17 @@ public class PromiseTimeRepositoryImpl implements PromiseTimeRepositoryCustom {
         Map<LocalDate, List<TimeSlotDTO>> grouped = result.stream()
                 .collect(Collectors.groupingBy(
                         tuple -> tuple.get(d.date),
-                        Collectors.mapping(
-                                tuple -> new TimeSlotDTO(
-                                        tuple.get(t.time),
-                                        tuple.get(t.time).plusMinutes(30)
+                        Collectors.collectingAndThen(
+                                Collectors.groupingBy(
+                                        tuple -> tuple.get(t.time),
+                                        Collectors.counting()
                                 ),
-                                Collectors.toList()
+                                timeMap -> timeMap.entrySet().stream()
+                                        .map(entry -> new TimeSlotDTO(
+                                                entry.getKey(),
+                                                entry.getValue().intValue()
+                                        ))
+                                        .collect(Collectors.toList())
                         )
                 ));
 

@@ -7,6 +7,6 @@ import timetogeter.context.schedule.domain.entity.Schedule;
 import java.util.List;
 
 public interface ScheduleRepositoryCustom {
-    List<Schedule> searchByQueryAndFilters(String query, List<String> filters);
+    List<Schedule> searchByQueryAndFilters(String query);
     PromiseDetailDTO findDetailByScheduleId(String scheduleId);
 }

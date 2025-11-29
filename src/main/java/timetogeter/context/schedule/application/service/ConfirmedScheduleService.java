@@ -56,16 +56,14 @@ public class ConfirmedScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ScheduleNotFoundException(BaseErrorCode.SCHEDULE_NOT_FOUND, "[ERROR} " + scheduleId + "에 해당하는 일정이 존재하지 않습니다."));
 
-        List<String> names = promiseShareKeyRepository.findByPromiseId(schedule.getScheduleId()).stream()
-                .map(s -> s.getEncUserId())
-                .collect(Collectors.toList());
+        List<String> encUserIds = promiseShareKeyRepository.findNamesByScheduleId(schedule.getScheduleId());
 
         PromiseDetailDTO dto = scheduleRepository.findDetailByScheduleId(scheduleId);
-        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), names);
+        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), encUserIds);
     }
 
-    public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
-        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query, filter);
+    public PromiseListResDTO searchPromiseView(String query) {
+        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query);
 
         List<PromiseResDTO> dtoList = result.stream()
                 .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
@@ -74,7 +72,7 @@ public class ConfirmedScheduleService {
         return new PromiseListResDTO(dtoList);
     }
 
-    // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime)
+    // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime, PromiseCheck)
     @Transactional
     public void confirmSchedule(String userId, String groupId, ScheduleConfirmReqDTO reqDTO) {
         Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);

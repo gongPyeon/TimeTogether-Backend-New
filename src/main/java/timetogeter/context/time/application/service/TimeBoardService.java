@@ -32,7 +32,7 @@ public class TimeBoardService {
 
     public TimeBoardResDTO getTimeBoard(String promiseId) {
         TimeRange timeRangeByPromise = promiseQueryService.getTimeRange(promiseId);
-        TimeRangeDTO timeRange = new TimeRangeDTO(timeRangeByPromise.startDate(), timeRangeByPromise.endDate());
+        TimeRangeDTO timeRange = new TimeRangeDTO(timeRangeByPromise.startDate());
         List<DailyTimeDTO> availableTimes = promiseTimeRepository.findAllWithDailyTimesByPromiseId(promiseId);
 
         return new TimeBoardResDTO(promiseId, timeRange, availableTimes);
@@ -55,6 +55,6 @@ public class TimeBoardService {
 
         promiseConfirmService.confirmPromiseDateTime(promiseId, dateTime);
 
-        return promiseConfirmService.confirmedSchedule(promiseId, dateTime);
+        return promiseConfirmService.confirmedScheduleByTime(promiseId);
     }
 }

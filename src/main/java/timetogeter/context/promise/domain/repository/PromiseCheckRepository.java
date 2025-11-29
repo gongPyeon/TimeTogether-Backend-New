@@ -8,4 +8,8 @@ import java.util.Optional;
 
 public interface PromiseCheckRepository extends JpaRepository<PromiseCheck, Integer> {
     Optional<PromiseCheck> findByPromiseId(@Param("promiseId") String promiseId);
+
+    Optional<PromiseCheck> findByPlaceId(@Param("placeId") int placeId);
+
+    Optional<PromiseCheck> findByDateTime(@Param("dateTime")String dateTime);
 }

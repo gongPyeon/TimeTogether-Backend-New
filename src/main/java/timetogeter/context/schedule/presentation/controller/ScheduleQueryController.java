@@ -101,8 +101,8 @@ public class ScheduleQueryController {
     })
     @GetMapping("/search")
     public BaseResponse<Object> searchPromiseView(
-            @RequestParam("query") String query, @RequestParam(required = false, value = "filter") List<String> filter){
-        PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query, filter);
+            @RequestParam("query") String query){
+        PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query);
         return new BaseResponse<>(dto);
     }
 

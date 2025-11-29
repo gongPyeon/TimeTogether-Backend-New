@@ -14,6 +14,7 @@ import timetogeter.context.schedule.domain.entity.QSchedule;
 import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.schedule.domain.repository.custom.ScheduleRepositoryCustom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -23,26 +24,24 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Schedule> searchByQueryAndFilters(String query, List<String> filters) {
+    public List<Schedule> searchByQueryAndFilters(String query) {
         QSchedule s = QSchedule.schedule;
         QPlaceBoard p = QPlaceBoard.placeBoard;
 
-        BooleanBuilder builder = new BooleanBuilder();
-
-        boolean noFilters = (filters == null || filters.isEmpty());
-
-        if (noFilters || filters.contains("title")) {
-            builder.or(s.title.containsIgnoreCase(query));
-        }
-        if (noFilters || filters.contains("place")) {
-            builder.or(p.placeName.containsIgnoreCase(query));
+        if (query == null || query.trim().isEmpty()) {
+            return new ArrayList<>();
         }
 
+        BooleanBuilder searchConditions = new BooleanBuilder();
+
+        searchConditions.or(s.title.containsIgnoreCase(query));
+        searchConditions.or(p.placeName.containsIgnoreCase(query));
 
         return queryFactory
                 .selectFrom(s)
                 .leftJoin(p).on(s.placeId.eq(p.placeBoardId))
-                .where(builder)
+                .where(searchConditions)
+                .distinct()
                 .fetch();
     }
 

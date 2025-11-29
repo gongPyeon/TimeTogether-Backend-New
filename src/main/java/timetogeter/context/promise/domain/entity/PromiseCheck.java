@@ -23,12 +23,22 @@ public class PromiseCheck {
     private String dateTime;
     private int placeId;
 
-    public PromiseCheck(String dateTime) {
+    public PromiseCheck(String promiseId, String dateTime) {
+        this.promiseId = promiseId;
         this.dateTime = dateTime;
     }
 
-    public PromiseCheck(int placeId) {
+    public PromiseCheck(String promiseId, int placeId) {
+        this.promiseId = promiseId;
         this.placeId = placeId;
+    }
+
+    public void setPlaceId(int placeId){
+        this.placeId = placeId;
+    }
+
+    public void setDateTime(String dateTime){
+        this.dateTime = dateTime;
     }
 
 }
