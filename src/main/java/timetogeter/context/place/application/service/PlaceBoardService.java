@@ -32,7 +32,6 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PromisePlaceRepository placeRepository;
     private final PlaceBoardRepository placeBoardRepository;
-    private final UserBoardRepository userBoardRepository;
     private final VotingService votingService;
     private final PromiseConfirmService promiseConfirmService;
 

@@ -41,8 +41,7 @@ public class PromiseTimeRepositoryImpl implements PromiseTimeRepositoryCustom {
                         tuple -> tuple.get(d.date),
                         Collectors.mapping(
                                 tuple -> new TimeSlotDTO(
-                                        tuple.get(t.time),
-                                        tuple.get(t.time).plusMinutes(30)
+                                        tuple.get(t.time)
                                 ),
                                 Collectors.toList()
                         )
