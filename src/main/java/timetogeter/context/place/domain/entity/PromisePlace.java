@@ -30,8 +30,9 @@ public class PromisePlace {
 
     private int voting;
     private Boolean aiPlace;
+    private int aiPlaceId;
 
-    public PromisePlace(String promiseId, String placeName, String placeAddr, String placeInfo, String userId, boolean aiPlace) {
+    public PromisePlace(String promiseId, String placeName, String placeAddr, String placeInfo, String userId, boolean aiPlace, int aiPlaceId) {
         validatePlace(placeName, placeAddr, placeInfo);
         this.promiseId = promiseId;
         this.placeAddr = placeAddr;
@@ -40,6 +41,7 @@ public class PromisePlace {
         this.voting = 0;
         this.userId = userId;
         this.aiPlace = aiPlace;
+        this.aiPlaceId = aiPlaceId;
     }
 
     private void validatePlace(String placeName, String placeAddr, String placeInfo) {

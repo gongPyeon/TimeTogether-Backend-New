@@ -5,5 +5,6 @@ import jakarta.validation.constraints.NotNull;
 public record PlaceRegisterDTO (@NotNull String placeName,
                                 String placeAddress,
                                 String placeInfo,
-                                boolean aiPlace){
+                                boolean aiPlace,
+                                int aiPlaceId){
 }
