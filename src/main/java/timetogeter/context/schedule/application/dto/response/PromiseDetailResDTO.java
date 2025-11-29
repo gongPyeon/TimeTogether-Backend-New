@@ -7,5 +7,5 @@ public record PromiseDetailResDTO(String scheduleId,
                                   String type,
                                   String placeName,
                                   String groupName,
-                                  List<String> names)
+                                  List<String> encUserIds)
 {}

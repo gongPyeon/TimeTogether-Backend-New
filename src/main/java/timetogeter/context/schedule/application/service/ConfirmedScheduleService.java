@@ -56,12 +56,10 @@ public class ConfirmedScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ScheduleNotFoundException(BaseErrorCode.SCHEDULE_NOT_FOUND, "[ERROR} " + scheduleId + "에 해당하는 일정이 존재하지 않습니다."));
 
-        List<String> names = promiseShareKeyRepository.findByPromiseId(schedule.getScheduleId()).stream()
-                .map(s -> s.getEncUserId())
-                .collect(Collectors.toList());
+        List<String> encUserIds = promiseShareKeyRepository.findNamesByScheduleId(schedule.getScheduleId());
 
         PromiseDetailDTO dto = scheduleRepository.findDetailByScheduleId(scheduleId);
-        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), names);
+        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), encUserIds);
     }
 
     public PromiseListResDTO searchPromiseView(String query, List<String> filter) {
