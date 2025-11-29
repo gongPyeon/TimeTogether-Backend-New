@@ -5,5 +5,6 @@ public record PlaceDTO (int id,
                         String placeAddr,
                         int voting,
                         boolean isRemoved,
-                        boolean voted){
+                        boolean voted,
+                        int aiPlace){
 }

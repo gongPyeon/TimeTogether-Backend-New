@@ -48,7 +48,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
                 .stream()
                 .map(p -> new PlaceDTO(p.getPlaceId(), p.getPlaceName(), p.getPlaceAddr(), p.getVoting(),
                         p.hasVotedBy(userId),  // 장소 삭제 유무
-                        votingService.hasVotedBy(userId, p.getPlaceId()))) // 투표 취소가 가능한지
+                        votingService.hasVotedBy(userId, p.getPlaceId()), p.getAiPlaceId())) // 투표 취소가 가능한지
                 .collect(Collectors.toList());
 
         return new PlaceBoardDTO(page, placePage.getTotalPages(), places);
@@ -69,23 +69,27 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         votingService.cancelVote(userId, placeId);
 
         PromisePlace place = get(placeId);
+        place.cancelVote();
         placeRepository.save(place);
     }
 
     @Transactional
-    public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId) {
+    public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId, Integer aiPlaceId) {
         boolean isConfirmed = promiseConfirmService.confirmedPromiseManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        PromisePlace promisePlace = get(placeId);
-        if(!promisePlace.getAiPlace()){
-            PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
-                    promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
-            placeBoardRepository.save(placeBoard);
-            placeId = placeBoard.getPlaceBoardId();
+        if(aiPlaceId == null) {
+            PromisePlace promisePlace = get(placeId);
+            if (!promisePlace.getAiPlace()) {
+                PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
+                        promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
+                placeBoardRepository.save(placeBoard);
+                placeId = placeBoard.getPlaceBoardId();
+            }
+        }else{
+            placeId = aiPlaceId;
         }
-
-        promiseConfirmService.confirmPromisePlace(promiseId, placeId);
+        promiseConfirmService.confirmPromisePlace(promiseId, aiPlaceId);
         return promiseConfirmService.confirmedScheduleByPlace(promiseId, placeId);
     }
 

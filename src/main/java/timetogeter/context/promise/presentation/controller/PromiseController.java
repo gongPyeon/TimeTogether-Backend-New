@@ -57,7 +57,7 @@ public class PromiseController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/mem/s2/{promiseId}")
+    @PostMapping("/mem/s2/{promiseId}")
     public BaseResponse<Object> getUsersByPromiseTime2(@PathVariable("promiseId") String promiseId,
                                                        @RequestBody UserIdsResDTO reqDTO) {
         UserInfoResDTO dto = promiseSecurityService.getUserInfoByDTO(promiseId, reqDTO);
