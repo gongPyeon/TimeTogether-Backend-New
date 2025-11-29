@@ -72,7 +72,7 @@ public class ConfirmedScheduleService {
         return new PromiseListResDTO(dtoList);
     }
 
-    // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime)
+    // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime, PromiseCheck)
     @Transactional
     public void confirmSchedule(String userId, String groupId, ScheduleConfirmReqDTO reqDTO) {
         Schedule schedule = Schedule.of(reqDTO.scheduleId(), reqDTO.title(), "", reqDTO.purpose(), reqDTO.placeId(), groupId);

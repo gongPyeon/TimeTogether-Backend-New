@@ -55,6 +55,6 @@ public class TimeBoardService {
 
         promiseConfirmService.confirmPromiseDateTime(promiseId, dateTime);
 
-        return promiseConfirmService.confirmedSchedule(promiseId, dateTime);
+        return promiseConfirmService.confirmedScheduleByTime(promiseId);
     }
 }

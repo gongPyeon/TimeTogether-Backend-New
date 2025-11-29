@@ -83,10 +83,11 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
             PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
                     promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
             placeBoardRepository.save(placeBoard);
+            placeId = placeBoard.getPlaceBoardId();
         }
 
         promiseConfirmService.confirmPromisePlace(promiseId, placeId);
-        return promiseConfirmService.confirmedSchedule(promiseId, placeId);
+        return promiseConfirmService.confirmedScheduleByPlace(promiseId, placeId);
     }
 
     private PromisePlace get(int placeId){

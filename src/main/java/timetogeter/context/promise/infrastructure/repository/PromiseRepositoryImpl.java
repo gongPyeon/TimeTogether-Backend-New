@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import timetogeter.context.place.domain.entity.QPromisePlace;
 import timetogeter.context.place.domain.entity.QVote;
 import timetogeter.context.promise.domain.entity.QPromise;
+import timetogeter.context.promise.domain.entity.QPromiseCheck;
 import timetogeter.context.promise.domain.repository.custom.PromiseRepositoryCustom;
 import timetogeter.context.time.domain.entity.QPromiseDate;
 import timetogeter.context.time.domain.entity.QPromiseTime;
@@ -55,6 +56,11 @@ public class PromiseRepositoryImpl implements PromiseRepositoryCustom {
         long promiseCount = queryFactory
                 .delete(QPromise.promise)
                 .where(QPromise.promise.promiseId.eq(promiseId))
+                .execute();
+
+        long promiseCheckCount = queryFactory
+                .delete(QPromiseCheck.promiseCheck)
+                .where(QPromiseCheck.promiseCheck.promiseId.eq(promiseId))
                 .execute();
 
         entityManager.flush();
