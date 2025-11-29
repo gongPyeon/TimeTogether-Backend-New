@@ -74,18 +74,19 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
     }
 
     @Transactional
-    public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, int placeId) {
+    public PromiseRegisterDTO confirmedPlace(String userId, String promiseId, Integer placeId) {
         boolean isConfirmed = promiseConfirmService.confirmedPromiseManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        PromisePlace promisePlace = get(placeId);
-        if(!promisePlace.getAiPlace()){
-            PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
-                    promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
-            placeBoardRepository.save(placeBoard);
-            placeId = placeBoard.getPlaceBoardId();
+        if(placeId == null) {
+            PromisePlace promisePlace = get(placeId);
+            if (!promisePlace.getAiPlace()) {
+                PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
+                        promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
+                placeBoardRepository.save(placeBoard);
+                placeId = placeBoard.getPlaceBoardId();
+            }
         }
-
         promiseConfirmService.confirmPromisePlace(promiseId, placeId);
         return promiseConfirmService.confirmedScheduleByPlace(promiseId, placeId);
     }
