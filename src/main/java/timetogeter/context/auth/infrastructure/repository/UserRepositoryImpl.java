@@ -43,6 +43,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         return queryFactory
                 .select(Projections.constructor(
                         UserInfoDTO.class,
+                        user.userId,
                         user.nickname,
                         user.userImg
                 ))
