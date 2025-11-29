@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import timetogeter.context.auth.exception.UserNotFoundException;
 import timetogeter.context.place.application.dto.PlaceDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
+import timetogeter.context.place.domain.entity.PlaceBoard;
 import timetogeter.context.place.domain.entity.PromisePlace;
+import timetogeter.context.place.domain.entity.UserBoard;
+import timetogeter.context.place.domain.repository.PlaceBoardRepository;
 import timetogeter.context.place.domain.repository.PromisePlaceRepository;
+import timetogeter.context.place.domain.repository.UserBoardRepository;
 import timetogeter.context.place.exception.PlaceNotFoundException;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.context.promise.application.service.PromiseConfirmService;
@@ -27,6 +31,8 @@ import static timetogeter.global.common.util.PageUtil.PLACE_PAGE;
 public class PlaceBoardService { // TODO: 장소 관리 시스템
 
     private final PromisePlaceRepository placeRepository;
+    private final PlaceBoardRepository placeBoardRepository;
+    private final UserBoardRepository userBoardRepository;
     private final VotingService votingService;
     private final PromiseConfirmService promiseConfirmService;
 
@@ -72,8 +78,14 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         boolean isConfirmed = promiseConfirmService.confirmedPromiseManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        promiseConfirmService.confirmPromisePlace(promiseId, placeId);
+        PromisePlace promisePlace = get(placeId);
+        if(!promisePlace.getAiPlace()){
+            PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
+                    promisePlace.getAiPlace(), promisePlace.getPlaceInfo());
+            placeBoardRepository.save(placeBoard);
+        }
 
+        promiseConfirmService.confirmPromisePlace(promiseId, placeId);
         return promiseConfirmService.confirmedSchedule(promiseId, placeId);
     }
 

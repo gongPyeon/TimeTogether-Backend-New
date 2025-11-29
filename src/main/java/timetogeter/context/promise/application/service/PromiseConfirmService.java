@@ -50,7 +50,6 @@ public class PromiseConfirmService {
                 promiseCheck.getPlaceId());
     }
 
-    // TODO: 두개의 리포지토리 업데이트?
     @Transactional
     public void confirmPromisePlace(String promiseId, int placeId){
         Promise promise = get(promiseId);
