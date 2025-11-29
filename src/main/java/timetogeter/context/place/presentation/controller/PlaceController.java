@@ -300,10 +300,10 @@ public class PlaceController {
                     )
             )
     })
-    @PostMapping("/confirm/{promiseId}/{placeId}")
+    @PostMapping("/confirm/{promiseId}")
     public BaseResponse<Object> confirmedPlace(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                @PathVariable("promiseId") String promiseId,
-                                               @PathVariable(value = "placeId", required = false) Integer placeId) {
+                                               @RequestParam(value = "placeId", required = false) Integer placeId) {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
