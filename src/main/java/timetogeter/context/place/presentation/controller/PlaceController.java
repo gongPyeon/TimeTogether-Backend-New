@@ -257,10 +257,9 @@ public class PlaceController {
                     )
             )
     })
-    @PostMapping("/ai/recommend/{promiseId}")
-    public BaseResponse<Object> recommendPlace(@RequestBody UserAIInfoReqDTO reqDTO,
-                                             @PathVariable("promiseId") String promiseId) {
-        List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(promiseId, reqDTO);
+    @PostMapping("/ai/recommend")
+    public BaseResponse<Object> recommendPlace(@RequestBody UserAIInfoReqDTO reqDTO) {
+        List<PlaceRegisterResDTO> dto = myPlaceService.recommendPlace(reqDTO);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_RECOMMEND_PLACE);
     }
 
