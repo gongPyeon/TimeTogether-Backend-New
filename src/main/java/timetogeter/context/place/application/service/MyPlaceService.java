@@ -53,10 +53,10 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
         placeRepository.saveAll(places);
     }
 
-    public List<PlaceRegisterResDTO> recommendPlace(String promiseId, UserAIInfoReqDTO dto) {
+    public List<PlaceRegisterResDTO> recommendPlace(UserAIInfoReqDTO dto) {
         String pseudoId = dto.pseudoId();
         List<PlaceRatingDTO> history = getByPlaceHistory(pseudoId);
-        String purpose = promiseQueryService.getPurpose(promiseId);
+        String purpose = dto.purpose();
         AIReqDTO aiReqDTO = new AIReqDTO(pseudoId, dto.latitude(), dto.longitude(), purpose, history);
         return aiPlaceClient.requestAIRecommendation(aiReqDTO);
     }
