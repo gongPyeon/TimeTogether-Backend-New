@@ -13,6 +13,6 @@ public interface PromiseDateRepository extends JpaRepository<PromiseDate, Intege
     @Query("SELECT d.dateId FROM PromiseDate d WHERE d.promiseId = :promiseId")
     int findIdByPromiseId(@Param("promiseId")String promiseId);
 
-    Optional<PromiseDate> findByPromiseIdAndDateAndUserId(
-            @Param("promiseId")String promiseId, @Param("date")LocalDate date, @Param("userId")String userId);
+    Optional<PromiseDate> findByPromiseIdAndDate(
+            @Param("promiseId")String promiseId, @Param("date")LocalDate date);
 }

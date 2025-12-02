@@ -26,19 +26,16 @@ public class MyTimeService {
 
     @Transactional
     public void updateUserTime(String userId, String promiseId, UserTimeSlotReqDTO reqDTO) {
+        promiseTimeRepository.deleteByPromiseIdAndUserId(promiseId, userId);
         for(UserTimeSlotDTO dateTime : reqDTO.dateTime()){ // find or create 로 분리할지 고민
             PromiseDate date = promiseDateRepository
-                    .findByPromiseIdAndDateAndUserId(promiseId, dateTime.date(), userId)
+                    .findByPromiseIdAndDate(promiseId, dateTime.date())
                     .orElseGet(() -> promiseDateRepository.save(
                             new PromiseDate(dateTime.day(), dateTime.date(), promiseId)
                     ));
 
             for(LocalTime time : dateTime.times()){
-                PromiseTime promiseTime = promiseTimeRepository
-                        .findByDateIdAndTimeAndUserId(date.getDateId(), time, userId)
-                        .orElseGet(() -> promiseTimeRepository.save(
-                                new PromiseTime(date.getDateId(), time, userId)
-                        ));
+                PromiseTime promiseTime = new PromiseTime(date.getDateId(), time, userId, promiseId);
                 promiseTimeRepository.save(promiseTime);
             }
 

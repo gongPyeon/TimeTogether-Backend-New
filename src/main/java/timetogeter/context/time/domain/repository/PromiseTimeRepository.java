@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface PromiseTimeRepository extends JpaRepository<PromiseTime, Integer>, PromiseTimeRepositoryCustom {
     Optional<PromiseTime> findByDateIdAndTimeAndUserId(
             @Param("dateId")int dateId, @Param("time") LocalTime time, @Param("userId")String userId);
+
+    void deleteByPromiseIdAndUserId(@Param("promiseId")String promiseId, @Param("userId")String userId);
 }

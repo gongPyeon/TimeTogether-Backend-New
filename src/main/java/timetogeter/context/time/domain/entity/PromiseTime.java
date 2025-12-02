@@ -23,13 +23,15 @@ public class PromiseTime {
     private int timeId;
 
     private int dateId;
+    private String promiseId;
 
     private LocalTime time;
     private String userId;
 
-    public PromiseTime(int dateId, LocalTime time, String userId) {
+    public PromiseTime(int dateId, LocalTime time, String userId, String promiseId) {
         this.dateId = dateId;
         this.time = time;
         this.userId = userId;
+        this.promiseId = promiseId;
     }
 }
