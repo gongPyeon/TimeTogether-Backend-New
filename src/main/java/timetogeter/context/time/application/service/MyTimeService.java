@@ -28,13 +28,17 @@ public class MyTimeService {
     public void updateUserTime(String userId, String promiseId, UserTimeSlotReqDTO reqDTO) {
         for(UserTimeSlotDTO dateTime : reqDTO.dateTime()){ // find or create 로 분리할지 고민
             PromiseDate date = promiseDateRepository
-                    .findByPromiseIdAndDate(promiseId, dateTime.date())
+                    .findByPromiseIdAndDateAndUserId(promiseId, dateTime.date(), userId)
                     .orElseGet(() -> promiseDateRepository.save(
                             new PromiseDate(dateTime.day(), dateTime.date(), promiseId)
                     ));
 
             for(LocalTime time : dateTime.times()){
-                PromiseTime promiseTime = new PromiseTime(date.getDateId(), time, userId);
+                PromiseTime promiseTime = promiseTimeRepository
+                        .findByDateIdAndTimeAndUserId(date.getDateId(), time, userId)
+                        .orElseGet(() -> promiseTimeRepository.save(
+                                new PromiseTime(date.getDateId(), time, userId)
+                        ));
                 promiseTimeRepository.save(promiseTime);
             }
 
