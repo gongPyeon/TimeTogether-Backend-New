@@ -26,7 +26,7 @@ public class PromiseConfirmService {
         String managerId = promiseRepository.findMangerById(promiseId)
                 .orElseThrow(() -> new PromiseNotFoundException(BaseErrorCode.PROMISE_NOT_FOUND,
                         "[ERROR] " + promiseId + "에 해당하는 약속이 존재하지 않습니다."));
-
+        log.info("managerId = {}, userId = {}", managerId, userId);
         return managerId.equals(userId);
     }
 
