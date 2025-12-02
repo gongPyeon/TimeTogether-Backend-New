@@ -196,6 +196,10 @@ public class PromiseManageInfoService {
                         "promiseId=" + request.promiseId() + " 약속을 찾을 수 없습니다"
                 ));
 
+        //약속 참여자 수 증가 
+        promise.incrementNum();
+        promiseRepository.save(promise);
+
         String promiseName = promise.getTitle(); //약속 제목
 
         return new JoinPromise1Response(promiseName + " 약속에 참여하였습니다.");
