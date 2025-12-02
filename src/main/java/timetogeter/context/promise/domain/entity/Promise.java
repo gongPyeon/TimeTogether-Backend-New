@@ -63,4 +63,8 @@ public class Promise {
     public void confirmDateTimeCheck() {
         this.dateTimeCheck = true;
     }
+
+    public void incrementNum() {
+        this.num++;
+    }
 }
