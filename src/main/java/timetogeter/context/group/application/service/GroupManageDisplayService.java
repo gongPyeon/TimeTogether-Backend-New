@@ -88,6 +88,7 @@ public class GroupManageDisplayService {
                     group.getGroupId(),
                     group.getGroupName(),
                     group.getGroupImg(),
+                    "임시 그룹 설명",
                     group.getManagerId(),
                     encUserIdList
             );

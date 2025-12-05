@@ -15,10 +15,13 @@ import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.domain.repository.PromiseShareKeyRepository;
+import timetogeter.context.place.domain.entity.PromisePlace;
+import timetogeter.context.place.domain.repository.PromisePlaceRepository;
 import timetogeter.context.schedule.domain.entity.Schedule;
 import timetogeter.context.schedule.domain.repository.ScheduleRepository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +34,7 @@ public class PromiseDetailInfoService {
     private final PromiseRepository promiseRepository;
     private final PromiseShareKeyRepository promiseShareKeyRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PromisePlaceRepository promisePlaceRepository;
 
     // 디테일 확인 - 사용자가 속한 그룹 내 약속을 (정하는중) , (확정완료) 로 구분지어 보여주는 화면 Step1 - 메인 메소드
     public List<PromiseView1Response> getEncPromiseIdList(String userId) {
@@ -86,16 +90,36 @@ public class PromiseDetailInfoService {
         List<String> scheduleIdList = request.scheduleIdList();
         List<Schedule> schedules = scheduleRepository.findByScheduleIdIn(scheduleIdList);
 
+        //해당 schedules의 placeId 모두 수집
+        List<Integer> placeIds = schedules.stream()
+                .map(Schedule::getPlaceId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        //PromisePlace 일괄 조회
+        List<PromisePlace> places = promisePlaceRepository.findByPlaceIdIn(placeIds);
+
+        //placeId로 매핑하여 빠른 조회를 위한 Map 생성
+        Map<Integer, PromisePlace> placeMap = places.stream()
+                .collect(Collectors.toMap(PromisePlace::getPlaceId, place -> place));
+
         return schedules.stream()
-                .map(schedule -> new PromiseView4Response(
-                        true, //Schedule 엔티티는 다 확정된 일정들
-                        schedule.getScheduleId(),
-                        schedule.getScheduleId(),
-                        schedule.getTitle(),
-                        schedule.getPurpose(),
-                        Long.valueOf(schedule.getPlaceId()),
-                        schedule.getGroupId()
-                ))
+                .map(schedule -> {
+                    PromisePlace place = placeMap.get(schedule.getPlaceId());
+                    String confirmedDateTime = schedule.getScheduleId();
+
+                    return new PromiseView4Response(
+                            true, //Schedule 엔티티는 다 확정된 일정들
+                            schedule.getScheduleId(),
+                            confirmedDateTime, //20251129Thhmm-20251129Thhmm 형식의 확정된 시간
+                            schedule.getTitle(),
+                            schedule.getContent() != null ? schedule.getContent() : "",
+                            schedule.getPurpose(),
+                            place != null ? place.getPlaceName() : "",
+                            place != null ? place.getPlaceInfo() : "",
+                            schedule.getGroupId()
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }
