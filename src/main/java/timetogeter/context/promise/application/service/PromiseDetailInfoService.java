@@ -106,9 +106,12 @@ public class PromiseDetailInfoService {
         return schedules.stream()
                 .map(schedule -> {
                     PromisePlace place = placeMap.get(schedule.getPlaceId());
+                    String confirmedDateTime = schedule.getScheduleId();
+
                     return new PromiseView4Response(
                             true, //Schedule 엔티티는 다 확정된 일정들
                             schedule.getScheduleId(),
+                            confirmedDateTime, //20251129Thhmm-20251129Thhmm 형식의 확정된 시간
                             schedule.getTitle(),
                             schedule.getContent() != null ? schedule.getContent() : "",
                             schedule.getPurpose(),
