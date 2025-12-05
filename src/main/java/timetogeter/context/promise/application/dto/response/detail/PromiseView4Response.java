@@ -18,8 +18,11 @@ public record PromiseView4Response(
         @Schema(description = "목적", example = "초콜릿초콜릿")
         String purpose,
 
-        @Schema(description = "장소 ID", example = "1")
-        Long placeId,
+        @Schema(description = "장소 이름", example = "독서실")
+        String placeName,
+
+        @Schema(description = "장소 정보", example = "공부하는곳")
+        String placeInfo,
 
         @Schema(description = "그룹 ID", example = "d71ac3eb-fc61-4cff-92c7-478a0e092936")
         String groupId

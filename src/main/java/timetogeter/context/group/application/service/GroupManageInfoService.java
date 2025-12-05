@@ -41,7 +41,7 @@ public class GroupManageInfoService {
     @Transactional
     public CreateGroup1Response createGroup1(CreateGroup1Request request, String managerId) {
         //Group 테이블에 저장
-        Group group = Group.of(request.groupName(), request.groupExplain(), request.groupImg(), managerId);
+        Group group = Group.of(request.groupName(), request.groupImg(), request.groupExplain(), managerId);
         groupRepository.save(group);
 
         //그룹 아이디 반환

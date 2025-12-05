@@ -5,6 +5,7 @@ public record ViewGroup3Response(
         String groupId,
         String groupName,
         String groupImg,
+        String explanation,
         String managerId,
         List<String> encUserId
 ) {
