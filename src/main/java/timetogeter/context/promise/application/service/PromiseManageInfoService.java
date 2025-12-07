@@ -229,4 +229,20 @@ public class PromiseManageInfoService {
         List<String> encPromiseIdList = promiseProxyUserRepository.findPromiseIdsByUserId(userId);
         return new GetPromiseKey1(encPromiseIdList);
     }
+
+    //promisekey를 획득하는 과정 - 메인 메소드(2)
+    public GetPromiseKey2 getPromiseKey2(String userId, GetPromiseRequest request) {
+        String promiseId = request.promiseId();
+        String encUserId = request.encUserId();
+
+
+        // promiseId와 encUserId로 encPromiseKey 조회
+        String encPromiseKey = promiseShareKeyRepository.findEncPromiseKey(promiseId, encUserId)
+                .orElseThrow(() -> new PromiseNotFoundException(
+                        BaseErrorCode.PROMISE_NOT_FOUND,
+                        "[ERROR]: promiseId=" + promiseId + ", encUserId=" + encUserId + "에 해당하는 encPromiseKey를 찾을 수 없습니다."
+                ));
+
+        return new GetPromiseKey2(encPromiseKey);
+    }
 }
