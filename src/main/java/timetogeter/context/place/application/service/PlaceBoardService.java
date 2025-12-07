@@ -105,7 +105,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         if(placeId == -1)
             throw new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_CONFIRM, "[ERROR] 약속에 해당하는 장소가 확정되지 않았습니다.");
 
-        PromisePlace promisePlace = get(placeId);
-        return new ConfirmedPlaceDTO(promisePlace.getPlaceId(), promisePlace.getPlaceName(), promisePlace.getPlaceAddr());
+        PlaceBoard placeBoard = placeBoardRepository.findById(placeId).orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 아이디에 해당하는 장소를 찾을 수 없습니다."));
+        return new ConfirmedPlaceDTO(placeBoard.getPlaceBoardId(), placeBoard.getPlaceName(), placeBoard.getPlaceAddr());
     }
 }

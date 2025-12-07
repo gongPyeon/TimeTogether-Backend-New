@@ -43,7 +43,7 @@ public class PromiseConfirmService {
 
     public int confirmedPlaceCheck(String promiseId) {
         Promise promise = get(promiseId);
-        if(!promise.getPromiseCheck()) return -1;
+        if(!promise.getPlaceCheck()) return -1;
         PromiseCheck promiseCheck = getPromiseCheck(promiseId);
 
         return promiseCheck.getPlaceId();

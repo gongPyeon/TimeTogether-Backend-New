@@ -371,7 +371,7 @@ public class PlaceController {
                     )
             )
     })
-    @PostMapping("/confirm/{promiseId}")
+    @GetMapping("/confirm/{promiseId}")
     public BaseResponse<Object> confirmedPlaceCheck(@PathVariable("promiseId") String promiseId) {
         ConfirmedPlaceDTO dto = placeBoardService.confirmedPlaceCheck(promiseId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);

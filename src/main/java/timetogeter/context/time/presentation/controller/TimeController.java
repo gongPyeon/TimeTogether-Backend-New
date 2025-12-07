@@ -194,7 +194,7 @@ public class TimeController {
                     )
             )
     })
-    @PostMapping("/confirm/{promiseId}")
+    @GetMapping("/confirm/{promiseId}")
     public BaseResponse<Object> confirmedTimeCheck(@PathVariable("promiseId") String promiseId) {
         ConfirmedTimeDTO dto = timeBoardService.confirmedTimeCheck(promiseId);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_TIME);
