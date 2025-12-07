@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import timetogeter.context.auth.exception.UserNotFoundException;
+import timetogeter.context.place.application.dto.ConfirmedPlaceDTO;
 import timetogeter.context.place.application.dto.PlaceDTO;
 import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.domain.entity.PlaceBoard;
@@ -97,5 +98,14 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         PromisePlace place = placeRepository.findByPlaceId(placeId)
                 .orElseThrow(() -> new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_FOUND, "[ERROR] 아이디에 해당하는 장소를 찾을 수 없습니다."));
         return place;
+    }
+
+    public ConfirmedPlaceDTO confirmedPlaceCheck(String promiseId) {
+        int placeId = promiseConfirmService.confirmedPlaceCheck(promiseId);
+        if(placeId == -1)
+            throw new PlaceNotFoundException(BaseErrorCode.PLACE_NOT_CONFIRM, "[ERROR] 약속에 해당하는 장소가 확정되지 않았습니다.");
+
+        PromisePlace promisePlace = get(placeId);
+        return new ConfirmedPlaceDTO(promisePlace.getPlaceId(), promisePlace.getPlaceName(), promisePlace.getPlaceAddr());
     }
 }

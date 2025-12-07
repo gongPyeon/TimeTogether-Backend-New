@@ -9,6 +9,7 @@ import timetogeter.context.promise.application.dto.TimeRange;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
 import timetogeter.context.promise.application.service.PromiseConfirmService;
 import timetogeter.context.promise.application.service.PromiseQueryService;
+import timetogeter.context.time.application.dto.ConfirmedTimeDTO;
 import timetogeter.context.time.application.dto.DailyTimeDTO;
 import timetogeter.context.time.application.dto.TimeRangeDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
@@ -16,6 +17,7 @@ import timetogeter.context.time.application.dto.response.TimeBoardResDTO;
 import timetogeter.context.time.application.dto.response.UserScheduleResDTO;
 import timetogeter.context.time.application.dto.response.UserTimeBoardResDTO;
 import timetogeter.context.time.domain.repository.PromiseTimeRepository;
+import timetogeter.context.time.exception.TimeNotFoundException;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
 import java.util.ArrayList;
@@ -56,5 +58,13 @@ public class TimeBoardService {
         promiseConfirmService.confirmPromiseDateTime(promiseId, dateTime);
 
         return promiseConfirmService.confirmedScheduleByTime(promiseId);
+    }
+
+    public ConfirmedTimeDTO confirmedTimeCheck(String promiseId) {
+        String dateTime = promiseConfirmService.confirmedTimeCheck(promiseId);
+        if(dateTime == null)
+            throw new TimeNotFoundException(BaseErrorCode.TIME_NOT_CONFIRM, "[ERROR] 약속에 해당하는 시간이 확정되지 않았습니다.");
+
+        return new ConfirmedTimeDTO(dateTime);
     }
 }

@@ -41,6 +41,14 @@ public class PromiseConfirmService {
                 promiseCheck.getPlaceId());
     }
 
+    public int confirmedPlaceCheck(String promiseId) {
+        Promise promise = get(promiseId);
+        if(!promise.getPromiseCheck()) return -1;
+        PromiseCheck promiseCheck = getPromiseCheck(promiseId);
+
+        return promiseCheck.getPlaceId();
+    }
+
     public PromiseRegisterDTO confirmedScheduleByTime(String promiseId) {
         Promise promise = get(promiseId);
         if(!promise.getPlaceCheck()) return new PromiseRegisterDTO();
@@ -105,4 +113,11 @@ public class PromiseConfirmService {
         return promiseCheck;
     }
 
+    public String confirmedTimeCheck(String promiseId) {
+        Promise promise = get(promiseId);
+        if(!promise.getDateTimeCheck()) return null;
+        PromiseCheck promiseCheck = getPromiseCheck(promiseId);
+
+        return promiseCheck.getDateTime();
+    }
 }
