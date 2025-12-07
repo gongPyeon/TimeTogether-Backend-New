@@ -224,4 +224,9 @@ public class PromiseManageInfoService {
         ));
     }
 
+    //promisekey를 획득하는 과정 - 메인 메소드(1)
+    public GetPromiseKey1 getPromiseKey1(String userId) {
+        List<String> encPromiseIdList = promiseProxyUserRepository.findPromiseIdsByUserId(userId);
+        return new GetPromiseKey1(encPromiseIdList);
+    }
 }

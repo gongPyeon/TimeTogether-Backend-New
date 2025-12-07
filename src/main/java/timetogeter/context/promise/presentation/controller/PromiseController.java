@@ -24,6 +24,7 @@ import timetogeter.context.promise.application.dto.response.basic.CreatePromise1
 import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
 import timetogeter.context.promise.application.dto.response.basic.CreatePromise3Response;
 import timetogeter.context.promise.application.dto.response.basic.CreatePromise4Response;
+import timetogeter.context.promise.application.dto.response.manage.GetPromiseKey1;
 import timetogeter.context.promise.application.service.PromiseManageInfoService;
 import timetogeter.context.promise.application.service.PromiseSecurityService;
 import timetogeter.context.promise.application.dto.response.UserIdsResDTO;
@@ -222,6 +223,35 @@ public class PromiseController {
             @RequestBody CreatePromise4Request request) throws Exception{
         String userId = userPrincipal.getId();
         CreatePromise4Response response = promiseManageInfoService.createPromise4(userId,request);
+        return new BaseResponse<>(response);
+    }
+
+    /*
+    promisekey를 획득하는 과정 - step1
+
+    promise_proxy_user 테이블에 있는 enc_promise_id (개인키로 암호화한 promise_id) 리스트 반환
+     */
+    @Operation(summary = "promisekey를 획득하는 과정 - step1", description = """
+         promise_proxy_user 테이블에 있는 enc_promise_id (개인키로 암호화한 promise_id) 리스트 반환
+        """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "enc_promise_id 리스트 조회 성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "401", description = "인증 실패",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = "{ \"code\": 401, \"message\": \"인증이 필요합니다.\" }")
+                    )),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class),
+                            examples = @ExampleObject(value = "{ \"code\": 500, \"message\": \"서버 내부 오류가 발생했습니다.\" }")
+                    ))
+    })
+    @SecurityRequirement(name = "BearerAuth")
+    @PostMapping(value = "/promisekey1", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BaseResponse<GetPromiseKey1> getPromiseKey1(
+            @AuthenticationPrincipal UserPrincipal userPrincipal) throws Exception{
+        String userId = userPrincipal.getId();
+        GetPromiseKey1 response = promiseManageInfoService.getPromiseKey1(userId);
         return new BaseResponse<>(response);
     }
 
