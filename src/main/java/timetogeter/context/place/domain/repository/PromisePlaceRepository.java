@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import timetogeter.context.place.domain.entity.PromisePlace;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PromisePlaceRepository extends JpaRepository<PromisePlace, String> {
@@ -14,4 +15,7 @@ public interface PromisePlaceRepository extends JpaRepository<PromisePlace, Stri
 
     @Query("SELECT p FROM PromisePlace p WHERE p.promiseId = :promiseId")
     Page<PromisePlace> findByPromiseId(@Param("promiseId") String promiseId, PageRequest pageRequest);
+
+    @Query("SELECT p FROM PromisePlace p WHERE p.placeId IN (:placeIds)")
+    List<PromisePlace> findByPlaceIdIn(@Param("placeIds") List<Integer> placeIds);
 }

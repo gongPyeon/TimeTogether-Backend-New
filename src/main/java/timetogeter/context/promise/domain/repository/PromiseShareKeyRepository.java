@@ -37,6 +37,13 @@ public interface PromiseShareKeyRepository extends JpaRepository<PromiseShareKey
     @Query("SELECT p FROM PromiseShareKey p WHERE p.encPromiseKey = :encPromiseKey")
     Optional<PromiseShareKey> findByEncPromiseKey(@Param("encPromiseKey")String encPromiseKey);
 
+    @Query(value = "SELECT enc_promise_key " +
+            "FROM promise_share_key " +
+            "WHERE promise_id = :promiseId AND enc_user_id = :encUserId",
+            nativeQuery = true)
+    Optional<String> findEncPromiseKey(@Param("promiseId") String promiseId,
+                                       @Param("encUserId") String encUserId);
+
     @Modifying
     @Query("DELETE FROM PromiseShareKey p WHERE p.promiseId = :promiseId")
     void deleteAllByEncPromiseId(@Param("promiseId") String promiseId);

@@ -196,6 +196,10 @@ public class PromiseManageInfoService {
                         "promiseId=" + request.promiseId() + " 약속을 찾을 수 없습니다"
                 ));
 
+        //약속 참여자 수 증가 
+        promise.incrementNum();
+        promiseRepository.save(promise);
+
         String promiseName = promise.getTitle(); //약속 제목
 
         return new JoinPromise1Response(promiseName + " 약속에 참여하였습니다.");
@@ -220,4 +224,25 @@ public class PromiseManageInfoService {
         ));
     }
 
+    //promisekey를 획득하는 과정 - 메인 메소드(1)
+    public GetPromiseKey1 getPromiseKey1(String userId) {
+        List<String> encPromiseIdList = promiseProxyUserRepository.findPromiseIdsByUserId(userId);
+        return new GetPromiseKey1(encPromiseIdList);
+    }
+
+    //promisekey를 획득하는 과정 - 메인 메소드(2)
+    public GetPromiseKey2 getPromiseKey2(String userId, GetPromiseRequest request) {
+        String promiseId = request.promiseId();
+        String encUserId = request.encUserId();
+
+
+        // promiseId와 encUserId로 encPromiseKey 조회
+        String encPromiseKey = promiseShareKeyRepository.findEncPromiseKey(promiseId, encUserId)
+                .orElseThrow(() -> new PromiseNotFoundException(
+                        BaseErrorCode.PROMISE_NOT_FOUND,
+                        "[ERROR]: promiseId=" + promiseId + ", encUserId=" + encUserId + "에 해당하는 encPromiseKey를 찾을 수 없습니다."
+                ));
+
+        return new GetPromiseKey2(encPromiseKey);
+    }
 }
