@@ -14,8 +14,8 @@ public interface PromiseProxyUserRepository extends JpaRepository<PromiseProxyUs
     Optional<PromiseProxyUser> findByEncPromiseId(String encPromiseId);
     @Query(value = """
         SELECT enc_promise_id
-        FROM PromiseProxyUser p
-        WHERE p.userId = :userId
+        FROM promise_proxy_user p
+        WHERE p.user_id = :userId
         """, nativeQuery = true)
     List<String> findPromiseIdsByUserId(@Param("userId") String userId);
 
