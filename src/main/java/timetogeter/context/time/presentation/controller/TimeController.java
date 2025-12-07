@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.place.application.dto.ConfirmedPlaceDTO;
 import timetogeter.context.promise.application.dto.response.PromiseRegisterDTO;
+import timetogeter.context.time.application.dto.ConfirmedTimeDTO;
 import timetogeter.context.time.application.dto.request.ConfirmDateReqDTO;
 import timetogeter.context.time.application.dto.request.TimeSlotReqDTO;
 import timetogeter.context.time.application.dto.request.UserTimeSlotReqDTO;
@@ -165,5 +167,36 @@ public class TimeController {
         String userId = userPrincipal.getId();
         PromiseRegisterDTO dto = timeBoardService.confirmDateTime(userId, promiseId, reqDTO.dateTime());
         return new BaseResponse<>(dto);
+    }
+
+    @Operation(summary = "시간 확정 확인", description = "시간을 확정했는지 확인한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "404", description = "요청 형식 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "약속 없음", summary = "약속 아이디에 해당하는 약속이 없음",
+                                            value = """
+                                                    { "code": 404, "message": "약속을 찾을 수 없어요" }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "시간 없음", summary = "약속 아이디에 해당하는 시간이 없음",
+                                            value = """
+                                                    { "code": 404, "message": "시간이 확정되지 않았어요" }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    @GetMapping("/confirm/{promiseId}")
+    public BaseResponse<Object> confirmedTimeCheck(@PathVariable("promiseId") String promiseId) {
+        ConfirmedTimeDTO dto = timeBoardService.confirmedTimeCheck(promiseId);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_TIME);
     }
 }

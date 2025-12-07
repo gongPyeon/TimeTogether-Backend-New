@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.place.application.dto.ConfirmedPlaceDTO;
 import timetogeter.context.place.application.dto.request.PlaceRegisterDTO;
 import timetogeter.context.place.application.dto.request.UserAIInfoReqDTO;
 import timetogeter.context.place.application.dto.request.UserBoardReqDTO;
@@ -305,7 +306,8 @@ public class PlaceController {
                                                @PathVariable("placeId") int placeId,
                                                @RequestParam(value = "aiPlaceId", required = false) Integer aiPlaceId) {
         String userId = userPrincipal.getId();
-        PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId, aiPlaceId);
+        int aiPlaceValue = (aiPlaceId != null) ? aiPlaceId : -1;
+        PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId, aiPlaceValue);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
@@ -342,6 +344,37 @@ public class PlaceController {
     public BaseResponse<Object> trainPlace() {
         trainingScheduler.sendTrainingData();
         return new BaseResponse<>(BaseCode.SUCCESS_TRAIN_PLACE);
+    }
+
+    @Operation(summary = "장소 확정 확인", description = "장소를 확정했는지 확인한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "404", description = "요청 형식 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "약속 없음", summary = "약속 아이디에 해당하는 약속이 없음",
+                                            value = """
+                                                    { "code": 404, "message": "약속을 찾을 수 없어요" }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "장소 없음", summary = "약속 아이디에 해당하는 장소가 없음",
+                                            value = """
+                                                    { "code": 404, "message": "장소가 확정되지 않았어요" }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    @GetMapping("/confirm/{promiseId}")
+    public BaseResponse<Object> confirmedPlaceCheck(@PathVariable("promiseId") String promiseId) {
+        ConfirmedPlaceDTO dto = placeBoardService.confirmedPlaceCheck(promiseId);
+        return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 
 }
