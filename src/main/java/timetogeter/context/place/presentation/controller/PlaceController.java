@@ -305,7 +305,8 @@ public class PlaceController {
                                                @PathVariable("placeId") int placeId,
                                                @RequestParam(value = "aiPlaceId", required = false) Integer aiPlaceId) {
         String userId = userPrincipal.getId();
-        PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId, aiPlaceId);
+        int aiPlaceValue = (aiPlaceId != null) ? aiPlaceId : -1;
+        PromiseRegisterDTO dto = placeBoardService.confirmedPlace(userId, promiseId, placeId, aiPlaceValue);
         return new BaseResponse<>(dto, BaseCode.SUCCESS_CONFIRM_PLACE);
     }
 

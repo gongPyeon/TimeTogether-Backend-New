@@ -78,7 +78,7 @@ public class PlaceBoardService { // TODO: 장소 관리 시스템
         boolean isConfirmed = promiseConfirmService.confirmedPromiseManager(userId, promiseId);
         if(!isConfirmed) throw new UserNotFoundException(BaseErrorCode.PROMISE_MANGER_FORBIDDEN, "[ERROR] 사용자에게 약속장 권한이 없습니다.");
 
-        if(aiPlaceId == null || aiPlaceId == 0) {
+        if(aiPlaceId == -1 || aiPlaceId == 0) {
             PromisePlace promisePlace = get(placeId);
             if (!promisePlace.getAiPlace()) {
                 PlaceBoard placeBoard = PlaceBoard.of(promisePlace.getPlaceName(), promisePlace.getPlaceAddr(),
