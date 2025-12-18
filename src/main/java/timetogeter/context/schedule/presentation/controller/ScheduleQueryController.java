@@ -105,7 +105,7 @@ public class ScheduleQueryController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/search")
+    @PostMapping("/search")
     public BaseResponse<Object> searchPromiseView(
             @RequestParam("query") String query,
             @RequestBody PromiseSearchReqDTO reqDTO){
