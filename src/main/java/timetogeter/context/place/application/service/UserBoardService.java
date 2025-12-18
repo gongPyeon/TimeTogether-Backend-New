@@ -9,6 +9,10 @@ import timetogeter.context.place.application.dto.response.PlaceBoardDTO;
 import timetogeter.context.place.domain.entity.UserBoard;
 import timetogeter.context.place.domain.repository.UserBoardRepository;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 @RequiredArgsConstructor
 @Service
 public class UserBoardService {
@@ -26,6 +30,13 @@ public class UserBoardService {
 
         userBoard.update(placeId, dto.pseudoId(), dto.rating());
         userBoardRepository.save(userBoard);
+    }
+
+    public Set<Integer> getRatedBoardIds(String userId, List<Integer> placeBoardIds) {
+        if (placeBoardIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return userBoardRepository.findRatedBoardIds(userId, placeBoardIds);
     }
 
 }

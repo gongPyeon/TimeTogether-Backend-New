@@ -20,7 +20,12 @@ import timetogeter.context.promise.application.service.PromiseQueryService;
 import timetogeter.context.promise.domain.entity.Promise;
 import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,11 +51,23 @@ public class MyPlaceService { // TODO: 내 장소 관리 시스템
     @Transactional
     public void registerPlace(String userId, String promiseId, List<PlaceRegisterDTO> dto) {
         if(dto.size() > 10) throw new InvalidPlaceNumException(BaseErrorCode.INVALID_PLACE_NUM, "[ERROR] 장소 등록 DTO의 사이즈가 10개를 넘습니다. 현재 "+dto.size()+"개 입니다.");
+
+        Set<String> existingPlaceAddresses = new HashSet<>(placeRepository.findAiPlaceAddrByPromiseId(promiseId));
+
         List<PromisePlace> places = dto.stream()
+                .filter(distinctByKey(PlaceRegisterDTO::placeAddress))
+                .filter(p -> !existingPlaceAddresses.contains(p.placeAddress()))
                 .map(p -> new PromisePlace(promiseId, p.placeName(), p.placeAddress(), p.placeInfo(), userId, p.aiPlace(), p.aiPlaceId()))
                 .collect(Collectors.toList());
 
-        placeRepository.saveAll(places);
+        if (!places.isEmpty()) {
+            placeRepository.saveAll(places);
+        }
+    }
+
+    private static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 
     public List<PlaceRegisterResDTO> recommendPlace(UserAIInfoReqDTO dto) {

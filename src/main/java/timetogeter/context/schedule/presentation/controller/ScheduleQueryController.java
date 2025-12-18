@@ -10,8 +10,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import timetogeter.context.auth.domain.adaptor.UserPrincipal;
+import timetogeter.context.auth.domain.entity.User;
 import timetogeter.context.schedule.application.dto.request.GetPromiseBatchReqDTO;
+import timetogeter.context.schedule.application.dto.request.PromiseSearchReqDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseDetailResDTO;
 import timetogeter.context.schedule.application.dto.response.PromiseListResDTO;
 import timetogeter.context.schedule.application.service.ConfirmedScheduleService;
@@ -37,7 +41,8 @@ public class ScheduleQueryController {
     })
     @PostMapping("/get")
     public BaseResponse<Object> getPromiseView(@RequestBody GetPromiseBatchReqDTO reqDTO){
-        PromiseListResDTO dto = confirmedScheduleService.getPromiseView(reqDTO);
+        String userId = reqDTO.pseudoId();
+        PromiseListResDTO dto = confirmedScheduleService.getPromiseView(reqDTO, userId);
         return new BaseResponse<>(dto);
     }
 
@@ -64,7 +69,8 @@ public class ScheduleQueryController {
     public BaseResponse<Object> getPromiseView(
             @PathVariable("groupId") String groupId,
             @RequestBody GetPromiseBatchReqDTO reqDTO){
-        PromiseListResDTO dto = confirmedScheduleService.getPromiseViewByGroup(groupId, reqDTO);
+        String userId = reqDTO.pseudoId();
+        PromiseListResDTO dto = confirmedScheduleService.getPromiseViewByGroup(groupId, reqDTO, userId);
         return new BaseResponse<>(dto);
     }
 
@@ -99,10 +105,12 @@ public class ScheduleQueryController {
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
     })
-    @GetMapping("/search")
+    @PostMapping("/search")
     public BaseResponse<Object> searchPromiseView(
-            @RequestParam("query") String query){
-        PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query);
+            @RequestParam("query") String query,
+            @RequestBody PromiseSearchReqDTO reqDTO){
+        String userId = reqDTO.pseudoId();
+        PromiseListResDTO dto = confirmedScheduleService.searchPromiseView(query, userId);
         return new BaseResponse<>(dto);
     }
 

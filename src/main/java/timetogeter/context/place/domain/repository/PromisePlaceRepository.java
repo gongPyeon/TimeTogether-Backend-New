@@ -18,4 +18,7 @@ public interface PromisePlaceRepository extends JpaRepository<PromisePlace, Stri
 
     @Query("SELECT p FROM PromisePlace p WHERE p.placeId IN (:placeIds)")
     List<PromisePlace> findByPlaceIdIn(@Param("placeIds") List<Integer> placeIds);
+
+    @Query("SELECT p.placeAddr FROM PromisePlace p WHERE p.promiseId = :promiseId")
+    List<String> findAiPlaceAddrByPromiseId(@Param("promiseId") String promiseId);
 }

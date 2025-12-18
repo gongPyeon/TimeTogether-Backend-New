@@ -3,6 +3,8 @@ package timetogeter.context.schedule.application.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import timetogeter.context.place.application.service.UserBoardService;
+import timetogeter.context.place.domain.repository.UserBoardRepository;
 import timetogeter.context.promise.domain.entity.PromiseShareKey;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
 import timetogeter.context.promise.exception.PromiseNotFoundException;
@@ -23,6 +25,8 @@ import timetogeter.global.interceptor.response.error.status.BaseErrorCode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,22 +37,20 @@ public class ConfirmedScheduleService {
     private final PromiseRepository promiseRepository;
     private final PromiseShareKeyRepository promiseShareKeyRepository;
     private final TimeStampRepository timeStampRepository;
+    private final UserBoardService userBoardService;
 
 
-    public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO) {
+    public PromiseListResDTO getPromiseView(GetPromiseBatchReqDTO reqDTO, String userId) {
         List<Schedule> schedules = scheduleRepository.findByScheduleIdIn(reqDTO.scheduleIdList());
-        List<PromiseResDTO> promiseResDTOList = schedules.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
-                .collect(Collectors.toList());
+
+        List<PromiseResDTO> promiseResDTOList = getPromiseResDTOS(userId, schedules);
 
         return new PromiseListResDTO(promiseResDTOList);
     }
-    public PromiseListResDTO getPromiseViewByGroup(String groupId, GetPromiseBatchReqDTO reqDTO) {
-        List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndScheduleIdIn(groupId, reqDTO.scheduleIdList());
-        List<PromiseResDTO> promiseResDTOList = schedules.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
-                .collect(Collectors.toList());
 
+    public PromiseListResDTO getPromiseViewByGroup(String groupId, GetPromiseBatchReqDTO reqDTO, String userId) {
+        List<Schedule> schedules = scheduleRepository.findAllByGroupIdAndScheduleIdIn(groupId, reqDTO.scheduleIdList());
+        List<PromiseResDTO> promiseResDTOList = getPromiseResDTOS(userId, schedules);
         return new PromiseListResDTO(promiseResDTOList);
     }
 
@@ -62,14 +64,32 @@ public class ConfirmedScheduleService {
         return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeId(), dto.placeName(), dto.placeAddress(), dto.groupId(), dto.groupName(), encUserIds);
     }
 
-    public PromiseListResDTO searchPromiseView(String query) {
-        List<Schedule> result  = scheduleRepository.searchByQueryAndFilters(query);
+    public PromiseListResDTO searchPromiseView(String query, String userId) {
+        List<Schedule> schedules  = scheduleRepository.searchByQueryAndFilters(query);
+        List<PromiseResDTO> promiseResDTOList = getPromiseResDTOS(userId, schedules);
 
-        List<PromiseResDTO> dtoList = result.stream()
-                .map(s -> new PromiseResDTO(s.getScheduleId(), s.getTitle(), s.getPurpose()))
-                .toList();
+        return new PromiseListResDTO(promiseResDTOList);
+    }
 
-        return new PromiseListResDTO(dtoList);
+    private List<PromiseResDTO> getPromiseResDTOS(String userId, List<Schedule> schedules) {
+        List<Integer> placeBoardIds = schedules.stream()
+                .map(Schedule::getPlaceId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        Set<Integer> ratedBoardIds = userBoardService.getRatedBoardIds(userId, placeBoardIds);
+        List<PromiseResDTO> promiseResDTOList = schedules.stream()
+                .map(s -> {
+                    boolean isRated = ratedBoardIds.contains(s.getPlaceId());
+                    return new PromiseResDTO(
+                            s.getScheduleId(),
+                            s.getTitle(),
+                            s.getPurpose(),
+                            isRated
+                    );
+                })
+                .collect(Collectors.toList());
+        return promiseResDTOList;
     }
 
     // schedule 저장, 타임스탬프 저장, promise 관련 테이블 모두 삭제 (Promise, PromiseDate, PromisePlace, Vote, PromiseTime, PromiseCheck)

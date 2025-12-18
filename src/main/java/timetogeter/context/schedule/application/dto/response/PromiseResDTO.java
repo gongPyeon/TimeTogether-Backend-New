@@ -4,5 +4,6 @@ import timetogeter.context.promise.domain.vo.PromiseType;
 
 public record PromiseResDTO(String scheduleId,
                             String title,
-                            String purpose) {
+                            String purpose,
+                            boolean isRated) {
 }
