@@ -56,7 +56,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                         s.scheduleId,
                         s.title,
                         s.purpose,
+                        p.placeBoardId,
                         p.placeName,
+                        p.placeAddr,
+                        g.groupId,
                         g.groupName
                 ))
                 .from(s)

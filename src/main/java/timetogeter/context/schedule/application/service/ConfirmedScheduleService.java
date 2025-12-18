@@ -59,7 +59,7 @@ public class ConfirmedScheduleService {
         List<String> encUserIds = promiseShareKeyRepository.findNamesByScheduleId(schedule.getScheduleId());
 
         PromiseDetailDTO dto = scheduleRepository.findDetailByScheduleId(scheduleId);
-        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeName(), dto.groupName(), encUserIds);
+        return new PromiseDetailResDTO(dto.scheduleId(), dto.title(), dto.type(), dto.placeId(), dto.placeName(), dto.placeAddress(), dto.groupId(), dto.groupName(), encUserIds);
     }
 
     public PromiseListResDTO searchPromiseView(String query) {
