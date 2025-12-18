@@ -20,6 +20,7 @@ import timetogeter.context.promise.application.dto.request.basic.CreatePromise2R
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise3Request;
 import timetogeter.context.promise.application.dto.request.basic.CreatePromise4Request;
 import timetogeter.context.promise.application.dto.request.manage.GetPromiseRequest;
+import timetogeter.context.promise.application.dto.response.UserInfoListResDTO;
 import timetogeter.context.promise.application.dto.response.UserInfoResDTO;
 import timetogeter.context.promise.application.dto.response.basic.CreatePromise1Response;
 import timetogeter.context.promise.application.dto.response.basic.CreatePromise2Response;
@@ -55,7 +56,7 @@ public class PromiseController {
         return new BaseResponse<>(dto);
     }
 
-    @Operation(summary = "약속원 정보 조회", description = "약속원에 대한 정보를 조회한다")
+    @Operation(summary = "약속원 정보 조회(약속아이디)", description = "약속원에 대한 정보를 조회한다")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공",
                     content = @Content(schema = @Schema(implementation = BaseResponse.class)))
@@ -64,6 +65,17 @@ public class PromiseController {
     public BaseResponse<Object> getUsersByPromiseTime2(@PathVariable("promiseId") String promiseId,
                                                        @RequestBody UserIdsResDTO reqDTO) {
         UserInfoResDTO dto = promiseSecurityService.getUserInfoByDTO(promiseId, reqDTO);
+        return new BaseResponse<>(dto);
+    }
+
+    @Operation(summary = "약속원 정보 조회(전체)", description = "약속원에 대한 정보를 조회한다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @PostMapping("/mem/s2")
+    public BaseResponse<Object> getUsersByPromiseTime3(@RequestBody UserIdsResDTO reqDTO) {
+        UserInfoListResDTO dto = promiseSecurityService.getUserInfoByDTO2(reqDTO);
         return new BaseResponse<>(dto);
     }
 

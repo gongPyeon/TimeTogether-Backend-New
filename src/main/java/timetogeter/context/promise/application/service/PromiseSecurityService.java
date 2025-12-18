@@ -10,6 +10,7 @@ import timetogeter.context.auth.application.service.UserQueryService;
 import timetogeter.context.promise.application.dto.UserInfoDTO;
 import timetogeter.context.promise.application.dto.request.DispersePromiseReqDTO;
 import timetogeter.context.promise.application.dto.request.ExitPromiseReqDTO;
+import timetogeter.context.promise.application.dto.response.UserInfoListResDTO;
 import timetogeter.context.promise.application.dto.response.UserInfoResDTO;
 import timetogeter.context.promise.domain.repository.PromiseProxyUserRepository;
 import timetogeter.context.promise.domain.repository.PromiseRepository;
@@ -39,6 +40,12 @@ public class PromiseSecurityService {
         List<UserInfoDTO> users = userQueryService.getUserInfoByDTO(reqDTO.userIds());
 
         return new UserInfoResDTO(promiseManager, users);
+    }
+
+    public UserInfoListResDTO getUserInfoByDTO2(UserIdsResDTO reqDTO) {
+        List<UserInfoDTO> users = userQueryService.getUserInfoByDTO(reqDTO.userIds());
+
+        return new UserInfoListResDTO(users);
     }
 
     @Transactional
