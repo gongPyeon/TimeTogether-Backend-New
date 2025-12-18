@@ -7,5 +7,6 @@ public record PromiseDetailDTO(String scheduleId,
                                   int placeId,
                                   String placeName,
                                   String placeAddress,
+                                  String groupId,
                                   String groupName)
 {}
